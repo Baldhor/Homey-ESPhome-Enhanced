@@ -1,0 +1,26 @@
+{
+  "id": "nl.inversion.esphome",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "name": {
+    "en": "ESPhome"
+  },
+  "description": {
+    "en": "Adds support for ESPhome devices"
+  },
+  "brandColor": "#FFFFFF",
+  "category": [
+    "appliances"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Robin van Kekem",
+    "email": "roady1979@gmail.com"
+  }
+}

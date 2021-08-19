@@ -1,0 +1,14 @@
+{
+  "name": "nl.inversion.esphome",
+  "version": "0.1.0",
+  "main": "app.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.1.0"
+  },
+  "dependencies": {
+    "esphome-native-api": "^1.0.9"
+  }
+}
