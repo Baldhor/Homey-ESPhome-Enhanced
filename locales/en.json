@@ -1,1 +1,28 @@
-{}
+{
+    "pair": {
+        "api": {
+            "title": "Connect your ESP Home device",
+            "description": "Please provide the IP adress and, optionally, a password for your device.",
+            "submit": "Login",
+            "label_hostname": "IP address",
+            "label_port": "Port",
+            "label_passwd": "Password",
+            "connection_failed": "Failed connecting to device: ",
+            "connection_timeout": "Time out while connecting to device",
+            "connection_refused": "Connection refused by remote host",
+            "connection_invalid_credentials": "Invalid password"
+        }
+    },
+    "settings": {
+        "port_number_incorrect": "Port number should be between 1 and 65535",
+        "ip_address_incorrect": "Please enter an valid IP address"
+    },
+    "app": {
+        "error": {
+            "connection_failed": "Failed connecting to device: ",
+            "connection_disconnected": "Disconnected from the device"
+            
+        },
+        "initializing": "Initializing device, please wait..."
+    }
+}

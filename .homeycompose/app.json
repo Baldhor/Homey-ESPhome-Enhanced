@@ -9,7 +9,7 @@
   "description": {
     "en": "Adds support for ESPhome devices"
   },
-  "brandColor": "#FFFFFF",
+  "brandColor": "#9e9c98",
   "category": [
     "appliances"
   ],

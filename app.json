@@ -10,6 +10,7 @@
   "description": {
     "en": "Adds support for ESPhome devices"
   },
+  "brandColor": "#9e9c98",
   "category": [
     "appliances"
   ],
@@ -22,5 +23,132 @@
   "author": {
     "name": "Robin van Kekem",
     "email": "roady1979@gmail.com"
+  },
+  "flow": {
+    "triggers": [
+      {
+        "id": "esphome_number_changed",
+        "title": {
+          "en": "Number changed"
+        },
+        "hint": {
+          "en": "This card will be triggered when the number has changed."
+        },
+        "tokens": [
+          {
+            "name": "Esphome-Number",
+            "type": "number",
+            "title": {
+              "en": "ESPHome number"
+            },
+            "example": 5
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-device"
+          }
+        ]
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "ESPHome device"
+      },
+      "class": "other",
+      "capabilities": [
+        "button",
+        "esphome_number",
+        "esphome_text"
+      ],
+      "images": {
+        "small": "/drivers/esphome-device/assets/images/small.png",
+        "large": "/drivers/esphome-device/assets/images/large.png",
+        "xlarge": "/drivers/esphome-device/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "api"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "esphome-device",
+      "settings": [
+        {
+          "id": "ip4",
+          "type": "text",
+          "label": {
+            "en": "IP address"
+          },
+          "value": "192.168.0.50",
+          "hint": {
+            "en": "IP address of the device"
+          }
+        },
+        {
+          "id": "port",
+          "type": "number",
+          "label": {
+            "en": "Port"
+          },
+          "value": 6053,
+          "min": 1,
+          "max": 65535
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "label": {
+            "en": "Password"
+          },
+          "value": "Secret",
+          "hint": {
+            "en": "The password of the device"
+          }
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "esphome_number": {
+      "type": "number",
+      "title": {
+        "en": "number"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "decimals": 2,
+      "icon": "/assets/images/esphome_number.svg"
+    },
+    "esphome_text": {
+      "type": "string",
+      "title": {
+        "en": "text"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": false,
+      "icon": "/assets/images/esphome_text.svg"
+    }
   }
 }

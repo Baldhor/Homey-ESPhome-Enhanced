@@ -1,0 +1,11 @@
+{
+    "type": "string",
+    "title": { 
+        "en": "text" 
+    },
+    "uiComponent": "sensor",
+    "getable": true,
+    "setable": false,
+    "insights": false,
+    "icon": "/assets/images/esphome_text.svg"
+  }

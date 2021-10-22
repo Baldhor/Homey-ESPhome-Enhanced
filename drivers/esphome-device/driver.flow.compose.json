@@ -1,0 +1,20 @@
+{   
+  "triggers": [
+    {"id": "esphome_number_changed",
+      "title": {
+          "en": "Number changed"
+        },
+        "hint": {
+          "en": "This card will be triggered when the number has changed."
+        },  
+        "tokens": [
+          {
+            "name": "Esphome-Number",
+            "type": "number",
+            "title": { "en": "ESPHome number" },
+            "example": 5
+          }
+        ]
+    }
+  ]
+}
