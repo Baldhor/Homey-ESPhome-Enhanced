@@ -8,7 +8,7 @@
     "en": "ESPhome"
   },
   "description": {
-    "en": "Adds support for ESPhome devices"
+    "en": "Control your ESP8266/ESP32 by simple configuration files."
   },
   "brandColor": "#9e9c98",
   "category": [
@@ -60,33 +60,17 @@
         "en": "ESPHome device"
       },
       "class": "other",
-      "capabilities": [
-        "button",
-        "esphome_number",
-        "esphome_text"
-      ],
+      "capabilities": [],
       "images": {
-        "small": "/drivers/esphome-device/assets/images/small.png",
-        "large": "/drivers/esphome-device/assets/images/large.png",
-        "xlarge": "/drivers/esphome-device/assets/images/xlarge.png"
+        "small": "drivers/esphome-device/assets/images/small.png",
+        "large": "drivers/esphome-device/assets/images/large.png"
       },
       "pair": [
         {
-          "id": "api"
+          "id": "credentials"
         },
         {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          },
-          "options": {
-            "singular": true
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
+          "id": "capabilities"
         }
       ],
       "id": "esphome-device",
@@ -110,7 +94,10 @@
           },
           "value": 6053,
           "min": 1,
-          "max": 65535
+          "max": 65535,
+          "hint": {
+            "en": "TCP port used. Default is 6053"
+          }
         },
         {
           "id": "password",
@@ -118,9 +105,29 @@
           "label": {
             "en": "Password"
           },
-          "value": "Secret",
+          "value": "",
           "hint": {
             "en": "The password of the device"
+          }
+        },
+        {
+          "id": "esphome_version",
+          "type": "label",
+          "label": {
+            "en": "ESPhome version"
+          },
+          "hint": {
+            "en": "The version of the ESPhome firmware"
+          }
+        },
+        {
+          "id": "esphome_compilationTime",
+          "type": "label",
+          "label": {
+            "en": "Compilation time"
+          },
+          "hint": {
+            "en": "The compilation time of the device firmware"
           }
         }
       ]

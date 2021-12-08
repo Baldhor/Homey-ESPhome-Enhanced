@@ -1,9 +1,9 @@
 {
     "pair": {
-        "api": {
+        "credentials": {
             "title": "Connect your ESP Home device",
             "description": "Please provide the IP adress and, optionally, a password for your device.",
-            "submit": "Login",
+            "submit": "Connect",
             "label_hostname": "IP address",
             "label_port": "Port",
             "label_passwd": "Password",
@@ -11,6 +11,17 @@
             "connection_timeout": "Time out while connecting to device",
             "connection_refused": "Connection refused by remote host",
             "connection_invalid_credentials": "Invalid password"
+        },
+        "capabilities": {
+            "title": "Link Homey capabilities",
+            "nothing_to_map": "No supported capabilities have been detected on your ESPhome device",
+            "description": "Link your ESPhome sensors to Homeys capabilities.",
+            "table_header_name": "Name",
+            "table_header_unit": "Unit",
+            "table_header_capacity": "Capability",
+            "table_header_decimals": "Decimals",
+            "submit_warning": "Are you sure you have all capabilites linked?",
+            "button_save": "Save"
         }
     },
     "settings": {
@@ -20,7 +31,8 @@
     "app": {
         "error": {
             "connection_failed": "Failed connecting to device: ",
-            "connection_disconnected": "Disconnected from the device"
+            "connection_disconnected": "Disconnected from the device",
+            "connection_error": "Connection error: "
             
         },
         "initializing": "Initializing device, please wait..."

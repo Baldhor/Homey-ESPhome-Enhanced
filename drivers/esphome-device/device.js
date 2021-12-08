@@ -3,11 +3,8 @@
 const { Device } = require('homey');
 const { Client } = require('esphome-native-api');
 
-class MyDevice extends Device {
+class ESPhomeDevice extends Device {
 
-  /**
-   * onInit is called when the device is initialized.
-   */
   async onInit() {
     this.log(this.getName(), 'has been inited');
 
@@ -15,10 +12,31 @@ class MyDevice extends Device {
     .catch(this.error);
 
     await this.getDeviceDetails();
+    await this.connectToDevice();
+    await this.startDeviceListeners();
+    await this.registerCapabilityListeners();
+  }
 
+  async getDeviceDetails() {
+    this.log('get device details from Homey device store');
+
+    this.settings = this.getSettings();
+    this.log('Store: settings', this.settings);
+
+    this.deviceInfo = this.getStoreValue('deviceInfo');
+    this.log('Store: deviceInfo', this.deviceInfo);
+
+    this.capabilities = this.getCapabilities();
+    this.log('Store: capabilities', this.capabilities);
+
+    this.capabilityKeys = this.getStoreValue('capabilityKeys');
+    this.log('Store: capabilityKeys', this.capabilityKeys);
+  }
+
+  async connectToDevice() {
     let deviceIP = this.settings.ip4;
     let port = this.settings.port;
-    let password = this.settings.password;
+    let devicePassword = this.settings.password;
 
     this.log(`Connecting to ${deviceIP}`);
     this.client = new Client({
@@ -29,14 +47,22 @@ class MyDevice extends Device {
     });
 
     this.client.connect();
-    
-    this.client.on('deviceInfo', deviceInfo => {
-        this.log('Device info:', deviceInfo);
-        this.deviceInfo = deviceInfo;
-        this.deviceInfo.ip = deviceIP;
-        this.deviceInfo.port = port;
-    });
 
+    this.client.on('deviceInfo', deviceInfo => {
+
+      this.log(`Received deviceInfo`);
+      
+      this.deviceInfo = deviceInfo;
+      this.deviceInfo.ip = deviceIP;
+      this.deviceInfo.port = port;
+
+      this.setSettings({esphome_version: deviceInfo.esphomeVersion});
+      this.setSettings({esphome_compilationTime: deviceInfo.compilationTime});
+      this.settings = this.getSettings();
+    });
+  }
+
+  async startDeviceListeners() {
     this.client.on('logs', ({ message }) => {
       this.log(message);
     });
@@ -67,7 +93,11 @@ class MyDevice extends Device {
     this.client.on('error', error => {
       this.log(`Error on device ${this.deviceInfo.name}:`, error);
 
-      this.setUnavailable(this.homey.__('app.error.connection_failed') + error.code)
+      var message = '';
+      if (error.data && error.data.code) message = error.data.code;
+      else message = error.data;
+
+      this.setUnavailable(this.homey.__('app.error.connection_failed') + message)
       .catch(this.error);
     });
 
@@ -84,102 +114,91 @@ class MyDevice extends Device {
     });
   }
 
-  async updateHomeyData(entityId, state) {
+  async registerCapabilityListeners() {
+    
+    this.capabilities.forEach((capability) => {
 
-    //this.log(`StateData:`, state);
-    //this.log(`DeviceEntity:`, this.deviceInfo[entityId])
+      let temp = capability.split(".");
+      const capabilityType = temp[0].toLowerCase();
 
-    switch (this.deviceInfo[entityId].type) {
+      if (capabilityType === "onoff") {
 
-      case 'Sensor':
-        this.log(`${this.deviceInfo[entityId].config.name} ${parseFloat(state.state).toFixed(2)}${this.deviceInfo[entityId].unit}`);
-        if (this.deviceInfo[entityId].config.objectId === 'woonkamer_zout_weger_weight') {
-          let number = parseFloat(state.state);
-          this.log(number);
-          this.setCapabilityValue('esphome_number', number).catch(this.error);
+        var cap_key = this.getKeyFromCapability(capability);
+        if (cap_key) {
+          this.registerCapabilityListener(capability, async (value) => {
+            if (this.client.connection) {
+              await this.client.connection.switchCommandService({key: cap_key, state: value});
+            }
+          });
+        };
+      };
+
+    });
+  }
+
+  getKeyFromCapability(capability) {
+
+    for (const key in this.capabilityKeys) {
+
+      if (Object.hasOwnProperty.call(this.capabilityKeys, key)) {
+
+        if (this.capabilityKeys[key] === capability) {
+        
+          return key;
         }
-        break;
-      
-      case 'TextSensor':
-        this.log(`${this.deviceInfo[entityId].config.name} ${state.state}`);
-        if (this.deviceInfo[entityId].config.objectId === 'woonkamer_zout_weger_esphome_version') {
-          this.setCapabilityValue('esphome_text', state.state).catch(this.error);
-        }
-        break;
-      
-      case 'Switch':
-        this.log(`${this.deviceInfo[entityId].config.name}: ${state.state}`);
-        break;
-
+        
+      }
     }
+
+    return undefined;
   }
 
-  /**
-   * onAdded is called when the user adds the device, called just after pairing.
-   */
-  async onAdded() {
-    this.log('ESPHome device has been added');
+  async updateHomeyData(entityId, state) {
+    
+    if (!this.capabilityKeys) return;
+
+    let value;
+    const capability = this.capabilityKeys[entityId];
+    const capabilityType = capability.split(".")[0];
+    
+    switch (capabilityType) {
+
+      case 'esphome_text':
+        value = String(state.state);
+        break;
+
+      case 'onoff':
+        if (typeof(state.state) === "boolean") { 
+          value = state.state;
+        } else {
+          value = (state.state === 'true') ? true : false;
+        }
+        break;
+    
+      default:
+        value = parseFloat(state.state);
+        break;
+    }
+
+    this.log('Setting ' + capability + ' to ' + value);
+    this.setCapabilityValue(capability, value).catch(this.error);
   }
 
-  /**
-   * onSettings is called when the user updates the device's settings.
-   * @param {object} event the onSettings event data
-   * @param {object} event.oldSettings The old settings object
-   * @param {object} event.newSettings The new settings object
-   * @param {string[]} event.changedKeys An array of keys changed since the previous version
-   * @returns {Promise<string|void>} return a custom message that will be displayed
-   */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.log('MyDevice settings where changed');
   }
 
-  /**
-   * onRenamed is called when the user updates the device's name.
-   * This method can be used this to synchronise the name to the device.
-   * @param {string} name The new name
-   */
-  async onRenamed(name) {
-    this.log('MyDevice was renamed');
-  }
-
-  /**
-   * onDeleted is called when the user deleted the device.
-   */
   async onDeleted() {
+
+    // TODO connection stays alive!
+
     this.log(`${this.deviceInfo.name} has been deleted`);
+    this.client.connection.disconnect();
+    this.client.connection = {};
     this.client.disconnect();
-  }
-
-  async getDeviceDetails() {
-    this.log('get device details');
-    var portValue = 0;
-
-    this.settings = this.getSettings();
-    this.log('settings', this.settings);
-
-    if (typeof this.settings.port === 'string') {
-      try {
-
-        this.log('convert port to integer');
-        portValue = parseInt(this.settings.port);
-        await this.setSettings({port: portValue});
-        this.settings = this.getSettings();
-        this.log('new settings', this.settings);
-
-      } catch(error) {
-
-        this.log('port could not be converted, using default port of 6053 instead');
-        portValue = 6053;
-        await this.setSettings({port: portValue});
-        this.settings = this.getSettings();
-
-      }
-    }
-
-    this.deviceInfo = this.getStoreValue('deviceInfo');
-    this.log('deviceInfo', this.deviceInfo);
+    this.client = {};
   }
 
 }
 
-module.exports = MyDevice;
+module.exports = ESPhomeDevice;

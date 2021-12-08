@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+    <body>
+        <p> <div id="description" data-i18n="pair.capabilities.description"></div> </p>
+
+        <p><div id="no_capabilities_to_map_text" data-i18n="pair.capabilities.nothing_to_map" style="display:none">
+            This is example text
+        </div></p>
+
+        <table cellspacing="0" rules="all" border="1" id="Table1" style="border-collapse: collapse;">
+            <tr>
+                <th style="width:180px" data-i18n="pair.capabilities.table_header_name" >Name2</th>
+                <th style="width:80px" data-i18n="pair.capabilities.table_header_unit" >Unit2</th>
+                <th style="width:120px" data-i18n="pair.capabilities.table_header_capacity" >Capability2</th>
+                <th style="width:120px" data-i18n="pair.capabilities.table_header_decimals" >Decimals2</th>
+            </tr>
+        </table>
+        <br />
+        <p><button id="save" class="right" data-i18n="pair.capabilities.button_save"></button></p>
+
+        <script type="text/javascript">
+
+            Homey.showLoadingOverlay();
+
+            var deviceData = {};
+            var deviceSwitches = [];
+            var deviceSensors = [];
+
+            var button_save = document.getElementById( 'save' );
+            Homey.setTitle( Homey.__('pair.capabilities.title') );
+
+            Homey.emit("get_device_details").then(function (result) {
+                console.log("get_device_details: received device details");
+                deviceData = result;
+                addTableRows();
+            });
+
+            // Tell Homey we're ready to be displayed
+            Homey.ready();
+
+            button_save.addEventListener('click', function (e) {
+
+                Homey.confirm(Homey.__("pair.capabilities.submit_warning"), "warning", (error, cont) => {
+                    if (cont) {
+                        getDataFromTable();
+                    }
+                });
+            });
+
+            function addTableRows() {
+
+                var capabilityCounter = 0;
+                var table = document.getElementById("Table1");
+                var no_capabilities_to_map_text = document.getElementById("no_capabilities_to_map_text");
+                var description = document.getElementById("description");
+
+                const values = [
+                    "esphome_number",
+                    "esphome_text",
+                    "measure_temperature",
+                    "measure_co",
+                    "measure_co2",
+                    "measure_pm25",
+                    "measure_humidity",
+                    "measure_pressure",
+                    "measure_noise",
+                    "measure_rain",
+                    "measure_wind_strength",
+                    "measure_wind_angle",
+                    "measure_gust_strength",
+                    "measure_gust_angle",
+                    "measure_battery",
+                    "measure_power",
+                    "measure_voltage", 
+                    "measure_current",
+                    "measure_luminance", 
+                    "measure_ultraviolet", 
+                    "measure_water",
+                    "meter_power",
+                    "meter_water",
+                    "meter_gas",
+                    "meter_rain"
+                ];
+
+                for (var key in deviceData) {
+                    
+                    if (deviceData[key].type && deviceData[key].type.toLowerCase() === "sensor") {
+
+                        capabilityCounter++;
+
+                        var row = table.insertRow(-1);
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+                        var cell4 = row.insertCell(3);
+
+                        cell1.innerHTML = deviceData[key].config.name;
+                        cell2.innerHTML = deviceData[key].config.unitOfMeasurement;
+                        cell4.innerHTML = deviceData[key].config.accuracyDecimals;
+
+                        var select = document.createElement("select");
+                        for (const val of values) {
+                            var option = document.createElement("option");
+                            option.value = val;
+                            option.text = val;
+                            select.appendChild(option);
+                        }
+                        select.id = "capabilities_dropdown";
+                        select.name = "capabilities_dropdown";
+                        cell3.append(select);
+
+                        let deviceSensor = {
+                            name: deviceData[key].config.name,
+                            unitOfMeasurement: deviceData[key].config.unitOfMeasurement,
+                            accuracyDecimals: deviceData[key].config.accuracyDecimals,
+                            icon: deviceData[key].config.icon,
+                            key: deviceData[key].config.key
+                        };
+
+                        this.deviceSensors.push(deviceSensor);
+
+                    } else if (deviceData[key].type && deviceData[key].type.toLowerCase() === "switch") {
+
+                        let deviceSwitch = {
+                            name: deviceData[key].config.name, 
+                            assumedState: deviceData[key].config.assumedState, 
+                            icon: deviceData[key].config.icon,
+                            key: deviceData[key].config.key
+                        };
+
+                        this.deviceSwitches.push(deviceSwitch);
+                    }
+
+                }
+                
+                if (capabilityCounter < 1) {
+                    table.style.display = "none"
+                    no_capabilities_to_map_text.style.display = "block"
+                    description.style.display = "block"
+                }
+
+                Homey.hideLoadingOverlay();
+            }
+
+            function getDataFromTable() {
+                
+                Homey.showLoadingOverlay();
+                var tableData = [];
+                var oTable = document.getElementById('Table1');
+                var rowLength = oTable.rows.length;
+
+                for (i = 0; i < rowLength; i++) {
+                
+                    var rowData = [];
+                    var oCells = oTable.rows.item(i).cells;
+                    var cellLength = oCells.length;
+
+                    for (var j = 0; j < cellLength; j++) {
+                        const select = oCells.item(j).querySelector('select');
+                        if(select && select.value) {
+                            // Dropdown menu
+                            rowData.push(select.value);
+                        } else {
+                            // Other
+                            var cellVal = oCells.item(j).innerHTML;
+                            rowData.push(cellVal);
+                        }
+                    }
+                    
+                    tableData.push(rowData);
+                }
+
+                createHomeyDevice(tableData);
+            }
+
+            function createHomeyDevice(tableData) {
+
+                console.log('Create homey device');
+
+                var device = {
+                    name: deviceData.name,
+                    capabilities: [],
+                    capabilitiesOptions: {},
+                    data: {
+                        id: deviceData.macAddress
+                    },
+                    settings: {
+                        ip4: deviceData.ip4,
+                        port: deviceData.port,
+                        password: deviceData.password
+                    },
+                    store: {
+                        deviceInfo: deviceData,
+                        capabilityKeys: {}
+                    }
+                };
+
+                device = capabilityTableDataToHomeyCapability(tableData, device);
+                device = switchesDataToHomeyCapability(this.deviceSwitches, device);
+                
+                console.log('Creating Homey device');
+                console.log(device);
+
+                Homey.createDevice(device)
+                    .then(function (result) {
+                        console.log('Homey create device result: ');
+                        console.log(result);
+                        Homey.hideLoadingOverlay();
+                        Homey.done();
+                    })
+                    .catch(function (error) {
+                        console.log('Homey create device error: ');
+                        console.log(error);
+
+                        Homey.hideLoadingOverlay();
+                        Homey.alert(error);
+                    });
+            }
+
+            function capabilityTableDataToHomeyCapability(tableData, device) {
+
+                console.log('Processing table data');
+
+                tableData.forEach((row, index) => {
+
+                    console.log('Processing row: ' + row);
+                    
+                    // Skip table headers on row 0
+                    if (index < 1) return
+
+                    var name = row[0];
+                    var unit = row[1];
+                    var capability = row[2];
+                    var decimals = row[3];
+                    var id = name.replaceAll(' ', '_');
+
+                    id = capability + "." + id;
+                    id = id.toLowerCase();
+
+                    device.capabilities.push(id);
+                    
+                    var options = {
+                            "title": name,
+                            "decimals": decimals,
+                            "units": unit
+                    };
+
+                    console.log(options);
+
+                    device.capabilitiesOptions[id] = options;
+
+                    console.log(device);
+
+                    /*
+                        deviceSensor: {
+                            name: deviceData[key].config.name,
+                            unitOfMeasurement: deviceData[key].config.unitOfMeasurement,
+                            accuracyDecimals: deviceData[key].config.accuracyDecimals,
+                            icon: deviceData[key].config.icon,
+                            key: deviceData[key].config.key
+                        }
+                    */
+                    
+                    // Store a list of key with their corresponding Homey capability
+                    // So when a ESPhome sensor/switch change is received, we can look up Homey's capability
+                    
+                    console.log(deviceSensors);
+
+                    deviceSensors.forEach(sensor => {
+                        console.log('Finding ' + sensor.name + ' in deviceSensors');
+                        if (sensor.name === name) {
+                            console.log('Found it!');
+                            console.log('Storing key: ' + sensor.key);
+                            console.log('Storing id:' + id);
+                            device.store.capabilityKeys[sensor.key] = id;
+                        }
+                    });
+                });
+
+                return device;
+            }
+
+            function switchesDataToHomeyCapability(deviceSwitches, device) {
+
+                if (deviceSwitches.length < 1) return device;
+
+                // Switches are not in the HTML table so we'll add them here to the data for device creation
+                
+                /*
+                deviceSwitch: {
+                    name: deviceData[key].config.name, 
+                    assumedState: deviceData[key].config.assumedState, 
+                    icon: deviceData[key].config.icon,
+                    key: deviceData[key].config.key
+                }
+                */
+
+                // Change to socket so the user can choose the device type in interface
+                device.class = "socket";
+
+                console.log('Processing device switches');
+                console.log(deviceSwitches);
+
+                deviceSwitches.forEach((switches, index) => {
+
+                    var id = "";
+                    
+                    if (index == 0) id = "onoff";
+                    else id = "onoff" + "." + switches.name.toLowerCase().replaceAll(' ', '_');
+
+                    device.capabilities.push(id);
+                    var options = {
+                        "title": switches.name
+                    };
+
+                    device.capabilitiesOptions[id] = options; 
+
+                    // Store a list of key with their corresponding Homey capability
+                    // So when a ESPhome sensor/switch change is received, we can look up Homey's capability
+                    device.store.capabilityKeys[switches.key] = id;
+                });
+
+                return device;
+            }
+        </script>
+    </body>
+</html>

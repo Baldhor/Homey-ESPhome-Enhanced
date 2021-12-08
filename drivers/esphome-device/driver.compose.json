@@ -3,33 +3,17 @@
     "en": "ESPHome device"
   },
   "class": "other",
-  "capabilities": [
-    "button",
-    "esphome_number",
-    "esphome_text"
-  ],
+  "capabilities": [],
   "images": {
-    "small": "{{driverAssetsPath}}/images/small.png",
-    "large": "{{driverAssetsPath}}/images/large.png",
-    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+    "small": "drivers/esphome-device/assets/images/small.png",
+    "large": "drivers/esphome-device/assets/images/large.png"
   },
   "pair": [
     {
-      "id": "api"
+      "id": "credentials"
     },
     {
-      "id": "list_devices",
-      "template": "list_devices",
-      "navigation": {
-        "next": "add_devices"
-      },
-      "options": {
-        "singular": true
-      }
-    },
-    {
-      "id": "add_devices",
-      "template": "add_devices"
+      "id": "capabilities"
     }
   ]
 }

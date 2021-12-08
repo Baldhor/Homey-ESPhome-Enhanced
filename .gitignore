@@ -1,3 +1,5 @@
 env.json
 node_modules/
+.vscode
+.vsc
 build/

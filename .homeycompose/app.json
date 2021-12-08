@@ -7,7 +7,7 @@
     "en": "ESPhome"
   },
   "description": {
-    "en": "Adds support for ESPhome devices"
+    "en": "Control your ESP8266/ESP32 by simple configuration files."
   },
   "brandColor": "#9e9c98",
   "category": [
