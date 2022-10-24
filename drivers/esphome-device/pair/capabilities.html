@@ -170,13 +170,14 @@
                     tableData.push(rowData);
                 }
 
-                createHomeyDevice(tableData);
+                createHomeyDeviceFromTableData(tableData);
             }
 
-            function createHomeyDevice(tableData) {
+            function createHomeyDeviceFromTableData(tableData) {
 
                 console.log('Create homey device');
 
+                // Blueprint of a Homey device
                 var device = {
                     name: deviceData.name,
                     capabilities: [],
@@ -203,10 +204,8 @@
 
                 Homey.createDevice(device)
                     .then(function (result) {
-                        console.log('Homey create device result: ');
-                        console.log(result);
                         Homey.hideLoadingOverlay();
-                        Homey.done();
+                        //Homey.done();
                     })
                     .catch(function (error) {
                         console.log('Homey create device error: ');
@@ -221,35 +220,61 @@
 
                 console.log('Processing table data');
 
+                // We should keep track of the same capabilities
+                var counterObject = {};
+
+                /*
+                    counterObject: {
+                        esphome_number: 5,
+                        measure_temperature: 2,
+                        measure_humidity: 1,
+                        measure_windGust: 3
+                    }
+                
+                */
+                
+                var count = 0;
+                
                 tableData.forEach((row, index) => {
+
+                    // Skip table headers on row 0
+                    if (index < 1) return;
 
                     console.log('Processing row: ' + row);
                     
-                    // Skip table headers on row 0
-                    if (index < 1) return
+                    const name = row[0];
+                    const unit = row[1];
+                    const capability = row[2];
+                    const decimals = row[3];
+                    var id = '';
 
-                    var name = row[0];
-                    var unit = row[1];
-                    var capability = row[2];
-                    var decimals = row[3];
-                    var id = name.replaceAll(' ', '_');
 
-                    id = capability + "." + id;
-                    id = id.toLowerCase();
+                    if (capability in counterObject) {
+                        count = counterObject[capability];
+                        count++;
+                    }
 
+                    if (count === 0) {
+                        // First capability of eacht type is created as a default 
+                        // Homey capability (not a sub capability)
+                        id = capability;
+                    } else {
+                        // All subsequent capabilities are numbered 
+                        // so we know the capability name at forehand
+                        id = capability + "." + String(count);
+                        id = id.toLowerCase();
+                    }
+
+                    counterObject[capability] = count;
                     device.capabilities.push(id);
                     
-                    var options = {
+                    const options = {
                             "title": name,
                             "decimals": decimals,
                             "units": unit
                     };
 
-                    console.log(options);
-
                     device.capabilitiesOptions[id] = options;
-
-                    console.log(device);
 
                     /*
                         deviceSensor: {
@@ -263,17 +288,9 @@
                     
                     // Store a list of key with their corresponding Homey capability
                     // So when a ESPhome sensor/switch change is received, we can look up Homey's capability
-                    
-                    console.log(deviceSensors);
-
                     deviceSensors.forEach(sensor => {
-                        console.log('Finding ' + sensor.name + ' in deviceSensors');
-                        if (sensor.name === name) {
-                            console.log('Found it!');
-                            console.log('Storing key: ' + sensor.key);
-                            console.log('Storing id:' + id);
+                        if (sensor.name === name) 
                             device.store.capabilityKeys[sensor.key] = id;
-                        }
                     });
                 });
 
@@ -282,10 +299,11 @@
 
             function switchesDataToHomeyCapability(deviceSwitches, device) {
 
+                // Switches are not in the HTML table so we'll add them here to the data for device creation
+
+                // No switches, nothing to do
                 if (deviceSwitches.length < 1) return device;
 
-                // Switches are not in the HTML table so we'll add them here to the data for device creation
-                
                 /*
                 deviceSwitch: {
                     name: deviceData[key].config.name, 
@@ -296,6 +314,7 @@
                 */
 
                 // Change to socket so the user can choose the device type in interface
+                // since we don't know what's connected to the ESP device
                 device.class = "socket";
 
                 console.log('Processing device switches');
@@ -305,8 +324,19 @@
 
                     var id = "";
                     
-                    if (index == 0) id = "onoff";
-                    else id = "onoff" + "." + switches.name.toLowerCase().replaceAll(' ', '_');
+                    if (index == 0) {
+                    
+                        // First capability is created as a default 
+                        // Homey capability (not a sub capability)
+                        id = "onoff";
+                    
+                    } else {
+                        
+                        // All other capabilities are numbered 
+                        // so we know the capability name at forehand
+                        id = "onoff" + "." + String(index);
+
+                    }
 
                     device.capabilities.push(id);
                     var options = {

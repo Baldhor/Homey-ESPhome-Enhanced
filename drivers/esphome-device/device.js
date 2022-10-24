@@ -15,6 +15,7 @@ class ESPhomeDevice extends Device {
     await this.connectToDevice();
     await this.startDeviceListeners();
     await this.registerCapabilityListeners();
+    await this.registerHomeyTriggerCards();
   }
 
   async getDeviceDetails() {
@@ -56,8 +57,15 @@ class ESPhomeDevice extends Device {
       this.deviceInfo.ip = deviceIP;
       this.deviceInfo.port = port;
 
-      this.setSettings({esphome_version: deviceInfo.esphomeVersion});
-      this.setSettings({esphome_compilationTime: deviceInfo.compilationTime});
+      const version = deviceInfo.esphomeVersion;
+      const compilationTime = deviceInfo.compilationTime;
+      const model = deviceInfo.model;
+      const macAddress = deviceInfo.macAddress;
+
+      this.setSettings({esphome_version: version});
+      this.setSettings({esphome_compilationTime: compilationTime});
+      this.setSettings({esphome_model: model});
+      this.setSettings({esphome_macaddress: macAddress});
       this.settings = this.getSettings();
     });
   }
@@ -136,17 +144,19 @@ class ESPhomeDevice extends Device {
     });
   }
 
+  async registerHomeyTriggerCards() {
+
+    this.esphome_number_custom = this.homey.flow.getTriggerCard('esphome_number_custom');
+    this.onoff_custom = this.homey.flow.getTriggerCard('onoff_custom');
+  }
+
   getKeyFromCapability(capability) {
 
     for (const key in this.capabilityKeys) {
-
       if (Object.hasOwnProperty.call(this.capabilityKeys, key)) {
-
         if (this.capabilityKeys[key] === capability) {
-        
           return key;
         }
-        
       }
     }
 
@@ -154,11 +164,18 @@ class ESPhomeDevice extends Device {
   }
 
   async updateHomeyData(entityId, state) {
-    
+
+    /*
+    entityId 2686558360
+    state { key: 2686558360, state: 82, missingState: false }
+    */
+
     if (!this.capabilityKeys) return;
 
     let value;
     const capability = this.capabilityKeys[entityId];
+    if (!capability) return;
+
     const capabilityType = capability.split(".")[0];
     
     switch (capabilityType) {
@@ -174,6 +191,11 @@ class ESPhomeDevice extends Device {
           value = (state.state === 'true') ? true : false;
         }
         break;
+
+      case 'esphome_number':
+        value = parseFloat(state.state);
+        this.triggerEsphome_numberFlowTrigger(entityId, value);
+        break;
     
       default:
         value = parseFloat(state.state);
@@ -182,6 +204,21 @@ class ESPhomeDevice extends Device {
 
     this.log('Setting ' + capability + ' to ' + value);
     this.setCapabilityValue(capability, value).catch(this.error);
+  }
+
+  async triggerEsphome_numberFlowTrigger(entityId, value) {
+
+    const capabilityName = this.deviceInfo[entityId].config.name;
+
+    const tokens = {
+      'Esphome-Number-Value': value,
+      'Esphome-Number-Name': capabilityName
+    };
+
+    this.esphome_number_custom.trigger(tokens)
+      .then(this.log)
+      .catch(this.error);
+
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {

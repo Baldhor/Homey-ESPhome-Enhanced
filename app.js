@@ -3,7 +3,7 @@
 const Homey = require('homey');
 const { Client } = require('esphome-native-api');
 
-const enableDebug = true;
+const enableDebug = false;
 
 class MyApp extends Homey.App {
   /**
