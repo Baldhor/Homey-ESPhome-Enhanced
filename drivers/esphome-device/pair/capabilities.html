@@ -23,8 +23,9 @@
             Homey.showLoadingOverlay();
 
             var deviceData = {};
-            var deviceSwitches = [];
             var deviceSensors = [];
+            var deviceSwitches = [];
+            var deviceCovers = [];
 
             var button_save = document.getElementById( 'save' );
             Homey.setTitle( Homey.__('pair.capabilities.title') );
@@ -54,7 +55,7 @@
                 var no_capabilities_to_map_text = document.getElementById("no_capabilities_to_map_text");
                 var description = document.getElementById("description");
 
-                const values = [
+                const sensorValues = [
                     "esphome_number",
                     "esphome_text",
                     "measure_temperature",
@@ -83,8 +84,17 @@
                 ];
 
                 for (var key in deviceData) {
-                    
+                    console.log('Processing entity ', key, ': ', deviceData[key]);
+
+                    if (deviceData[key].config && deviceData[key].config.disabledByDefault) {
+                      console.log('Ignoring disabled entity');
+                      continue;
+                    }
+
+                    console.log('Continue processing entity');
+
                     if (deviceData[key].type && deviceData[key].type.toLowerCase() === "sensor") {
+                        console.log('Continue processing entity as sensor');
 
                         capabilityCounter++;
 
@@ -99,7 +109,7 @@
                         cell4.innerHTML = deviceData[key].config.accuracyDecimals;
 
                         var select = document.createElement("select");
-                        for (const val of values) {
+                        for (const val of sensorValues) {
                             var option = document.createElement("option");
                             option.value = val;
                             option.text = val;
@@ -120,6 +130,7 @@
                         this.deviceSensors.push(deviceSensor);
 
                     } else if (deviceData[key].type && deviceData[key].type.toLowerCase() === "switch") {
+                        console.log('Continue processing entity as switch');
 
                         let deviceSwitch = {
                             name: deviceData[key].config.name, 
@@ -129,16 +140,29 @@
                         };
 
                         this.deviceSwitches.push(deviceSwitch);
-                    }
+                    } else if (deviceData[key].type && deviceData[key].type.toLowerCase() === "cover") {
+                        console.log('Continue processing entity as cover');
 
+                        let deviceCover = {
+                            name: deviceData[key].config.name, 
+                            assumedState: deviceData[key].config.assumedState, 
+                            icon: deviceData[key].config.icon,
+                            key: deviceData[key].config.key
+                        };
+
+                        this.deviceCovers.push(deviceCover);
+                    } else {
+                        console.log('Unknown type of entity, ignoring');
+                    }
                 }
                 
                 if (capabilityCounter < 1) {
-                    table.style.display = "none"
-                    no_capabilities_to_map_text.style.display = "block"
-                    description.style.display = "block"
+                    table.style.display = "none";
+                    no_capabilities_to_map_text.style.display = "block";
+                    description.style.display = "block";
                 }
 
+                console.log('Hiding overlay');
                 Homey.hideLoadingOverlay();
             }
 
@@ -198,6 +222,7 @@
 
                 device = capabilityTableDataToHomeyCapability(tableData, device);
                 device = switchesDataToHomeyCapability(this.deviceSwitches, device);
+                device = coversDataToHomeyCapability(this.deviceCovers, device);
                 
                 console.log('Creating Homey device');
                 console.log(device);
@@ -205,7 +230,7 @@
                 Homey.createDevice(device)
                     .then(function (result) {
                         Homey.hideLoadingOverlay();
-                        //Homey.done();
+                        Homey.done();
                     })
                     .catch(function (error) {
                         console.log('Homey create device error: ');
@@ -352,6 +377,38 @@
 
                 return device;
             }
+
+            function coversDataToHomeyCapability(deviceCovers, device) {
+
+                // Covers are not in the HTML table so we'll add them here to the data for device creation
+
+                // No covers, nothing to do
+                if (deviceCovers.length < 1) return device;
+
+                /*
+                deviceCover: {
+                    name: deviceData[key].config.name, 
+                    assumedState: deviceData[key].config.assumedState, 
+                    icon: deviceData[key].config.icon,
+                    key: deviceData[key].config.key
+                }
+                */
+
+                // Device class
+                device.class = "blinds";
+
+                console.log('Processing device covers');
+                console.log(deviceCovers);
+
+		device.capabilities.push('windowcoverings_set');
+
+                // Store a list of key with their corresponding Homey capability
+                // So when a ESPhome sensor/switch change is received, we can look up Homey's capability
+                device.store.capabilityKeys[deviceCovers[0].key] = 'windowcoverings_set';
+
+                return device;
+            }
+
         </script>
     </body>
 </html>

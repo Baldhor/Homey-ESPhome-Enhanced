@@ -1,7 +1,7 @@
 'use strict';
 
 const { Device } = require('homey');
-const { Client } = require('esphome-native-api');
+const { Client } = require('@2colors/esphome-native-api');
 
 class ESPhomeDevice extends Device {
 
@@ -123,23 +123,35 @@ class ESPhomeDevice extends Device {
   }
 
   async registerCapabilityListeners() {
-    
+    this.log('List of capabilities: ', this.capabilities);
+
     this.capabilities.forEach((capability) => {
+      this.log('Processing capability: ', capability);
 
       let temp = capability.split(".");
       const capabilityType = temp[0].toLowerCase();
 
       if (capabilityType === "onoff") {
-
         var cap_key = this.getKeyFromCapability(capability);
         if (cap_key) {
+          this.log('Adding ${capability} listener for key: ${cap_key}');
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
               await this.client.connection.switchCommandService({key: cap_key, state: value});
             }
           });
-        };
-      };
+        }
+      } else if (capabilityType === "windowcoverings_set") {
+        var cap_key = this.getKeyFromCapability(capability);
+        if (cap_key) {
+          this.log('Adding ${capability} listener for key: ${cap_key}');
+          this.registerCapabilityListener(capability, async (value) => {
+            if (this.client.connection) {
+              await this.client.connection.coverCommandService({key: cap_key, position: value});
+            }
+          });
+        }
+      }
 
     });
   }
@@ -195,6 +207,10 @@ class ESPhomeDevice extends Device {
       case 'esphome_number':
         value = parseFloat(state.state);
         this.triggerEsphome_numberFlowTrigger(entityId, value);
+        break;
+    
+      case 'windowcoverings_set':
+        value = parseFloat(state.position);
         break;
     
       default:

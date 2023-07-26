@@ -1,7 +1,7 @@
 'use strict';
 
 const Homey = require('homey');
-const { Client } = require('esphome-native-api');
+const { Client } = require('@2colors/esphome-native-api');
 
 const enableDebug = false;
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const Homey = require('homey');
-const { Client } = require('esphome-native-api');
+const { Client } = require('@2colors/esphome-native-api');
 
 class ESPhomeDriver extends Homey.Driver {
 
@@ -39,6 +39,7 @@ class ESPhomeDriver extends Homey.Driver {
       });
 
       client.on('newEntity', entity => {
+        this.log('Entity info:', entity);
       
         this.deviceInfo[entity.id] = {
           config : entity.config,
