@@ -4,7 +4,3 @@ ESP8266's and ESP32's are widely available on webshops and Aliexpress for a few 
 They can also be used to control motors, relais, light strips, displays, touch sensors, fans etc.
 Since they have bluetooth they can also be used as presence detection, read Xiaomi temperature/humidity sensors or even the Xiaomi weighing scale!
 The possibilities are endless!
-
-Based on Robin van Kekem 'RoadXY' work. Enhanced to handle covers.
-Sockets and sensors are untested ... the code id untouched for those.
-Upgraded to @2colors/esphome-native-api to handle latest upgrade of the ESPhome framework.
