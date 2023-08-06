@@ -34,7 +34,7 @@ class MyApp extends Homey.App {
     }
 
     // Init Logger
-    this.logger= new Logger(this, 'nodejs', 'App');
+    Logger.init(this, 'nodejs', 'App');
 
     this.logger.error('test1');
     this.logger.warn('test2');

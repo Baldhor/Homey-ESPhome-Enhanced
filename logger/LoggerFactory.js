@@ -3,7 +3,7 @@
 import { CategoryLogger } from "./CategoryLogger";
 
 class LoggerFactory {
-    public createLogger(category: string): ICategoryLogger {
+    createLogger(category) {
         return new CategoryLogger(category);
     }
 }
