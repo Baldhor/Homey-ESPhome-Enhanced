@@ -10,5 +10,8 @@
   },
   "0.3.1": {
     "en": "Added support for button (untested)"
+  },
+  "0.3.2": {
+    "en": "Attempt to solve capabilities and cards handled by the app in homey store"
   }
 }

@@ -33,6 +33,9 @@
     "meter_gas",
     "meter_rain"
   ],
+  "energy": {
+    "batteries": ["OTHER"]
+  },
   "images": {
     "small": "drivers/esphome-device/assets/images/small.png",
     "large": "drivers/esphome-device/assets/images/large.png"
