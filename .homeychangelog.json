@@ -7,5 +7,11 @@
   },
   "0.3.0": {
     "en": "Project forked and app ownership in Homey store transfered to baldhors@gmail.com. Added support for ESPhome based cover. Please log issues on the github project!"
+  },
+  "0.3.1": {
+    "en": "Added support for button (untested)"
+  },
+  "0.3.2": {
+    "en": "Attempt to solve capabilities and cards handled by the app in homey store"
   }
 }

@@ -134,17 +134,27 @@ class ESPhomeDevice extends Device {
       if (capabilityType === "onoff") {
         var cap_key = this.getKeyFromCapability(capability);
         if (cap_key) {
-          this.log('Adding ${capability} listener for key: ${cap_key}');
+          this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
               await this.client.connection.switchCommandService({key: cap_key, state: value});
             }
           });
         }
+      } else if (capabilityType === "button") {
+        var cap_key = this.getKeyFromCapability(capability);
+        if (cap_key) {
+          this.log('Adding ' + capability + ' listener for key: ' + cap_key);
+          this.registerCapabilityListener(capability, async (value) => {
+            if (this.client.connection) {
+              await this.client.connection.buttonCommandService({key: cap_key, state: value});
+            }
+          });
+        }
       } else if (capabilityType === "windowcoverings_set") {
         var cap_key = this.getKeyFromCapability(capability);
         if (cap_key) {
-          this.log('Adding ${capability} listener for key: ${cap_key}');
+          this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
               await this.client.connection.coverCommandService({key: cap_key, position: value});
@@ -190,6 +200,8 @@ class ESPhomeDevice extends Device {
 
     const capabilityType = capability.split(".")[0];
     
+    this.log('Received State for ' + capability + ':', state);
+
     switch (capabilityType) {
 
       case 'esphome_text':
@@ -234,7 +246,6 @@ class ESPhomeDevice extends Device {
     this.esphome_number_custom.trigger(tokens)
       .then(this.log)
       .catch(this.error);
-
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {
@@ -242,7 +253,6 @@ class ESPhomeDevice extends Device {
   }
 
   async onDeleted() {
-
     // TODO connection stays alive!
 
     this.log(`${this.deviceInfo.name} has been deleted`);
