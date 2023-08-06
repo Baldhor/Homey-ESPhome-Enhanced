@@ -391,62 +391,6 @@
                 return device;
             }
 
-            function switchesDataToHomeyCapability(deviceSwitches, device) {
-
-                // Switches are not in the HTML table so we'll add them here to the data for device creation
-
-                // No switches, nothing to do
-                if (deviceSwitches.length < 1) return device;
-
-                /*
-                deviceSwitch: {
-                    name: deviceData[key].config.name, 
-                    assumedState: deviceData[key].config.assumedState, 
-                    icon: deviceData[key].config.icon,
-                    key: deviceData[key].config.key
-                }
-                */
-
-                // Change to socket so the user can choose the device type in interface
-                // since we don't know what's connected to the ESP device
-                device.class = "socket";
-
-                console.log('Processing device switches');
-                console.log(deviceSwitches);
-
-                deviceSwitches.forEach((switches, index) => {
-
-                    var id = "";
-                    
-                    if (index == 0) {
-                    
-                        // First capability is created as a default 
-                        // Homey capability (not a sub capability)
-                        id = "onoff";
-                    
-                    } else {
-                        
-                        // All other capabilities are numbered 
-                        // so we know the capability name at forehand
-                        id = "onoff" + "." + String(index);
-
-                    }
-
-                    device.capabilities.push(id);
-                    var options = {
-                        "title": switches.name
-                    };
-
-                    device.capabilitiesOptions[id] = options; 
-
-                    // Store a list of key with their corresponding Homey capability
-                    // So when a ESPhome sensor/switch change is received, we can look up Homey's capability
-                    device.store.capabilityKeys[switches.key] = id;
-                });
-
-                return device;
-            }
-
             function buttonsDataToHomeyCapability(deviceButtons, device) {
 
                 // Buttons are not in the HTML table so we'll add them here to the data for device creation
@@ -501,7 +445,7 @@
 
                 return device;
             }
-            
+
             function coversDataToHomeyCapability(deviceCovers, device) {
 
                 // Covers are not in the HTML table so we'll add them here to the data for device creation
