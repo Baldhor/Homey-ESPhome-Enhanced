@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- The '/homey.js' script must be included in your settings view to work -->
+    <script
+      type="text/javascript"
+      src="/homey.js"
+      data-origin="settings"
+    ></script>
+  </head>
+  <body>
+    <header class="homey-header">
+      <h1 class="homey-title" data-i18n="settings.title">
+        <!-- This will be filled with the translated string with key 'settings.title'. -->
+      </h1>
+    </header>
+
+    <header class="homey-header">
+      <p class="homey-subtitle" data-i18n="settings.log.subtitle">
+        <!-- This field will also be translated -->
+      </p>
+    </header>
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend">Log configuration</legend>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="log.level">Level</label>
+        <select class="homey-form-select" id="log.level">
+          <option value="debug">Debug</option>
+          <option value="info">Info</option>
+          <option value="warn">Warn</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <header class="homey-header">
+      <p class="homey-subtitle" data-i18n="settings.consolere.subtitle">
+        <!-- This field will also be translated -->
+      </p>
+    </header>
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend">console.re configuration</legend>
+
+      <div class="homey-form-group">
+        <label class="homey-form-checkbox">
+          <input class="homey-form-checkbox-input" type="checkbox" id="consolere.enabled"/>
+          <span class="homey-form-checkbox-checkmark"></span>
+          <span class="homey-form-checkbox-text">Enabled?</span>
+        </label>
+      </div>
+
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="consolere.label">Label</label>
+        <input class="homey-form-input" id="consolere.label" type="text" maxlength="20" pattern="[A-Za-z0-9]{5,20}"/>
+        <label class="homey-form-label"><i>Characters allowed: a-zA-Z0-9 -> Min 5, Max 20</i></label>
+        <label class="homey-form-label" id="consolere.link"><i>Link to console.re: </i><a id="consolere.link.href" href="..." hidden>xxx</a></label>
+        <label class="homey-form-label" id="consolere.link.invalid" style="color:red;"><i>Label is not valid</i></label>
+      </div>
+    </fieldset>
+
+    <button id="save" class="homey-button-primary-full is-disabled">Save changes</button>
+
+
+    <script type="text/javascript">
+      // a method named 'onHomeyReady' must be present in your code
+      function onHomeyReady(Homey) {
+        //Initialize fields
+        var logLevelElement = document.getElementById("log.level");
+        var consolereEnabledElement = document.getElementById("consolere.enabled");
+        var consolereLabelElement = document.getElementById("consolere.label");
+        var saveElement = document.getElementById("save");
+        var consolereLinkElement = document.getElementById("consolere.link");
+        var consolereLinkHrefElement = document.getElementById("consolere.link.href");
+        var consolereLinkInvalidElement = document.getElementById("consolere.link.invalid");
+
+        updateFields = function() {
+          if (consolereEnabledElement.checked && (consolereLabelElement.value == "" || consolereLabelElement.validity.patternMismatch)) {
+            if (!saveElement.classList.contains("is-disabled"))
+              saveElement.classList.add("is-disabled");
+            saveElement.disabled = true;
+          } else {
+            if (saveElement.classList.contains("is-disabled"))
+              saveElement.classList.remove("is-disabled");
+            saveElement.disabled = false;
+          }
+
+          if (consolereLabelElement.value == "" || consolereLabelElement.validity.patternMismatch) {
+            consolereLinkElement.hidden = true;
+            Array.from(consolereLinkElement.children).forEach(function(element){
+              element.hidden = true;
+            });
+            consolereLinkInvalidElement.hidden = false;
+            Array.from(consolereLinkInvalidElement.children).forEach(function(element){
+              element.hidden = false;
+            });
+          } else {
+            consolereLinkHrefElement.href = "https://console.re/" + consolereLabelElement.value;
+            consolereLinkHrefElement.text = "https://console.re/" + consolereLabelElement.value;
+            consolereLinkElement.hidden = false;
+            Array.from(consolereLinkElement.children).forEach(function(element){
+              element.hidden = false;
+            });
+            consolereLinkInvalidElement.hidden = true;
+            Array.from(consolereLinkInvalidElement.children).forEach(function(element){
+              element.hidden = true;
+            });
+          }
+        }
+
+        consolereEnabledElement.addEventListener("change", (event) => {
+          updateFields();
+        });
+
+        consolereLabelElement.addEventListener("input", (event) => {
+          updateFields();
+        });
+
+        Homey.get("log.level", function (err, current_value) {
+          if (err) return Homey.alert(err);
+          logLevelElement.value = current_value;
+        });
+
+        Homey.get("consolere.enabled", function (err, current_value) {
+          if (err) return Homey.alert(err);
+          consolereEnabledElement.checked = current_value;
+          updateFields();
+        });
+
+        Homey.get("consolere.label", function (err, current_value) {
+          if (err) return Homey.alert(err);
+          consolereLabelElement.value = current_value;
+          updateFields();
+        });
+
+        saveElement.addEventListener("click", function (e) {
+          Homey.set("log.level", logLevelElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("consolere.enabled", consolereEnabledElement.checked, function (err) {
+            if (err) return Homey.alert(err);
+          });
+          Homey.set("consolere.label", consolereLabelElement.value, function (err) {
+            if (err) return Homey.alert(err);
+          });
+        });
+
+        Homey.ready();
+      }
+    </script>
+  </body>
+</html>

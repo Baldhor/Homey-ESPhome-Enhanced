@@ -9,6 +9,8 @@
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.1.0"
   },
   "dependencies": {
-    "@2colors/esphome-native-api": "^1.2.3"
+    "@2colors/esphome-native-api": "^1.2.3",
+    "socket.io-client": "^2.2.0",
+    "@sentry/utils:": "^7.61.1"
   }
 }

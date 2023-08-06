@@ -26,7 +26,10 @@
     },
     "settings": {
         "port_number_incorrect": "Port number should be between 1 and 65535",
-        "ip_address_incorrect": "Please enter an valid IP address"
+        "ip_address_incorrect": "Please enter an valid IP address",
+        "title": "Application settings",
+        "log.subtitle": "Log configuration",
+        "consolere.subtitle": "Console.re configuration"
     },
     "app": {
         "error": {
