@@ -134,7 +134,7 @@ class ESPhomeDevice extends Device {
       if (capabilityType === "onoff") {
         var cap_key = this.getKeyFromCapability(capability);
         if (cap_key) {
-          this.log('Adding ${capability} listener for key: ${cap_key}');
+          this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
               await this.client.connection.switchCommandService({key: cap_key, state: value});
@@ -144,7 +144,7 @@ class ESPhomeDevice extends Device {
       } else if (capabilityType === "button") {
         var cap_key = this.getKeyFromCapability(capability);
         if (cap_key) {
-          this.log('Adding ${capability} listener for key: ${cap_key}');
+          this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
               await this.client.connection.buttonCommandService({key: cap_key, state: value});
@@ -154,7 +154,7 @@ class ESPhomeDevice extends Device {
       } else if (capabilityType === "windowcoverings_set") {
         var cap_key = this.getKeyFromCapability(capability);
         if (cap_key) {
-          this.log('Adding ${capability} listener for key: ${cap_key}');
+          this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
               await this.client.connection.coverCommandService({key: cap_key, position: value});
