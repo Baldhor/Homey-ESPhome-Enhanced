@@ -1,41 +1,49 @@
 'use strict';
 
-import { PromiseBuffer } from "@sentry/utils";
-import { connect } from "socket.io-client";
-import { Logger } from "./Logger";
+const Homey = require('homey');
+const connect = require('socket.io-client');
+const LogService = require('./LogService');
+const DefaultLogger = require('./DefaultLogger');
 
 class ConsoleReLogger {
-    domain = null;
+    disconnecting = false;
+    buffer = null;
+    socket = null;
 
-    constructor(domain, level) {
-        this.disconnecting = false;
-        buffer = new PromiseBuffer<void>(30);
+    app = null;
+    label = null;
 
-        this.domain = domain;
+    constructor(app, label) {
+        this.app = app;
         this.label = label;
 
-        this.socket = connect("https://console.re:443", {
+        this.buffer = require('./promise-buffer').promiseBuffer();
+
+        this.socket = connect("https://console.re", {
+            withCredentials: !1,
             transports: ["websocket"],
+            extraHeaders:{"x-consolere":"true"}
         });
 
         this.socket.on("connect", () => {
-            Logger.default.info("ConsoleRe connected");
+            DefaultLogger.info("ConsoleRe connected");
+            this.info('ConsoleRe connected');
         });
 
         this.socket.on("connect_error", (error) => {
-            Logger.default.error(error, "ConsoleRe socket connect_error", error);
+            DefaultLogger.error("ConsoleRe socket connect_error", error);
         });
 
         this.socket.on("reconnect_error", (error) => {
-            Logger.default.error(error, "ConsoleRe socket reconnect_error", error);
+            DefaultLogger.error( "ConsoleRe socket reconnect_error", error);
         });
 
         this.socket.on("error", (error) => {
-            Logger.default.error("ConsoleRe socket error", error);
+            DefaultLogger.error("ConsoleRe socket error", error);
         });
 
         this.socket.on("disconnect", () => {
-            Logger.default.info("ConsoleRe disconnected");
+            DefaultLogger.info("ConsoleRe disconnected");
             if (!this.disconnecting) { this.socket.connect(); }
         });
     }
@@ -45,44 +53,36 @@ class ConsoleReLogger {
     }
 
     disconnect() {
-        return this.buffer.drain().then(() => {
-            this.disconnecting = true;
-            this.socket.disconnect();
+        this.disconnecting = true;
+        this.socket.disconnect();
 
-            delete this.socket;
-            delete this.buffer;
+        delete this.socket;
+        delete this.buffer;
 
-            Logger.default.info("ConsoleRe cleaned up");
-            return true;
-        }) as Promise<boolean>;
+        DefaultLogger.info("ConsoleRe cleaned up");
     }
 
     debug(...args) {
-        sendLog('debug', this.domain, ...args);
+        this.log('debug', ...args);
     }
 
     info(...args) {
-        sendLog('info', this.domain, ...args);
+        this.log('info', ...args);
     }
 
     warn(...args) {
-        sendLog('warn', this.domain, ...args);
+        this.log('warn', ...args);
     }
 
     error(...args) {
-        sendLog('error', this.domain, ...args);
+        this.log('error', ...args);
     }
 
-    sendLog(level, ...args) {
-        if (!this.buffer.isReady()) {
-            Logger.default.error("ConsoleReLogger buffer full", ...args);
-            return;
-        }
-
-        appVersion = 'undefined';
-        this.homey.api.getApiApp('com.athom.otherApp').getVersion().then((result) => appVersion = result);
-
-        this.buffer.add(
+    log(level, ...args) {
+        DefaultLogger.info("ConsoleRe send a log on channel ", this.label, ':', level, ...args);
+        
+        // TODO This buffer is not limited, and start immediatly ... it should run only when the socket is connected.
+        this.buffer.push(() => {
             new Promise((resolve) => {
                 if (this.socket.connected) {
                     this.socket.emit("toServerRe", {
@@ -98,18 +98,17 @@ class ConsoleReLogger {
                         browser: {
                             browser: {
                                 f: this.app.id,
-                                s: "H",
+                                s: this.app.manifest.version,
                             },
-                            version: appVersion,
+                            version: this.app.homey.version,
                             OS: "Homey",
                         },
                     });
+                } else {
+                    DefaultLogger.error("ConsoleReLogger is not connected", ...args);
                 }
-
                 resolve();
-            }),
-        ).catch((e) => {
-            Logger.default.error("ConsoleRe could not send log: ", ...args, e);
+          });
         });
     }
 }

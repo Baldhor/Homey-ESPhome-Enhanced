@@ -2,7 +2,8 @@
 
 const Homey = require('homey');
 const { Client } = require('@2colors/esphome-native-api');
-const Logger = require('./logger/Logger');
+const LogService = require('./logger/LogService');
+const LoggerFactory = require('./logger/LoggerFactory');
 
 const enableDebug = false;
 
@@ -33,8 +34,14 @@ class MyApp extends Homey.App {
       this.homey.settings.set('log.label', '');
     }
 
-    // Init Logger
-    Logger.init(this, 'nodejs', 'App');
+    // Init LogService
+    this.log(LogService);
+    this.log(typeof LogService);
+
+    LogService.init(this);
+
+    // Create App category
+    this.logger = LoggerFactory.createLogger('App');
 
     this.logger.error('test1');
     this.logger.warn('test2');

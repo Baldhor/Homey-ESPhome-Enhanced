@@ -1,11 +1,15 @@
 'use strict';
 
-import { Logger } from "./Logger";
+const LogService = require('./LogService');
 
 class CategoryLogger {
     category;
 
     constructor(category) {
+        if (category == '') {
+            throw new Error("Assertion failed: category cannot be empty");
+        }
+
         this.category = `[${category.padEnd(10)}]`;
     }
 
@@ -14,35 +18,35 @@ class CategoryLogger {
     }
 
     isDebugEnabled() {
-        return Logger.isDebugEnabled();
+        return LogService.isDebugEnabled();
     }
 
     isInfoEnabled() {
-        return Logger.isInfoEnabled();
+        return LogService.isInfoEnabled();
     }
 
     isWarnEnabled() {
-        return Logger.isWarnEnabled();
+        return LogService.isWarnEnabled();
     }
 
     isErrorEnabled() {
-        return Logger.isErrorEnabled();
+        return LogService.isErrorEnabled();
     }
 
     info(...args) {
-        Logger.info(this.category, ...args);
+        LogService.info(this.category, ...args);
     }
 
     debug(...args) {
-        Logger.debug(this.category, ...args);
+        LogService.debug(this.category, ...args);
     }
 
-    warn()...args) {
-        Logger.warn(this.category, ...args);
+    warn(...args) {
+        LogService.warn(this.category, ...args);
     }
 
-    error()...args) {
-        Logger.error(this.category, ...args);
+    error(...args) {
+        LogService.error(this.category, ...args);
     }
 }
 

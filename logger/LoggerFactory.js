@@ -1,9 +1,9 @@
 'use strict';
 
-import { CategoryLogger } from "./CategoryLogger";
+const CategoryLogger = require('./CategoryLogger');
 
 class LoggerFactory {
-    createLogger(category) {
+    static createLogger(category) {
         return new CategoryLogger(category);
     }
 }

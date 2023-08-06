@@ -1,30 +1,33 @@
 'use strict';
 
-const Homey = require('homey');
-
 class AppLogger {
-    app = null;
-    domain = null;
-
-    constructor(app, domain) {
-        this.app = app;
-        this.domain = domain;
-    }
-    
-    debug(...args) {
-        this.app.log('[DEBUG] [%s]', this.domain, ...args);
+    static debug(app, ...args) {
+        app.log('[DEBUG]', ...args);
     }
 
-    info(...args) {
-        this.app.log('[INFO ] [%s]', this.domain, ...args);
+    static info(app, ...args) {
+        app.log('[INFO ]', ...args);
     }
 
-    warn(...args) {
-        this.app.log('[WARN ] [%s]', this.domain, ...args);
+    static warn(app, ...args) {
+        app.log('[WARN ]', ...args);
     }
 
-    error(...args) {
-        this.app.log('[ERROR] [%s]', this.domain, ...args);
+    static error(app, ...args) {
+        app.log('[ERROR]', ...args);
+    }
+
+    static log(app, level, ...args) {
+        // Delegate to formating functions
+        if (level == 'debug') {
+            this.debug(app, ...args);
+        } else if (level == 'info') {
+            this.info(app, ...args);
+        } else if (level == 'warn') {
+            this.warn(app, ...args);
+        } else if (level == 'error') {
+            this.error(app, ...args);
+        }
     }
 }
 
