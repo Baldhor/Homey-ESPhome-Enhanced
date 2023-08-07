@@ -16,5 +16,8 @@
   },
   "0.3.3": {
     "en": "Added support for consoleRe, it can be enabled from app settings"
+  },
+  "0.3.4": {
+    "en": "Fixed issues #8, #9 and #10. Also include a fix to console.re to avoid stackcall overflow"
   }
 }
