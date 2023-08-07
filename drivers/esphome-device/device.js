@@ -173,9 +173,7 @@ class ESPhomeDevice extends Device {
   }
 
   async registerHomeyTriggerCards() {
-
-    this.esphome_number_custom = this.homey.flow.getTriggerCard('esphome_number_custom');
-    this.onoff_custom = this.homey.flow.getTriggerCard('onoff_custom');
+    this.esphome_number_custom = this.homey.flow.getDeviceTriggerCard('esphome_number_custom');
   }
 
   getKeyFromCapability(capability) {
@@ -241,17 +239,20 @@ class ESPhomeDevice extends Device {
   }
 
   async triggerEsphome_numberFlowTrigger(entityId, value) {
-
-    const capabilityName = this.deviceInfo[entityId].config.name;
+    const entityName = this.deviceInfo[entityId].config.name;
 
     const tokens = {
-      'Esphome-Number-Value': value,
-      'Esphome-Number-Name': capabilityName
+      entityName: entityName,
+      value: value
     };
 
-    this.esphome_number_custom.trigger(tokens)
-      .then(this.log)
-      .catch(this.error);
+    this.esphome_number_custom.trigger(this, tokens)
+      .then(value => {
+        this.log('Flow card esphome_number_custom triggered:', entityId, this.deviceInfo[entityId]);
+      })
+      .catch(error => {
+        this.log ('Failed to trigger esphome_number_custom flow card:', error);
+      })
   }
 
   async onSettings({ oldSettings, newSettings, changedKeys }) {

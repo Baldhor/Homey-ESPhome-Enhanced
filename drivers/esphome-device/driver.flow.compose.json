@@ -9,29 +9,19 @@
       },  
       "tokens": [
         {
-          "name": "Esphome-Number-Value",
-          "type": "number",
-          "title": { "en": "ESPHome number value" },
-          "example": 35
-        },
-        {
-          "name": "Esphome-Number-Name",
+          "name": "entityName",
           "type": "string",
           "title": { "en": "ESPhome number name" },
           "example": "Humidity"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "title": { "en": "ESPHome number value" },
+          "example": 35
         }
       ],
-      "$filter": "capabilities=esphome_number,esphome_number.1,esphome_number.2,esphome_number.3,esphome_number.4,esphome_number.5,esphome_number.6,esphome_number.7,esphome_number.8,esphome_number.9,esphome_number.10"
-    },
-    
-    {"id": "onoff_custom",
-      "title": {
-        "en": "Onoff custom changed"
-      },
-      "hint": {
-        "en": "This card will be triggered when the onoff custom has changed."
-      },
-      "$filter": "capabilities=onoff.1,onoff.2,onoff.3,onoff.4,onoff.5,onoff.6,onoff.7,onoff.8,onoff.9"
+      "$filter": "capabilities=esphome_number"
     }
   ]
 }
