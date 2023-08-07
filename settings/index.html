@@ -119,7 +119,6 @@
         });
 
         saveElement.addEventListener("click", function (e) {
-          console.log('Test loggin from settings');
           Homey.set("consolere.enabled", consolereEnabledElement.checked, function (err) {
             if (err) return Homey.alert(err);
           });
