@@ -1,6 +1,5 @@
-'use strict'
+'use strict';
 
-//var assert = require('assert')
 var Promise = require('pinkie-promise');
 
 exports.promiseBuffer = promiseBuffer;
@@ -20,8 +19,8 @@ function newBufferState () {
   };
 
   state.pendingPromise = new Promise(function (resolve, reject) {
-    state.finalResolve = resolve
-    state.finalReject = reject
+    state.finalResolve = resolve;
+    state.finalReject = reject;
   });
 
   return state;
@@ -43,7 +42,7 @@ function registerLaterRun (state) {
   }
 
   process.nextTick(processBuffer.bind(null, state));
-  return true // means that it's running;
+  return true; // means that it's running;
 }
 
 function processBuffer (state) {
