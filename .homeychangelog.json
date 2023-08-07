@@ -13,5 +13,8 @@
   },
   "0.3.2": {
     "en": "Attempt to solve capabilities and cards handled by the app in homey store"
+  },
+  "0.3.3": {
+    "en": "Added support for consoleRe, it can be enabled from app settings"
   }
 }
