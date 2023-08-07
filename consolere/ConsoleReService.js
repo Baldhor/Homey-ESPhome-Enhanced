@@ -210,29 +210,45 @@ class ConsoleReService {
         let app = this.getApp();
         let homey = app.homey;
 
+        // Filtering out connection attributs of object to avoid callstack overflow
+        // Yes, it's very very dirty, but the socket.io-parser doesn't handle that much :)
+        let i = 0;
+        let len = args.length;
+
+        for( ; i < len; i += 1 ){
+            if (typeof args[i] === 'object' && args[i].connection) {
+                args[i].connection = 'connection filtered to avoid stack overflow';
+            }
+        }
+
         // TODO This buffer is not limited, and start immediatly ... it should run only when the socket is connected.
         instance.buffer.push(() => {
-            new Promise((resolve) => {
+            new Promise((resolve, reject) => {
                 if (instance.socket && instance.socket.connected) {
-                    this.socket.emit("toServerRe", {
-                        // command: null,
-                        channel: instance.consolereChannel,
-                        level: "info",
-                        args,
-                        caller: { /* that's true */
-                            file: "ConsoleReService.js",
-                            line: 202,
-                            column: 21,
-                        },
-                        browser: {
-                            browser: {
-                                f: app.id,
-                                s: app.manifest.version,
+                    try {
+                        this.socket.emit("toServerRe", {
+                            // command: null,
+                            channel: instance.consolereChannel,
+                            level: "info",
+                            args,
+                            caller: { /* that's true */
+                                file: "ConsoleReService.js",
+                                line: 202,
+                                column: 21,
                             },
-                            version: homey.version,
-                            OS: "Homey",
-                        }
-                    });
+                            browser: {
+                                browser: {
+                                    f: app.id,
+                                    s: app.manifest.version,
+                                },
+                                version: homey.version,
+                                OS: "Homey",
+                            }
+                        });
+                    } catch (e) {
+                        instance.internalLog('ConsoleRe emit error:', e);
+                        reject('ConsoleRe emit error');
+                    }
                 } else {
                     // We do not log to avoid an infinite loop
                     //this.internalLog('Not connected to ConsoleRe, cannot send log');
