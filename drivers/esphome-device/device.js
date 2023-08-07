@@ -30,6 +30,12 @@ class ESPhomeDevice extends Device {
     this.capabilities = this.getCapabilities();
     this.log('Store: capabilities', this.capabilities);
 
+    this.capabilitiesOptions = {};
+    this.capabilities.forEach(element => {
+      this.capabilitiesOptions[element] = this.getCapabilityOptions(element);
+    });
+    this.log('Store: capabilitiesOptions', this.capabilitiesOptions);
+
     this.capabilityKeys = this.getStoreValue('capabilityKeys');
     this.log('Store: capabilityKeys', this.capabilityKeys);
   }
