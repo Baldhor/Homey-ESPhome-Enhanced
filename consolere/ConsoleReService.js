@@ -22,7 +22,7 @@ class ConsoleReService {
     // logger
     disconnecting = false;
     queue = null;
-    tooManylogs = false;
+    hasTooManylogs = false;
     tooManyLogsTimer = null;
     socket = null;
 
@@ -263,14 +263,14 @@ class ConsoleReService {
         // Get instance handle
         let instance = this.getInstance();
 
-        if (instance.tooManyLogs) {
-            // Already sent the message recently
+        if (instance.hasTooManyLogs && instance.queue.size >= (QUEUE_MAX_SIZE + 1)) {
+            // Already sent the message recently or last message (max size + 1) is already the "too many logs" message
             return;
         }
 
-        instance.tooManyLogs = true;
-        instance.tooManyLogsTimer = instance.setTimeout(() => {
-            instance.tooManyLogs = false;
+        instance.hasTooManyLogs = true;
+        instance.tooManyLogsTimer = setTimeout(() => {
+            instance.hasTooManyLogs = false;
             instance.tooManyLogsTimer = null;
         }, TOO_MANY_LOGS_DELAY);
 
