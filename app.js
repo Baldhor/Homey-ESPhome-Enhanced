@@ -19,7 +19,7 @@ class MyApp extends Homey.App {
     }
 
     // Init ConsoleReService
-    ConsoleReService.init(this);
+    await ConsoleReService.init(this);
   }
 }
 
