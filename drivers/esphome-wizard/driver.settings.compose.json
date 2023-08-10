@@ -1,0 +1,74 @@
+[
+  {"id": "ip4",
+    "type": "text",
+    "label": { 
+      "en": "IP address" 
+    },
+    "value": "192.168.0.50",
+    "hint": { 
+      "en": "IP address of the device" 
+    }
+  },
+  {"id": "port",
+    "type": "number",
+    "label": { 
+      "en": "Port" 
+    },
+    "value": 6053,
+    "min": 1,
+    "max": 65535,
+    "hint": { 
+      "en": "TCP port used. Default is 6053"
+    }
+  },
+  {"id": "password",
+    "type": "password",
+    "label": { 
+      "en": "Password" 
+    },
+    "value": "",
+    "hint": { 
+      "en": "The password of the device" 
+    }
+  },
+  {"id": "esphome_model",
+    "type": "label",
+    "label": { 
+      "en": "ESP model" 
+    },
+    "hint": { 
+      "en": "The model type of the ESP" 
+    },
+    "value": ""
+  },
+  {"id": "esphome_version",
+    "type": "label",
+    "label": { 
+      "en": "ESPhome version" 
+    },
+    "hint": { 
+      "en": "The version of the ESPhome firmware" 
+    },
+    "value": ""
+  },
+  {"id": "esphome_compilationTime",
+    "type": "label",
+    "label": { 
+      "en": "Compilation time" 
+    },
+    "hint": { 
+      "en": "The compilation time of the device firmware" 
+    },
+    "value": ""
+  },
+  {"id": "esphome_macaddress",
+    "type": "label",
+    "label": { 
+      "en": "MAC address" 
+    },
+    "hint": { 
+      "en": "The mac address of the ESPhome" 
+    },
+    "value": ""
+  }
+]
