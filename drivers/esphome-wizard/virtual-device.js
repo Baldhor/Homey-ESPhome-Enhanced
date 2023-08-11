@@ -91,7 +91,7 @@ class VirtualDevice extends Device {
     }
 
     registerCustomerTriggerCards() {
-        this.esphome_number_custom = this.homey.flow.getDeviceTriggerCard('esphome_number_custom');
+        this.esphome_number_custom = this.homey.flow.getDeviceTriggerCard('esphome_number_custom2');
     }
 
     startAvailabilityListner() {
@@ -205,10 +205,10 @@ class VirtualDevice extends Device {
 
         this.esphome_number_custom.trigger(this, tokens)
             .then(value => {
-                this.log('Flow card esphome_number_custom triggered:', entityId, this.deviceInfo[entityId]);
+                this.log('Flow card esphome_number_custom2 triggered:', entityId, this.deviceInfo[entityId]);
             })
             .catch(error => {
-                this.log('Failed to trigger esphome_number_custom flow card:', error);
+                this.log('Failed to trigger esphome_number_custom2 flow card:', error);
             })
     }
 

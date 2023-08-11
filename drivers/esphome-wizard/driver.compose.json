@@ -6,7 +6,7 @@
   "capabilities": [
     "onoff",
     "windowcoverings_set",
-    "windowcoverings_tilt",
+    "windowcoverings_tilt_set",
     "button",
     "esphome_number",
     "esphome_text",

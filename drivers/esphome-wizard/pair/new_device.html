@@ -7,16 +7,14 @@
     Homey.setNavigationClose();
 </script>
 <header class="homey-header" data-i18n="wizard.new_device.description"></header>
-<form class="homey-form">
-    <label class="homey-form-label" for="ipAddress" data-i18n="wizard.new_device.ipAddress"></label>
-    <input class="homey-form-input" id="ipAddress" type="text" maxlength="15" />
-    <label class="homey-form-label" for="port" data-i18n="wizard.new_device.port"></label>
-    <input class="homey-form-input" id="port" type="text" maxlength="5" />
-    <label class="homey-form-label" for="password" data-i18n="wizard.new_device.password"></label>
-    <input class="homey-form-input" id="password" type="text" maxlength="20" />
+<label class="homey-form-label" for="ipAddress" data-i18n="wizard.new_device.ipAddress"></label>
+<input class="homey-form-input" id="ipAddress" type="text" maxlength="15" />
+<label class="homey-form-label" for="port" data-i18n="wizard.new_device.port"></label>
+<input class="homey-form-input" id="port" type="text" maxlength="5" placeholder="6053"/>
+<label class="homey-form-label" for="password" data-i18n="wizard.new_device.password"></label>
+<input class="homey-form-input" id="password" type="text" maxlength="20" />
 
-    <button id="connect" class="homey-button-primary-full" data-i18n="wizard.new_device.connect"></button>
-</form>
+<button id="connect" class="homey-button-primary-full" data-i18n="wizard.new_device.connect"></button>
 <script type="application/javascript">
     const connectElement = document.getElementById('connect');
 
@@ -25,12 +23,13 @@
     const passwordElement = document.getElementById("password");
 
     function getPort() {
-        let port = 6053;
+        let port = '6053';
         try {
-            port = parseInt(portElement.value);
+            tmpPort = parseInt(portElement.value, 10);
+            if(!isNaN(tmpPort))
+                port = String(tmpPort);
         } catch (error) {
-            // Well that didn't work, let assume standard port 6053
-            port = 6053;
+            // Well that didn't work, let assume standard port
         }
         
         return port;
@@ -84,17 +83,19 @@
 
     // Disable connect button by default
     disableConnectButton();
-    connectElement.onsubmit = connect;
+    connectElement.onclick = connect;
 
-    ipAddressElement.on('change', () => checkConnectButton());
-    portElement.on('change', () => checkConnectButton());
+    ipAddressElement.oninput = checkConnectButton;
+    portElement.oninput = checkConnectButton;
 
     Homey.on('new-device-connected', function () {
+        console.log('Even received: new-device-connected');
         Homey.hideLoadingOverlay();
         Homey.showView('conf_main');
     });
 
     Homey.on('new-device-failed', function (message) {
+        console.log('Even received: new-device-failed', message);
         Homey.hideLoadingOverlay();
         Homey.alert(message, 'error');
     });

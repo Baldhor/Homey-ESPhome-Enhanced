@@ -1,11 +1,10 @@
 'use strict';
 
 const Homey = require('homey');
-const { PhysicalDeviceManager } = require('./physical-device-manager');
+const PhysicalDeviceManager = require('./physical-device-manager');
 
 class Driver extends Homey.Driver {
     physicalDeviceManager = null;
-    wizard = null;
 
     async onInit() {
         this.physicalDeviceManager = new PhysicalDeviceManager(this);
@@ -27,36 +26,38 @@ class Driver extends Homey.Driver {
          * Emit:
          * - new-device-connected: if success
          * - new-device-failed: if failed
-         * 
-         * TODO: I suspect listening to unavailable is not enough to detect failure
          */
         session.setHandler('connect-new-device', (data) => {
             // Check if physical device already exist
-            let existingPhysicalDevice = this.physicalDeviceManager.get(ipAddress, port);
-            if (!existingPhysicalDevice) {
+            let existingPhysicalDevice = this.physicalDeviceManager.get(data.ipAddress, data.port);
+            if (existingPhysicalDevice) {
                 // Maybe it's a physical device without virtual device linked? In such case we can clean up
                 // Why? PairSession can end without notice, and so the physicalDevice created previosuly may not be cleaned up
                 this.physicalDeviceManager.checkDelete(null, existingPhysicalDevice);
                 existingPhysicalDevice = null;
 
                 // Let's check again
-                if (!this.physicalDeviceManager.get(ipAddress, port)) {
+                if (this.physicalDeviceManager.get(data.ipAddress, data.port)) {
                     this.emit('new-device-failed', 'A physical device already exist');
                     return;
                 }
             }
 
             // Create a new physical device and add listeners
-            let physicalDevice = this.physicalDeviceManager.create(ClientConnectionMode.ConnectOnce, data.ipAddress, data.port, data.password);
+            let physicalDevice = this.physicalDeviceManager.create(false, data.ipAddress, data.port, data.password);
 
             physicalDevice.on('available', () => {
+                this.log('Received available event');
+
                 // Get what we need and disconnect
                 session.newPhysicalDevice = physicalDevice;
-                this.emit('new-device-connected');
+                session.emit('new-device-connected');
             });
 
             physicalDevice.on('unavailable', () => {
-                this.emit('new-device-failed', 'Could not connect to the device, or something went wrong');
+                this.log('Received unavailable event');
+                
+                session.emit('new-device-failed', 'Could not connect to the device, or something went wrong');
             });
         });
 
@@ -75,7 +76,7 @@ class Driver extends Homey.Driver {
          */
         session.setHandler('get-existing-device', () => {
             let result = [];
-            this.physicalDeviceManager.physicalDevices.values().forEach(physicalDevice => {
+            this.physicalDeviceManager.physicalDevices.forEach((physicalDevice) => {
                 // Find num of bound virtual devices
                 let bound = 0;
                 this.driver.getDevices().forEach(device => {
@@ -94,8 +95,7 @@ class Driver extends Homey.Driver {
 
             return result;
         });
-
     }
 }
 
-module.exports = ESPhomeWizard;
+module.exports = Driver;

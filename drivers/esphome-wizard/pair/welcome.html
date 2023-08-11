@@ -7,10 +7,11 @@
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.welcome.title') );
     Homey.setNavigationClose();
-
-    document.getElementById('new_device').onsubmit = newDevice;
-    document.getElementById('update_device').onsubmit = updateDevice;
-
+</script>
+<header class="homey-header" data-i18n="wizard.welcome.description"></header>
+<button id="new_device" class="homey-button-primary-full" data-i18n="wizard.welcome.new"></button>
+<button id="update_device" class="homey-button-primary-full" data-i18n="wizard.welcome.update"></button>
+<script>
     function newDevice(event) {
         Homey.showView('new_device');
     }
@@ -18,9 +19,7 @@
     function updateDevice(event) {
         Homey.showView('update_device');
     }
+
+    document.getElementById('new_device').onclick = newDevice;
+    document.getElementById('update_device').onclick = updateDevice;
 </script>
-<header class="homey-header" data-i18n="wizard.welcome.description"></header>
-<form class="homey-form">
-    <button id="new_device" class="homey-button-primary-full" data-i18n="wizard.welcome.new"></button>
-    <button id="update_device" class="homey-button-primary-full" data-i18n="wizard.welcome.update"></button>
-</form>

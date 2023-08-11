@@ -18,9 +18,9 @@
  * Only the virtual device knows to which physical device is is linked
  */
 const EventEmitter = require('events');
-const { Driver } = require('./driver');
-const { Client } = require('./client');
-const { Utils } = require('./utils');
+const Driver = require('./driver');
+const Client = require('./client');
+const Utils = require('./utils');
 
 class PhysicalDevice extends EventEmitter {
     id = null;
@@ -46,21 +46,22 @@ class PhysicalDevice extends EventEmitter {
      * Create a new ESPhome native api client and _start_ connection process
      * 
      * @param {Driver} driver Handle to the Driver for log context and retrieve configuration from driver
-     * @param {ClientConnectionMode} connectionMode Connection mode: connect once or reconnect
+     * @param {boolean} reconnect Connection mode: connect once or reconnect
      * @param {string} ipAddress IP address
      * @param {string} port Port number
      * @param {string} password (Optionnal) password
      */
-    constructor(driver, connectionMode, ipAddress, port, password) {
+    constructor(driver, reconnect, ipAddress, port, password) {
         Utils.assert(driver != null && typeof driver === 'object' && driver.constructor.name === 'Driver', 'Driver cannot be null or of wrong type');
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
         Utils.assert(Utils.checkIfValidPortnumber(port), 'Wrong format of port:', port)
 
+        super();
         this.driver = driver;
-        this.id = this.buildPhysicalDeviceId(ipAddress, port);
+        this.id = PhysicalDevice.buildPhysicalDeviceId(ipAddress, port);
         this.native_capabilities = new Map();
 
-        this.client = new Client(this, connectionMode, ipAddress, port, password);
+        this.client = new Client(this, reconnect, ipAddress, port, password);
 
         // Add listener
         this.startClientListener();
@@ -87,13 +88,13 @@ class PhysicalDevice extends EventEmitter {
     }
 
     connectedListener() {
-        this.log('Connected');
+        this.log('Connected: available!');
 
         this.emit('available');
     }
 
     disconnectedListener() {
-        this.log('Disconnected');
+        this.log('Disconnected: unavailable!');
 
         this.emit('unavailable');
     }

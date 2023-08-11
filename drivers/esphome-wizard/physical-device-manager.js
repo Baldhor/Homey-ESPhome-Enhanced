@@ -1,7 +1,8 @@
 'use strict';
 
-const { PhysicalDevice } = require('./physical-device');
-const { Utils } = require('./utils');
+const EventEmitter = require('events');
+const PhysicalDevice = require('./physical-device');
+const Utils = require('./utils');
 
 class PhysicalDeviceManager extends EventEmitter {
     driver = null;
@@ -15,21 +16,22 @@ class PhysicalDeviceManager extends EventEmitter {
     constructor(driver) {
         Utils.assert(driver != null && typeof driver === 'object' && driver.constructor.name === 'Driver', 'Driver cannot be null or of wrong type');
 
+        super();
         this.driver = driver;
-        physicalDevices = new Map();
+        this.physicalDevices = new Map();
     }
 
     /**
      * Create a new physical device if it doesn't exist
      * Otherwise, return the existing one for the couple ipAdress/port
      * 
-     * @param {*} connectionMode Connection mode: connect once or reconnect
+     * @param {*} reconnect Connection mode: connect once or reconnect
      * @param {*} ipAddress IP address
      * @param {*} port Port number
      * @param {*} password (Optionnal) password
      * @returns PhysicalDevice
      */
-    create(connectionMode, ipAddress, port, password) {
+    create(reconnect, ipAddress, port, password) {
         this.log('New Physical Device to create:', ipAddress, port);
 
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
@@ -42,8 +44,8 @@ class PhysicalDeviceManager extends EventEmitter {
             this.log('Physical Device already exist');
             return this.physicalDevices[id];
         } else {
-            this.log("Physical Device doesn't exist");
-            return new PhysicalDevice(this.driver, connectionMode, ipAddress, port, password);
+            this.log("Physical Device doesn't exist, create a new one");
+            return new PhysicalDevice(this.driver, reconnect, ipAddress, port, password);
         }
     }
 

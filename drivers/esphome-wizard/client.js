@@ -17,19 +17,9 @@
  * 
  */
 const EventEmitter = require('events');
-const { PhysicalDevice } = require('./physical-device');
-const { NativeApiClient } = require('@2colors/esphome-native-api');
-const { Utils } = require('./utils');
-
-const ClientState = Object.freeze({
-    Disconnected: Symbol("disconnected"),
-    Connected: Symbol("connected")
-});
-
-const ClientConnectionMode = Object.freeze({
-    ConnectOnce: Symbol("connectonce"),
-    Reconnect: Symbol("reconnect")
-});
+const PhysicalDevice = require('./physical-device');
+const { Client : NativeApiClient } = require('@2colors/esphome-native-api');
+const Utils = require('./utils');
 
 // Delay used to reconnect if initilization is wrong
 const NATIVE_API_RECONNECTION_DELAY = 3000;
@@ -46,9 +36,9 @@ class Client extends EventEmitter {
     port = null;
     password = null;
 
-    expectedState = ClientState.Disconnected;
-    connectionMode = ClientConnectionMode.Reconnect;
-    state = ClientState.Disconnected;
+    reconnect = true;
+    expectConnected = false;
+    connected = false;
 
     nativeApiClient = null;
 
@@ -56,15 +46,15 @@ class Client extends EventEmitter {
      * Create a new ESPhome native api client and _start_ connection process
      * 
      * @param {PhysicalDevice} physicalDevice Handle to the Driver for log context
-     * @param {ClientConnectionMode} connectionMode Connection mode: connect once or reconnect
+     * @param {boolean} reconnect Connection mode: connect once or reconnect
      * @param {string} ipAddress IP address
      * @param {string} port Port number
      * @param {string} password (Optionnal) password
      */
-    constructor(physicalDevice, connectionMode, ipAddress, port, password) {
+    constructor(physicalDevice, reconnect, ipAddress, port, password) {
         // Check input
         Utils.assert(physicalDevice != null && typeof physicalDevice === 'object' && physicalDevice.constructor.name === 'PhysicalDevice', 'Physical device cannot be null or of wrong type');
-        Utils.assert(connectionMode != null && typeof connectionMode === 'symbol' && ClientConnectionMode.values().include(connectionMode), 'Connection mode cannot be null or of wrong type');
+        Utils.assert(reconnect != null && typeof reconnect === 'boolean', 'Connection mode cannot be null or of wrong type');
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
         Utils.assert(Utils.checkIfValidPortnumber(port), 'Wrong format of port:', port)
 
@@ -76,14 +66,14 @@ class Client extends EventEmitter {
         this.port = port;
         this.password = password && password !== '' ? password : '';
 
-        this.log('Client initializing:', ipAdress, port, password !== '' ? '<password hidden>' : '<no password>');
+        this.log('Initializing:', ipAddress, port, password !== '' ? '<password hidden>' : '<no password>');
 
         // We obviosuly expect to connect, so let's start
-        this.expectedState = ClientState.Connected;
-        this.connectionMode = ClientConnectionMode.ConnectOnce;
+        this.expectConnected = true;
+        this.reconnect = reconnect;
         this.processConnection();
 
-        this.log('Client created');
+        this.log('Created');
     }
 
     /**
@@ -91,7 +81,7 @@ class Client extends EventEmitter {
      */
     async processConnection() {
         // Make sure nothing is wrong
-        if (this.expectedState != ClientState.Connected) {
+        if (!this.expectConnected) {
             this.log("Processing connection, but expected state is not 'Connected'");
             return;
         }
@@ -104,7 +94,7 @@ class Client extends EventEmitter {
                 port: this.port,
                 initializeSubscribeLogs: true, // We want logs, we like logs
                 initializeListEntities: true, // We want the entities configuration²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
-                reconnect: this.connectionMode === ClientConnectionMode.Reconnect,
+                reconnect: this.reconnect,
                 clientInfo: 'homey'
             });
 
@@ -136,21 +126,24 @@ class Client extends EventEmitter {
     }
 
     initializedListener() {
-        this.log('Connected:', this.deviceInfo);
+        this.log('Connected:', this.nativeApiClient.deviceInfo);
 
-        this.state = ClientState.Connected;
+        this.connected = true;
         this.emit('connected');
     }
 
     disconnectedListener() {
         this.log('Disconnected');
 
-        this.state = ClientState.Disconnected;
+        this.connected = false;
         this.emit('disconnected');
     }
 
     errorListener(error) {
         this.log('Received an error:', error);
+
+        this.connected = false;
+        this.emit('disconnected');
     }
 
     logsListener(message) {
@@ -160,7 +153,7 @@ class Client extends EventEmitter {
 
     newEntityListener(entity) {
         this.log('Received a newentity:', entity);
-        startRemoteEntityListener(entity.id);
+        this.startRemoteEntityListener(entity.id);
     }
 
     /**
@@ -189,7 +182,7 @@ class Client extends EventEmitter {
         this.log('Received state for entity', entityId, ':', state);
 
         // Retrieve entity type
-        let entity = this.client.nativeApiClient.entities[entityId];
+        let entity = this.nativeApiClient.entities[entityId];
         Utils.assert(entity, 'Entity undefined');
         let entityType = entity.type;
 
@@ -205,8 +198,8 @@ class Client extends EventEmitter {
             if (attributsToIgnore.includes(element))
                 return;
 
-            this.log('Emit event:', 'state.' + element, entityId, state.element);
-            this.emit('stateChanged', entityId, 'state.' + element, state.element);
+            this.log('Emit event:', 'stateChanged', entityId, 'state.' + element, state[element]);
+            this.emit('stateChanged', entityId, 'state.' + element, state[element]);
         });
     }
 
@@ -277,25 +270,25 @@ class Client extends EventEmitter {
             entity.options = {};
             entity.state = state;
 
-            entities.push(entity);
+            config.push(entity);
         });
 
-        this.log('Built config:', entities);
+        this.log('Built config:', config);
 
-        return entities;
+        return config;
     }
 
     log(...args) {
-        this.physicalDevice.log('Client', ...args);
+        this.physicalDevice.log('[Client]', ...args);
     }
 
     disconnect() {
-        this.log('Client disconnecting');
+        this.log('Disconnecting');
 
-        this.expectedState = ClientState.Disconnected;
+        this.expectConnected = false;
         this.nativeApiClient.disconnect();
 
-        this.log('Client disconnected');
+        this.log('Disconnected');
     }
 }
 

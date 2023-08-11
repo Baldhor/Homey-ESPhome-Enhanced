@@ -1,6 +1,6 @@
 {   
   "triggers": [
-    {"id": "esphome_number_custom",
+    {"id": "esphome_number_custom2",
       "title": {
         "en": "Number changed"
       },
