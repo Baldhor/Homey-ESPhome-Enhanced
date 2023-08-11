@@ -1,0 +1,35 @@
+<!--
+    Show a summary of ongoing configuration:
+    - Virtual device, its capabilities and related native capabilities => only offer a "goto" button (go to view 'conf_virtual_device')
+    - Settings, and its related native capabilities => only offer a "goto" button (go to view 'conf_settings')
+    - Unbind native capabilities => only offer a "create a new virtual device" button (then go to view 'conf_virtual_device')
+
+    Initialy, the ongoing configuration is based on current Homey configuration, and the current physical device configuration.
+    After each modifications, the ongoing configuration will update.
+
+    This view also has a "confirm" button which will apply definitively all the modifications.
+-->
+
+<script type="application/javascript">
+    Homey.setTitle(Homey.__('wizard.conf_main.title'));
+    Homey.setNavigationClose();
+</script>
+<label class="homey-form-label" data-i18n="wizard.conf_main.notimplemented"></label>
+
+<button id="govirtualdevice" class="homey-button-primary-full" data-i18n="wizard.conf_main.govirtualdevice"></button>
+<button id="gosettings" class="homey-button-primary-full" data-i18n="wizard.conf_main.gosettings"></button>
+
+<script type="application/javascript">
+    const govirtualdeviceElement = document.getElementById('govirtualdevice');
+    const gosettingsElement = document.getElementById('gosettings');
+
+    // Add submit  functions
+    function govirtualdevice(event) {
+        Homey.showView('conf_virtualdevice');
+    }
+    govirtualdeviceElement.onsubmit = goback;
+    function gosettings(event) {
+        Homey.showView('conf_settings');
+    }
+    gosettingsElement.onsubmit = goback;
+</script>

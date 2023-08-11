@@ -52,7 +52,13 @@
       "id": "update_device"
     },
     {
-      "id": "configuration"
+      "id": "conf_main"
+    },
+    {
+      "id": "conf_virtual_device"
+    },
+    {
+      "id": "conf_settings"
     }
   ]
 }

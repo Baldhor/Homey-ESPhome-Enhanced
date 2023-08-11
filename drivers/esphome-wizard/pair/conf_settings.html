@@ -1,0 +1,32 @@
+<!--
+    Allows to modify the settings:
+    - Remove a native capability
+    - Modify a native capability options
+    - Add an unbind native capability
+
+    If a modification require a confirmation, a popup will appear.
+    All modifications are saved automatically, there are no "save" button.
+
+    This view has a "Back" button (go to view 'conf_main')
+
+    TODO: not implemented, it's a lot of work for something that can be done from the device web server itself ...
+-->
+
+<script type="application/javascript">
+    Homey.setTitle(Homey.__('wizard.conf_settings.title'));
+    Homey.setNavigationClose();
+</script>
+<label class="homey-form-label" data-i18n="wizard.conf_settings.notimplemented"></label>
+<label class="homey-form-label" data-i18n="wizard.conf_settings.info"></label>
+
+<button id="goback" class="homey-button-primary-full" data-i18n="wizard.conf_settings.goback"></button>
+
+<script type="application/javascript">
+    const gobackElement = document.getElementById('goback');
+
+    // Add submit  function
+    function goback(event) {
+        Homey.showView('conf_main');
+    }
+    gobackElement.onsubmit = goback;
+</script>

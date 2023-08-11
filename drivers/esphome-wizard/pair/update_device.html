@@ -1,9 +1,17 @@
+<!--
+    Allows to choose an existing physical device to modify
+-->
+
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.new_device.title'));
     Homey.setNavigationClose();
 </script>
 <header class="homey-header" data-i18n="wizard.update_device.description"></header>
 <form class="homey-form">
+    <label class="homey-form-label" data-i18n="wizard.update_device.info"></label>
+
+    <label id="none" class="homey-form-label" data-i18n="wizard.update_device.none" style="color:red;"></label>
+
     <table id="existing_devices">
         <tr>
             <th></th>
@@ -21,7 +29,6 @@
             </th>
         </tr>
     </table>
-    </div>
 
     <button id="select" class="homey-button-primary-full" data-i18n="wizard.update_device.select"></button>
 </form>
@@ -29,8 +36,9 @@
     // We need to init the view
     Homey.showLoadingOverlay();
 
-    const selectElement = document.getElementById('select');
+    const noneElement = document.getElementById('none');
     const listElement = document.getElementById('existing_devices');
+    const selectElement = document.getElementById('select');
 
     // Get existing device from homey
     var existingDevices = null;
@@ -51,28 +59,63 @@
         selectElement.disabled = true;
     }
 
-    // Loop on each device and add them to the list with a radio button
-    // Using physical device id to identify the radio button
-    existingDevices.forEach(element => {
-        var row = listElement.insertRow(-1);
-        var cellSelect = row.insertCell(0);
-        var cellId = row.insertCell(1);
-        var cellIpAddress = row.insertCell(2);
-        var cellPort = row.insertCell(3);
-        var cellBound = row.insertCell(4);
+    function hideAll(element) {
+        element.hidden = true;
+        Array.from(element.children).forEach(function(subElement){
+            subElement.hidden = true;
+        });
+    }
 
-        cellSelect.innerHTML = '<input class="homey-form-radio-input" type="radio" name="radio-buttons" id="' + element.id + '"/>';
-        cellId.innerHTML = '<label class="homey-form-label">' + element.id + '</label>';
-        cellIpAddress.innerHTML = '<label class="homey-form-label">' + element.ipAddress + '</label>';
-        cellPort.innerHTML = '<label class="homey-form-label">' + element.port + '</label>';
-        cellBound.innerHTML = '<label class="homey-form-label">' + element.bound + '</label>';
+    // Add submit  function
+    function select(event) {
+        Homey.showLoadingOverlay();
 
-        // Add a listener to update the select button
-        document.getElementById('element.id').on('change', () => enableSelectButton());;
+        // Don't actually submit the form just yet
+        event.preventDefault();
+
+        Homey.emit('select-device', {
+            'id': document.querySelector('input[name="radio-buttons"]:checked').value
+        });
+    }
+    connectElement.onsubmit = select;
+
+    if (existingDevices.length === 0) {
+        // Hide list and select button
+        hideAll(listElement);
+        hideAll(selectElement);
+    } else {
+        // Hide none
+        hideAll(noneElement);
+
+        // Loop on each device and add them to the list with a radio button
+        // Using physical device id to identify the radio button
+        existingDevices.forEach(element => {
+            var row = listElement.insertRow(-1);
+            var cellSelect = row.insertCell(0);
+            var cellId = row.insertCell(1);
+            var cellIpAddress = row.insertCell(2);
+            var cellPort = row.insertCell(3);
+            var cellBound = row.insertCell(4);
+
+            cellSelect.innerHTML = '<input class="homey-form-radio-input" type="radio" name="radio-buttons" id="' + element.id + '"/>';
+            cellId.innerHTML = '<label class="homey-form-label">' + element.id + '</label>';
+            cellIpAddress.innerHTML = '<label class="homey-form-label">' + element.ipAddress + '</label>';
+            cellPort.innerHTML = '<label class="homey-form-label">' + element.port + '</label>';
+            cellBound.innerHTML = '<label class="homey-form-label">' + element.bound + '</label>';
+
+            // Add a listener to update the select button
+            document.getElementById('element.id').on('change', () => enableSelectButton());;
+        });
+
+        // Make sure the select button is disabled by default: need to select one device in the list!
+        disableSelectButton();
+    }
+
+    Homey.on('selected-device', function () {
+        Homey.hideLoadingOverlay();
+        Homey.showView('conf_main');
     });
 
-    // Make sure the select button is disabled by default: need to select one device in the list!
-    disableSelectButton();
 
     // Finished init of the view
     Homey.hideLoadingOverlay();

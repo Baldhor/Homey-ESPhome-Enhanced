@@ -45,14 +45,15 @@
             "title": "Choose an existing device",
             "description": "To assist you, I need you to choose an existing device",
             "info": "To change the IP address, port or password, use the settings screen of any virtual device bound to the concerned physical device",
+            "none": "I didn't find any existing physical device, are you sure?",
             "list": "Here is the list of the physical devices I know, please choose one!",
             "physical_device_id": "Id",
             "physical_device_ipAddress": "IP address",
             "physical_device_port": "Port",
             "physical_device_bound": "Number of virtual device bound",
-            "this_one": "This one!"
+            "select": "Select"
         },
-        "wizard.configuration": {
+        "wizard.conf_main": {
             "title": "There goes the magic",
             "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
             "settings_title": "Your physical device",
@@ -77,6 +78,16 @@
             "option.mode": "Mode",
             "option.mode.box": "Box",
             "option.mode.slidder": "Slidder"
+        },
+        "wizard.conf_virtual_device": {
+            "title": "Configure your virtual device",
+            "notimplemented": "Not yet implemented"
+        },
+        "wizard.conf_settings": {
+            "title": "My magic has its limits",
+            "notimplemented": "Not yet implemented",
+            "info": "Your physical device web server probably do the equivalent!",
+            "goback" : "Go back"
         }
     },
     "settings": {

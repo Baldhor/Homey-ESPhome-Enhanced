@@ -1,3 +1,7 @@
+<!--
+    Allows to connect to a new physical device
+-->
+
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.new_device.title'));
     Homey.setNavigationClose();
@@ -13,33 +17,6 @@
 
     <button id="connect" class="homey-button-primary-full" data-i18n="wizard.new_device.connect"></button>
 </form>
-
-
-
-<div class="hy-tmpl-api-logo">
-    <img class="my-svg" src="../assets/svg/api.svg" alt="api">
-</div>
-<p data-i18n="pair.credentials.description"></p>
-<form id="api-form" class="hy-tmpl-api-form" action="/" method="post">
-    <div class="hy-tmpl-api-row row">
-        <label class="hy-label hy-tmpl-api-label" for="host" data-i18n="pair.credentials.label_hostname"></label>
-        <input class="hy-input-text" name="host" type="text" id="host" value="" placeholder="192.168.0.50" required>
-    </div>
-    <div class="hy-tmpl-api-row row">
-        <label class="hy-label hy-tmpl-api-label" for="port" data-i18n="pair.credentials.label_port"></label>
-        <input class="hy-input-text" name="port" type="number" id="port" value="6053" placeholder="6053" required>
-    </div>
-    <div class="hy-tmpl-api-row row">
-        <label class="hy-label hy-tmpl-api-label" for="passwd" data-i18n="pair.credentials.label_passwd"></label>
-        <input class="hy-input-text" name="passwd" type="password" id="passwd" value="" placeholder="Wachtwoord">
-    </div>
-    <div class="hy-tmpl-api-row row">
-        <input class="hy-button hy-button-primary hy-button-fill hy-tmpl-api-submit button" type="submit"
-            data-i18n="pair.credentials.submit">
-    </div>
-</form>
-
-
 <script type="application/javascript">
     const connectElement = document.getElementById('connect');
 
@@ -114,7 +91,7 @@
 
     Homey.on('new-device-connected', function () {
         Homey.hideLoadingOverlay();
-        Homey.showView('configuration');
+        Homey.showView('conf_main');
     });
 
     Homey.on('new-device-failed', function (message) {
