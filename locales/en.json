@@ -22,6 +22,61 @@
             "table_header_decimals": "Decimals",
             "submit_warning": "Are you sure you have all capabilites linked?",
             "button_save": "Save"
+        },
+        "wizard.welcome": {
+            "title": "ESPhome Wizard",
+            "description": "How my magic can assist you?",
+            "new": "Configure a new physical device",
+            "update": "Update an existing physical device"
+        },
+        "wizard.new_device": {
+            "title": "Connect to the new device",
+            "description": "To assist you, I need to connect to your physical device!",
+            "ipAddress": "IP address",
+            "port": "Port",
+            "password": "Password",
+            "password_is_optionnal": "Optionnal",
+            "already_exist": "I already know a physical device with those IP address and port, please use 'Update an existing physical device' in previous screen or correct your input",
+            "connect": "Connect",
+            "connected": "Great, I was able to connect, let's start to use magic",
+            "failed": "Connection failed, maybe your input is wrong"
+        },
+        "wizard.update_device": {
+            "title": "Choose an existing device",
+            "description": "To assist you, I need you to choose an existing device",
+            "info": "To change the IP address, port or password, use the settings screen of any virtual device bound to the concerned physical device",
+            "list": "Here is the list of the physical devices I know, please choose one!",
+            "physical_device_id": "Id",
+            "physical_device_ipAddress": "IP address",
+            "physical_device_port": "Port",
+            "physical_device_bound": "Number of virtual device bound",
+            "this_one": "This one!"
+        },
+        "wizard.configuration": {
+            "title": "There goes the magic",
+            "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
+            "settings_title": "Your physical device",
+            "physical_device_id": "Id",
+            "physical_device_ipAddress": "IP address",
+            "physical_device_port": "Port",
+            "virtual_device_title": "Virtual device(s)",
+            "virtual_device_info": "For each native capability you added to a virtual device, you can choose some options",
+            "virtual_device_name": "Name",
+            "Virtual_device_capability": "Homey capability",
+            "advanced_settings_title": "Native capibility bound to advanced settings",
+            "advanced_settings_info": "Those native capabilities can be accessed from the advanced settings screen of any virtual device",
+            "advanced_settings_info2": "For each native capability you added to advanced settings, you can choose some options",
+            "unbind_title": "Native capability unbind",
+            "unbind_info": "It's ok to leave some behind",
+            "entity_id": "Entity ID",
+            "native_capability_name": "Name",
+            "native_capability_value": "Current value",
+            "option.min_value": "Min value",
+            "option.max_value": "Max value",
+            "option.step": "Step",
+            "option.mode": "Mode",
+            "option.mode.box": "Box",
+            "option.mode.slidder": "Slidder"
         }
     },
     "settings": {

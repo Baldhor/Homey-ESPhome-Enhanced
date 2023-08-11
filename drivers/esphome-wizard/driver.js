@@ -1,79 +1,101 @@
 'use strict';
 
 const Homey = require('homey');
+const { PhysicalDeviceManager } = require('./physical-device-manager');
 
-class ESPhomeWizard extends Homey.Driver {
+class Driver extends Homey.Driver {
+    physicalDeviceManager = null;
+    wizard = null;
 
-  async onInit() {
-    this.log('ESPhomeWizard initialized');
-  }
+    async onInit() {
+        this.physicalDeviceManager = new PhysicalDeviceManager(this);
 
-  async onPair(session) {
-  
-    session.setHandler('validate_device', async (data) => {
+        this.log('ESPhomeWizard initialized');
+    }
 
-      this.log('validate_device');
-      this.log('data:', data);
+    async onPair(session) {
+        /**
+         * Used by new_device view
+         * Connect to a new physical device
+         * 
+         * data: {
+         *     ipAddress,
+         *     port,
+         *    password
+         * }
+         * 
+         * Emit:
+         * - new-device-connected: if success
+         * - new-device-failed: if failed
+         * 
+         * TODO: I suspect listening to unavailable is not enough to detect failure
+         */
+        session.setHandler('connect-new-device', (data) => {
+            // Check if physical device already exist
+            let existingPhysicalDevice = this.physicalDeviceManager.get(ipAddress, port);
+            if (!existingPhysicalDevice) {
+                // Maybe it's a physical device without virtual device linked? In such case we can clean up
+                // Why? PairSession can end without notice, and so the physicalDevice created previosuly may not be cleaned up
+                this.physicalDeviceManager.checkDelete(null, existingPhysicalDevice);
+                existingPhysicalDevice = null;
 
-      this.log('Connecting to:', data.host);
-      const client = new Client({
-        host: data.host,
-        port: data.port,
-        password: data.password,
-        initializeSubscribeLogs: false,
-        initializeSubscribeStates: false,
-        initializeListEntities: true,
-        reconnect: false,
-        clientInfo: 'homey'
-      });
-  
-      client.connect();
-      
-      client.on('deviceInfo', deviceInfo => {
-          this.log('Device info:', deviceInfo);
-          this.deviceInfo = deviceInfo;
-          this.deviceInfo.ip4 = data.host;
-          this.deviceInfo.port = data.port;
-          this.deviceInfo.password = data.password;
-      });
+                // Let's check again
+                if (!this.physicalDeviceManager.get(ipAddress, port)) {
+                    this.emit('new-device-failed', 'A physical device already exist');
+                    return;
+                }
+            }
 
-      client.on('newEntity', entity => {
-        this.log('Entity info:', entity);
-      
-        this.deviceInfo[entity.id] = {
-          config : entity.config,
-          name : entity.name,
-          type : entity.type,
-          unit: entity.config.unitOfMeasurement !== undefined ? entity.config.unitOfMeasurement || '' : ''
-        };
-      });
+            // Create a new physical device and add listeners
+            let physicalDevice = this.physicalDeviceManager.create(ClientConnectionMode.ConnectOnce, data.ipAddress, data.port, data.password);
 
-      client.on('initialized', () => {
-        this.log('initialized device', this.deviceInfo.name);
-        try {
-          client.disconnect();
-        } catch (error) {}
-        session.emit('device-validate-ok');
-      });
+            physicalDevice.on('available', () => {
+                // Get what we need and disconnect
+                session.newPhysicalDevice = physicalDevice;
+                this.emit('new-device-connected');
+            });
 
-      client.on('error', error => {
-        this.log(`Error on device ${data.host}:`, error);
-        if (error.message) session.emit('device-validate-error', error.message);
-        else if (error.code) session.emit('device-validate-error', error.code);
-        else if (error.error) session.emit('device-validate-error', error.error);
-        else session.emit('device-validate-error', error);
-      });
+            physicalDevice.on('unavailable', () => {
+                this.emit('new-device-failed', 'Could not connect to the device, or something went wrong');
+            });
+        });
 
-      client.on('disconnected', () => {
-        this.log(`Device ${data.host} disconnected`);
-      });
-    });
+        /**
+         * Used by update_device view
+         * Get the list of existing physical device
+         * 
+         * return: [
+         *     {
+         *         id,
+         *         ipAddress,
+         *         port,
+         *         bound
+         *     }
+         * ]
+         */
+        session.setHandler('get-existing-device', () => {
+            let result = [];
+            this.physicalDeviceManager.physicalDevices.values().forEach(physicalDevice => {
+                // Find num of bound virtual devices
+                let bound = 0;
+                this.driver.getDevices().forEach(device => {
+                    if (device.physicalDevice ===  physicalDevice) {
+                        ++bound;
+                    }
+                });
 
-    session.setHandler("get_device_details", () => {
-      this.log('get_device_details');
-      return this.deviceInfo;
-    });
-  }
+                result.push({
+                    'id': physicalDevice.id,
+                    'ipAddress': physicalDevice.client.ipAddress,
+                    'port': physicalDevice.client.port,
+                    'bound': bound
+                });
+            });
+
+            return result;
+        });
+
+    }
 }
 
 module.exports = ESPhomeWizard;

@@ -1,0 +1,124 @@
+<script type="application/javascript">
+    Homey.setTitle(Homey.__('wizard.new_device.title'));
+    Homey.setNavigationClose();
+</script>
+<header class="homey-header" data-i18n="wizard.new_device.description"></header>
+<form class="homey-form">
+    <label class="homey-form-label" for="ipAddress" data-i18n="wizard.new_device.ipAddress"></label>
+    <input class="homey-form-input" id="ipAddress" type="text" maxlength="15" />
+    <label class="homey-form-label" for="port" data-i18n="wizard.new_device.port"></label>
+    <input class="homey-form-input" id="port" type="text" maxlength="5" />
+    <label class="homey-form-label" for="password" data-i18n="wizard.new_device.password"></label>
+    <input class="homey-form-input" id="password" type="text" maxlength="20" />
+
+    <button id="connect" class="homey-button-primary-full" data-i18n="wizard.new_device.connect"></button>
+</form>
+
+
+
+<div class="hy-tmpl-api-logo">
+    <img class="my-svg" src="../assets/svg/api.svg" alt="api">
+</div>
+<p data-i18n="pair.credentials.description"></p>
+<form id="api-form" class="hy-tmpl-api-form" action="/" method="post">
+    <div class="hy-tmpl-api-row row">
+        <label class="hy-label hy-tmpl-api-label" for="host" data-i18n="pair.credentials.label_hostname"></label>
+        <input class="hy-input-text" name="host" type="text" id="host" value="" placeholder="192.168.0.50" required>
+    </div>
+    <div class="hy-tmpl-api-row row">
+        <label class="hy-label hy-tmpl-api-label" for="port" data-i18n="pair.credentials.label_port"></label>
+        <input class="hy-input-text" name="port" type="number" id="port" value="6053" placeholder="6053" required>
+    </div>
+    <div class="hy-tmpl-api-row row">
+        <label class="hy-label hy-tmpl-api-label" for="passwd" data-i18n="pair.credentials.label_passwd"></label>
+        <input class="hy-input-text" name="passwd" type="password" id="passwd" value="" placeholder="Wachtwoord">
+    </div>
+    <div class="hy-tmpl-api-row row">
+        <input class="hy-button hy-button-primary hy-button-fill hy-tmpl-api-submit button" type="submit"
+            data-i18n="pair.credentials.submit">
+    </div>
+</form>
+
+
+<script type="application/javascript">
+    const connectElement = document.getElementById('connect');
+
+    const ipAddressElement = document.getElementById("ipAddress");
+    const portElement = document.getElementById("port");
+    const passwordElement = document.getElementById("password");
+
+    function getPort() {
+        let port = 6053;
+        try {
+            port = parseInt(portElement.value);
+        } catch (error) {
+            // Well that didn't work, let assume standard port 6053
+            port = 6053;
+        }
+        
+        return port;
+    }
+    
+    function checkIfValidIpAddress(input) {
+        // Regular expression to check if input is a valide ip address
+        return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(input);
+    }
+
+    function checkIfValidPortnumber(input) {
+        // Regular expression to check if input is a valid port number
+        return /^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$/.test(input);
+    }
+
+    function checkConnectButton() {
+        let ipAddress = ipAddressElement.value;
+        let port = getPort();
+
+        // check ipAddress is not empty
+        if(!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPortnumber(port))
+            disableConnectButton();
+        else
+            enableConnectButton();
+    }
+
+    function enableConnectButton() {
+        if (connectElement.classList.contains("is-disabled"))
+            connectElement.classList.remove("is-disabled");
+        connectElement.disabled = false;
+    }
+
+    function disableConnectButton() {
+        if (!connectElement.classList.contains("is-disabled"))
+            connectElement.classList.add("is-disabled");
+        connectElement.disabled = true;
+    }
+
+    function connect(event) {
+        Homey.showLoadingOverlay();
+
+        // Don't actually submit the form just yet
+        event.preventDefault();
+
+        Homey.emit('connect-new-device', {
+            'ipAddress': ipAddressElement.value,
+            'port': getPort(),
+            'password': passwordElement.value
+        });
+    }
+
+    // Disable connect button by default
+    disableConnectButton();
+    connectElement.onsubmit = connect;
+
+    ipAddressElement.on('change', () => checkConnectButton());
+    portElement.on('change', () => checkConnectButton());
+
+    Homey.on('new-device-connected', function () {
+        Homey.hideLoadingOverlay();
+        Homey.showView('configuration');
+    });
+
+    Homey.on('new-device-failed', function (message) {
+        Homey.hideLoadingOverlay();
+        Homey.alert(message, 'error');
+    });
+</script>

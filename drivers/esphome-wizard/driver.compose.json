@@ -1,11 +1,12 @@
 {
   "name": {
-    "en": "ESPHome device"
+    "en": "ESPHome Wizard (beta)"
   },
   "class": "other",
   "capabilities": [
     "onoff",
     "windowcoverings_set",
+    "windowcoverings_tilt",
     "button",
     "esphome_number",
     "esphome_text",
@@ -37,15 +38,21 @@
     "batteries": ["OTHER"]
   },
   "images": {
-    "small": "drivers/esphome-device/assets/images/small.png",
-    "large": "drivers/esphome-device/assets/images/large.png"
+    "small": "drivers/esphome-wizard/assets/images/small.png",
+    "large": "drivers/esphome-wizard/assets/images/large.png"
   },
   "pair": [
     {
-      "id": "credentials"
+      "id": "welcome"
     },
     {
-      "id": "capabilities"
+      "id": "new_device"
+    },
+    {
+      "id": "update_device"
+    },
+    {
+      "id": "configuration"
     }
   ]
 }

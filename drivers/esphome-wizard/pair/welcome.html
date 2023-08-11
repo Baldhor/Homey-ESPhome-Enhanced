@@ -1,0 +1,22 @@
+<script type="application/javascript">
+    Homey.setTitle(Homey.__('wizard.welcome.title') );
+    Homey.setNavigationClose();
+
+    document.getElementById('new_device').onsubmit = newDevice;
+    document.getElementById('update_device').onsubmit = updateDevice;
+
+    function newDevice(event) {
+        Homey.showLoadingOverlay();
+        Homey.showView('new_device');
+    }
+
+    function updateDevice(event) {
+        Homey.showLoadingOverlay();
+        Homey.showView('update_device');
+    }
+</script>
+<header class="homey-header" data-i18n="wizard.welcome.description"></header>
+<form class="homey-form">
+    <button id="new_device" class="homey-button-primary-full" data-i18n="wizard.welcome.new"></button>
+    <button id="update_device" class="homey-button-primary-full" data-i18n="wizard.welcome.update"></button>
+</form>
