@@ -1,0 +1,81 @@
+<!--
+    This view is only used to store ongoing configuration.
+    To store / retrive the configuration, we use hidden functions from the Homey framework ...
+    They are not in the SDK documentation ...
+
+    Homey.getViewStore() : get current view store and return it
+    Homey.getViewStore(viewId) : get view store and return it
+    Homey.getViewStore((store) => function) : get current view store and call the function
+    Homey.getViewStore(viewId, (store) => function) : get view store and call the function
+    
+    Homey.setViewStore(newStore) : set current view store and return it
+    Homey.setViewStore(viewId, newStore) : set view store and return it
+    Homey.setViewStore(newStore, (store) => function) : set current view store and call the function
+    Homey.setViewStore(viewId, newStore, (store) => function) : set view store and call the function
+    
+    Homey.getViewStoreValue(name) : get current view store value and return it
+    Homey.getViewStoreValue(viewId, name) : get view store value and return it
+    Homey.getViewStoreValue(name, (value) => function) : get current view store value and call the function
+    Homey.getViewStoreValue(viewId, name, (value) => function) : get view store value and call the function
+
+    Homey.setViewStoreValue(name, value) : set current view store value and return it
+    Homey.setViewStoreValue(viewId, name, value) : set view store value and return it
+    Homey.setViewStoreValue(name, value, (value) => function) : set current view store value and call the function
+    Homey.setViewStoreValue(viewId, name, value, (value) => function) : set view store value and call the function
+-->
+
+<!--
+    Expected store content:
+    - mode : new_physical_device, existing_physical_device
+    - physical_device_id : identifier of the  physical device
+    - last_virtual_device_id : Id of the last virtual device created, if null must be initialized to 1
+    - initial_configuration : Initial configuration retrieved from the Driver, it can be usefull to keep it for debug purpose
+    - ongoing_configuration : Ongoing configuration, initialized from initial_configuration
+-->
+
+<!--
+    Structure of configuration
+
+    {
+        physical_device : {
+            id : string,
+            ipAddress : string,
+            port : string
+        },
+        virtual_devices : [
+            {
+                homey_id : string,
+                name : string,
+                nameMustBeChanged : boolean (false by default, true if new virtual device),
+                state : string (one of: unmodfied, added, modified, deleted. unmodified by default, added if new virtual device)
+                capabilities : [
+                    {
+                        name : string,
+                        native_capability_id : string (format: <entity_id>:<attribut> => refer to a physical_device native capability),
+                        state : string (one of: unmodified, added, modified, deleted. unmodified by default),
+                        options : [
+                            name -> value ???
+                        ]
+                    }
+                ]
+            }
+        ],
+        native_capabilities : [
+            {
+                id : string (format: <entity_id>:<attribut>)
+                entity_id : string,
+                type : string,
+                attribut : string,
+                state : string (one of: unbind, bound),
+                current_value : string,
+                configs : [
+                    name : string => value : string
+                ],
+                constraints: [
+                    name : string => value : string
+                ]
+            }
+        ]
+    }
+-->
+

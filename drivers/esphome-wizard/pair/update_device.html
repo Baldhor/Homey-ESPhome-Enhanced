@@ -5,6 +5,8 @@
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.update_device.title'));
     Homey.setNavigationClose();
+
+    Homey.showLoadingOverlay();
 </script>
 <header class="homey-header" data-i18n="wizard.update_device.description"></header>
 <label class="homey-form-label" data-i18n="wizard.update_device.info"></label>
@@ -31,9 +33,6 @@
 
 <button id="select" class="homey-button-primary-full" data-i18n="wizard.update_device.select"></button>
 <script type="application/javascript">
-    // We need to init the view
-    Homey.showLoadingOverlay();
-
     const noneElement = document.getElementById('none');
     const listElement = document.getElementById('existing_devices');
     const selectElement = document.getElementById('select');
@@ -106,16 +105,11 @@
         // Don't actually submit the form just yet
         event.preventDefault();
 
-        Homey.emit('select-device', {
-            'id': document.querySelector('input[name="radio-buttons"]:checked').value
+        Homey.setViewStoreValue('store', 'physical_device_id', document.querySelector('input[name="radio-buttons"]:checked').value).then(() => {
+            Homey.hideLoadingOverlay();
+            Homey.showView('conf_main');
         });
     }
+    
     selectElement.onclick = select;
-
-    Homey.on('selected-device', function () {
-        console.log('Even received: selected-device');
-
-        Homey.hideLoadingOverlay();
-        Homey.showView('conf_main');
-    });
 </script>

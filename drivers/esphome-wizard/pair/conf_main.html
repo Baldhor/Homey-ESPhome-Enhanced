@@ -9,27 +9,366 @@
 
     This view also has a "confirm" button which will apply definitively all the modifications.
 -->
+<style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+</style>
 
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.conf_main.title'));
     Homey.setNavigationClose();
+    
+    Homey.showLoadingOverlay();
 </script>
-<label class="homey-form-label" data-i18n="wizard.conf_main.notimplemented"></label>
+<label class="homey-form-label" data-i18n="wizard.conf_main.description"></label>
 
-<button id="govirtualdevice" class="homey-button-primary-full" data-i18n="wizard.conf_main.govirtualdevice"></button>
-<button id="gosettings" class="homey-button-primary-full" data-i18n="wizard.conf_main.gosettings"></button>
+<!--
+    physical_device
+-->
+<header class="homey-header">
+    <p class="homey-subtitle" data-i18n="wizard.conf_main.physical_device.title">
+      <!-- This field will also be translated -->
+    </p>
+</header>
+<div class="homey-form-group">
+    <!-- Seems useless, it is built from: <ipAddress> + ':' + <port>
+    <div class="homey-form-group">
+        <label class="homey-form-label" for="physical_device.id" data-i18n="wizard.conf_main.physical_device.id"></label>
+        <input class="homey-form-input" id="physical_device.id" type="text" value="" readonly/>
+    </div>
+    -->
+    <div class="homey-form-group">
+        <label class="homey-form-label" for="physical_device.ipAddress" data-i18n="wizard.conf_main.physical_device.ipAddress"></label>
+        <input class="homey-form-input" id="physical_device.ipAddress" type="text" value="" readonly/>
+    </div>
+    <div class="homey-form-group">
+        <label class="homey-form-label" for="physical_device.port" data-i18n="wizard.conf_main.physical_device.port"></label>
+        <input class="homey-form-input" id="physical_device.port" type="text" value="" readonly/>
+    </div>
+</div>
+
+<!--
+    Virtual device list
+
+    Structure expected:
+    - Header line
+    - Virtual device 'first line', include first native capability
+    - Virtual device 'more lines', for other native capability (doesn't repeat the name of the virtual device)
+-->
+<header class="homey-header">
+    <p class="homey-subtitle" data-i18n="wizard.conf_main.virtual_devices.title">
+      <!-- This field will also be translated -->
+    </p>
+</header>
+<div class="homey-form-group">
+    <label id="virtual_devices.none" class="homey-form-label" data-i18n="wizard.conf_main.virtual_devices.none" style="color:red;"></label>
+    <table id="virtual_devices">
+        <tr>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.virtual_device.name"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.virtual_device.stateLabel"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.name"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.attribut"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.homey_capability.name"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.homey_capability.options"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.virtual_devices.actions.title"></legend>
+            </th>
+        </tr>
+    </table>
+    <button id="create_virtual_device" class="homey-button-primary-full" data-i18n="wizard.conf_main.virtual_devices.create" onclick="create_virtual_device()"></button>
+</div>
+
+<!--
+    Unbind native capabilities
+-->
+<header class="homey-header">
+    <p class="homey-subtitle" data-i18n="wizard.conf_main.unbind_native_capabilities.title">
+      <!-- This field will also be translated -->
+    </p>
+</header>
+<div class="homey-form-group">
+    <label id="unbind_native_capabilities.info" class="homey-form-label" data-i18n="wizard.conf_main.unbind_native_capabilities.info"></label>
+    <label id="unbind_native_capabilities.none" class="homey-form-label" data-i18n="wizard.conf_main.unbind_native_capabilities.none"></label>
+    <table id="unbind_native_capabilities">
+        <tr>
+            <!-- Seems useless, it is built from: <entityId> + ':' + <attribut>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.entity_id"></legend>
+            </th>
+            -->
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.name"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.type"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.attribut"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.value"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.configs"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.constraints"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.unbind_native_capabilities.action.label"></legend>
+            </th>
+        </tr>
+    </table>
+</div>
+<br>
+
+<!--
+    Confirm button
+-->
+<button id="confirm" class="homey-button-primary-full" data-i18n="wizard.conf_main.confirm" onclick="confirm()"></button>
+
 
 <script type="application/javascript">
-    const govirtualdeviceElement = document.getElementById('govirtualdevice');
-    const gosettingsElement = document.getElementById('gosettings');
+    let ongoing_configuration = null;
 
-    // Add submit  functions
-    function govirtualdevice(event) {
-        Homey.showView('conf_virtualdevice');
+    /**
+     * Emit event to Homey to retrieve the initial configuration from the Driver
+     */
+    function retrieve_initial_configuration() {
+        console.log('Retrieve initial configuration');
+
+        Homey.getViewStore('store').then((store) => {
+            console.log('Store:', store);
+
+            let mode = store['mode'];
+            let physical_device_id = store['physical_device_id'];
+
+            console.log('Retrieved mode from store:', mode);
+            console.log('Retrieved physical_device_id from store:', physical_device_id);
+
+            Homey.emit("get-initial-configuration", {'mode' : mode, 'physical_device_id' : physical_device_id}).then(function (result) {
+                console.log('Initial configuration:', result);
+                Homey.setViewStoreValue('store', 'initial_configuration', result);
+
+                // Copy it as the ongoing configuration
+                // FIXME: Should we make a deep copy ???
+                Homey.setViewStoreValue('store', 'ongoing_configuration', result);
+
+                ongoing_configuration = result;
+
+                // Finished, init of the view
+                init_view();
+            });
+
+        });
     }
-    govirtualdeviceElement.onsubmit = goback;
-    function gosettings(event) {
-        Homey.showView('conf_settings');
+
+    function init_view() {
+        init_physical_device();
+
+        init_virtual_devices();
+
+        init_unbind_native_capabilities();
+
+        // Finished init of the view
+        Homey.hideLoadingOverlay();
     }
-    gosettingsElement.onsubmit = goback;
+
+    function init_physical_device() {
+        //document.getElementById('physical_device.id').value = ongoing_configuration.physical_device.id;
+        document.getElementById('physical_device.ipAddress').value = ongoing_configuration.physical_device.ipAddress;
+        document.getElementById('physical_device.port').value = ongoing_configuration.physical_device.port;
+    }
+
+    function init_virtual_devices() {
+        let listElement = document.getElementById('virtual_devices');
+        let count = 0;
+        ongoing_configuration.virtual_devices.forEach(element => {
+            ++count;
+
+            // TODO: To be completed
+        });
+
+        if (count === 0) {
+            document.getElementById('virtual_devices').remove();
+        } else {
+            document.getElementById('virtual_devices.none').remove();
+        }
+    }
+
+    function init_unbind_native_capabilities() {
+        let listElement = document.getElementById('unbind_native_capabilities');
+        let count = 0;
+        ongoing_configuration.native_capabilities.forEach(native_capability => {
+            if (native_capability.state === 'unbind') {
+                ++count;
+
+                let row = listElement.insertRow(-1);
+                let cellIndex= 0; // Easier to add/remove cells if need in the future
+                let cellEntityName = row.insertCell(cellIndex++);
+                let cellType = row.insertCell(cellIndex++);
+                let cellAttribut = row.insertCell(cellIndex++);
+                let cellValue = row.insertCell(cellIndex++);
+                let cellConfigs = row.insertCell(cellIndex++);
+                let cellConstraints = row.insertCell(cellIndex++);
+                let cellAction = row.insertCell(cellIndex++);
+
+                cellEntityName.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.entity_name + '</label>';
+                cellType.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.type + '</label>';
+                cellAttribut.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.attribut + '</label>';
+                cellValue.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.value + '</label>';
+                cellConfigs.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(native_capability.configs, null, 2) + '</pre></label>'; // TODO: Need some formatting
+                cellConstraints.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(native_capability.constraints, null, 2) + '</pre></label>'; //TODO: Need some formatting
+
+                let tmpAction = '<label class="homey-form-label" style="margin-top:0px !important;">' + Homey.__('wizard.conf_main.unbind_native_capabilities.action.no_virtual_device') + '</label>';
+                if (ongoing_configuration.virtual_devices.length > 0) {
+                    tmpAction = '<select class="homey-form-select" onchange="assignNativeCapability()">';
+                    tmpAction += '<option value="default"><span data-i18n="wizard.conf_main.unbind_native_capabilities.action.no_virtual_device_selected"/></option>';
+                    ongoing_configuration.virtual_devices.foreach(element => {
+                        tmpAction += '<option value="' + element.homey_id + '">' + element.name + '</option>';
+                    });
+                    tmpAction+= '</select>';
+                }
+                cellAction.innerHTML = tmpAction;
+            }
+        });
+
+        if (count === 0) {
+            document.getElementById('unbind_native_capabilities.info').remove();
+            document.getElementById('unbind_native_capabilities').remove();
+        } else {
+            document.getElementById('unbind_native_capabilities.none').remove();
+        }
+    }
+
+    function assign_native_capability(event) {
+        console.log('assign_native_capability:', event);
+
+        // TODO: To be implemented
+        // Exclude processing of first choice in the list => no_virtual_device_selected
+        // Change view to itself after processing to refresh (just a little trick)
+    }
+
+    /**
+     * This function add a virtual device
+     * 
+     * By default:
+     * - Its name is generated : new1, new2, ...
+     * - it doesn't have any native capability, the user need to add at least one
+     * 
+     * /!\ Name must be changed and at least one native capaibility must be added, otherwise the confirm button is disabled
+     */
+    function create_virtual_device() {
+        function get_next_virtual_device_id() {
+            // Get nextValue from the store
+            let nextId = Homey.getStoreValue('store', 'last_virtual_device_id');
+            if (!nextId){
+                nextId = 1;
+            } else {
+                ++nextId;
+            }
+            // Store new value
+            Homey.setStoreValue('store', 'last_virtual_device_id', nextId);
+        }
+
+        nextId = get_next_virtual_device_id();
+
+        // TODO: to be completed
+    }
+
+    /**
+     * Hide a HTML element and all its sub element
+     * FIXME: Should be reccursive?
+     */
+    function hideAll(element) {
+        element.hidden = true;
+        Array.from(element.children).forEach(function(subElement){
+            subElement.hidden = true;
+        });
+    }
+
+    /**
+     * Enable a button
+     */
+    function enableButton(button) {
+        if (button.classList.contains("is-disabled"))
+            button.classList.remove("is-disabled");
+        button.disabled = false;
+    }
+
+    /**
+     * Disable a button
+     */
+    function disableButton(button) {
+        if (!button.classList.contains("is-disabled"))
+            button.classList.add("is-disabled");
+        button.disabled = true;
+    }
+
+    /**
+     * Check if the confirm button should be available
+     */
+    function checkConfirm() {
+        let enable = false;
+
+        // TODO: to be completed
+
+        enable ? enableButton(document.getElementById('confirm')) : disableButton(document.getElementById('confirm'));
+    }
+
+    /**
+     * Apply the ongoing configuration
+     * 
+     * /!\ Cannot go back ...
+     */
+    function confirm() {
+
+    }
+
+    /**
+     * ***************************
+     * ** MAIN CODE
+     * ***************************
+     */
+    // Check if initial configuration is already in the store view
+    // If not, emit get-initial-configuration and store the initial configuration in the store view (also stored as ongoing configuration)
+    // We can then init the view based on ongoing configuration from the store
+    let initial_configuration = null;
+    Homey.getViewStoreValue('store', 'ongoing_configuration').then(function (result) {
+        console.log('Ongoing configuration from store:', result);
+
+        if (!result) {
+            retrieve_initial_configuration();
+        } else {
+            ongoing_configuration = result;
+
+            // Finished, init of the view
+            init_view();
+        }
+    });
 </script>

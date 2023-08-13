@@ -58,28 +58,82 @@
         "conf_main": {
             "title": "There goes the magic",
             "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
-            "settings_title": "Your physical device",
-            "physical_device_id": "Id",
-            "physical_device_ipAddress": "IP address",
-            "physical_device_port": "Port",
-            "virtual_device_title": "Virtual device(s)",
-            "virtual_device_info": "For each native capability you added to a virtual device, you can choose some options",
-            "virtual_device_name": "Name",
-            "Virtual_device_capability": "Homey capability",
-            "advanced_settings_title": "Native capibility bound to advanced settings",
-            "advanced_settings_info": "Those native capabilities can be accessed from the advanced settings screen of any virtual device",
-            "advanced_settings_info2": "For each native capability you added to advanced settings, you can choose some options",
-            "unbind_title": "Native capability unbind",
-            "unbind_info": "It's ok to leave some behind",
-            "entity_id": "Entity ID",
-            "native_capability_name": "Name",
-            "native_capability_value": "Current value",
-            "option.min_value": "Min value",
-            "option.max_value": "Max value",
-            "option.step": "Step",
-            "option.mode": "Mode",
-            "option.mode.box": "Box",
-            "option.mode.slidder": "Slidder"
+            "physical_device": {
+                "title": "Characteristics of the physical device",
+                "id": "ID",
+                "ipAddress": "IP address",
+                "port": "Port"
+            },
+            "virtual_devices": {
+                "title": "List of virtual devices",
+                "none": "None yet, create your first one!",
+                "create": "Create",
+                "actions": {
+                    "title": "Available action(s)",
+                    "modify": "Modify",
+                    "delete": "Delete"
+                },
+                "delete_warning": "Deletetion of a virtual device can break your flows! Are you sure?"
+            },
+            "settings": {
+                "title": "List of settings",
+                "info": "Seetings are shared for all the virtual device",
+                "none": "None yet, add your first one!",
+                "go": "Modify"
+            },
+            "unbind_native_capabilities": {
+                "title": "List of unbind native capabilities",
+                "info": "It's ok to leave some behind",
+                "none": "All native capabilities have been assigned!",
+                "action": {
+                    "label": "Choose a virtual device to assign",
+                    "no_virtual_device_selected": "Select a virtual device",
+                    "no_virtual_device": "Create a virtual device first"
+                }
+            },
+            "confirm": "Confirm",
+            "virtual_device": {
+                "name": "Name",
+                "stateLabel": "State",
+                "state" : {
+                    "unmodified" : "Unmodified",
+                    "added": "New",
+                    "modified": "Modified",
+                    "deleted": "Deleted"
+                }
+            },
+            "native_capability": {
+                "entity_id": "Entity ID",
+                "name": "Entity name",
+                "type": "Entity type",
+                "attribut": "Attribut(s)",
+                "value": "Current value",
+                "configs": "Config(s)",
+                "constraints": "Constraint(s)",
+                "state" : {
+                    "added": "Added",
+                    "modified": "Modified",
+                    "deleted": "Deleted"
+                }
+            },
+            "homey_capability": {
+                "title": "Homey capability",
+                "name": "Capability",
+                "options": "Option(s)"
+            },
+            "config_label": {
+                "precision": "Precision",
+                "unit" : "Unit"
+            },
+            "constraint_label": {
+                "min_value": "Min",
+                "max_value": "Max",
+                "step": "Step",
+                "mode": {
+                    "box": "Box",
+                    "slidder": "Slidder"
+                }
+            }
         },
         "conf_virtual_device": {
             "title": "Configure your virtual device",

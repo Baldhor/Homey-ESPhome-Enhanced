@@ -306,6 +306,9 @@
         },
         {
           "id": "conf_settings"
+        },
+        {
+          "id": "store"
         }
       ],
       "id": "esphome-wizard",

@@ -59,6 +59,9 @@
     },
     {
       "id": "conf_settings"
+    },
+    {
+      "id": "store"
     }
   ]
 }

@@ -4,21 +4,40 @@ const EventEmitter = require('events');
 const PhysicalDevice = require('./physical-device');
 const Utils = require('./utils');
 
+// Singleton
+// Avoid 2 circular references:
+//    - Driver->Manager->Driver->...
+//    - Driver->Manager->PhysicalDevice->Driver->...
 class PhysicalDeviceManager extends EventEmitter {
     driver = null;
     physicalDevices = null;
 
+    instance = new PhysicalDeviceManager();
+
     /**
-     * Create a new ESPhome native api client and _start_ connection process
      * 
-     * @param {Driver} driver Handle to the Driver for log context
+     * @returns Singleton instance
      */
-    constructor(driver) {
+    static getInstance() {
+        // Execute outside or inside the instance
+        if (this.instance == null) {
+            return this;
+        } else {
+            return this.instance;
+        }
+    }
+
+    /**
+     * Init the factory
+     * 
+     * @param {Driver} driver Handle to the Driver for log context and virtual devices handling
+     */
+    static init(driver) {
         Utils.assert(driver != null && typeof driver === 'object' && driver.constructor.name === 'Driver', 'Driver cannot be null or of wrong type');
 
-        super();
-        this.driver = driver;
-        this.physicalDevices = new Map();
+        let instance = this.getInstance();
+        instance.driver = driver;
+        instance.physicalDevices = new Map();
     }
 
     /**
@@ -31,7 +50,7 @@ class PhysicalDeviceManager extends EventEmitter {
      * @param {*} password (Optionnal) password
      * @returns PhysicalDevice
      */
-    create(reconnect, ipAddress, port, password) {
+    static create(reconnect, ipAddress, port, password) {
         this.log('New Physical Device to create:', ipAddress, port);
 
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
@@ -40,27 +59,38 @@ class PhysicalDeviceManager extends EventEmitter {
         let id = PhysicalDevice.buildPhysicalDeviceId(ipAddress, port);
 
         // If the device already exist, return it
-        if (this.physicalDevices.has(id)) {
+        let instance = this.getInstance();
+        if (instance.physicalDevices.has(id)) {
             this.log('Physical Device already exist');
-            return this.physicalDevices[id];
+            return instance.physicalDevices.get(id);
         } else {
             this.log("Physical Device doesn't exist, create a new one");
-            return new PhysicalDevice(this.driver, reconnect, ipAddress, port, password);
+            instance.physicalDevices.set(id, new PhysicalDevice(instance.driver, reconnect, ipAddress, port, password));
+            return instance.physicalDevices.get(id);
         }
     }
 
     /**
      * 
-     * @param {*} ipAddress 
-     * @param {*} port 
+     * @param {*} id
      * @returns null || PhysicalDevice
      */
-    get(ipAddress, port) {
+    static getById(id) {
+        return this.getInstance().physicalDevices.get(id);
+    }
+
+    /**
+     * 
+     * @param {*} ipAddress
+     * @param {*} port
+     * @returns null || PhysicalDevice
+     */
+    static get(ipAddress, port) {
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
         Utils.assert(Utils.checkIfValidPortnumber(port), 'Wrong format of port:', port)
 
         let id = PhysicalDevice.buildPhysicalDeviceId(ipAddress, port);
-        return this.physicalDevices[id];
+        return this.getInstance().physicalDevices.get(id);
     }
 
     /**
@@ -72,11 +102,11 @@ class PhysicalDeviceManager extends EventEmitter {
      * @param {*} virtualDeviceDeleted The virtual device being deleted
      * @param {*} physicalDevice The physical device currently used by the virtual device
      */
-    checkDelete(virtualDeviceDeleted, physicalDevice) {
-        this.log('Checking if still usefull:', physicalDevice);
+    static checkDelete(virtualDeviceDeleted, physicalDevice) {
+        this.log('Checking if still usefull:', physicalDevice.id);
         const result = false;
-        this.driver.getDevices().forEach(device => {
-            if (device !== virtualDeviceDeleted && device.physicalDevice ===  physicalDevice) {
+        this.getInstance().driver.getDevices().forEach(device => {
+            if (device !== virtualDeviceDeleted && device.physicalDevice === physicalDevice) {
                 result = true;
                 return; // Still usefull
             }
@@ -84,7 +114,7 @@ class PhysicalDeviceManager extends EventEmitter {
 
         if (!result) {
             this.log('Physical device became useless');
-            this._delete(physicalDevice);
+            PhysicalDeviceManager._delete(physicalDevice);
         } else
             this.log('Physical device is usefull');
     }
@@ -96,8 +126,10 @@ class PhysicalDeviceManager extends EventEmitter {
      * 
      * @param {*} physicalDevice The physical device to disconnect/destroy
      */
-    _delete(physicalDevice) {
-        this.physicalDevices.delete(physicalDevice.id);
+    static _delete(physicalDevice) {
+        this.log('Delete a physical device:', physicalDevice.id);
+        this.getInstance().physicalDevices.delete(physicalDevice.id);
+        physicalDevice.removeAllListeners();
         physicalDevice.client.disconnect();
     }
 
@@ -115,7 +147,7 @@ class PhysicalDeviceManager extends EventEmitter {
      * @param {*} ipAddress The new IP address
      * @param {*} port The new port
      */
-    changeIpAdress(physicalDevice, ipAddress, port) {
+    static changeIpAdress(physicalDevice, ipAddress, port) {
         // TODO: to be implemented
     }
 
@@ -129,12 +161,12 @@ class PhysicalDeviceManager extends EventEmitter {
      * @param {*} physicalDevice 
      * @param {*} password 
      */
-    changePassword(physicalDevice, password) {
+    static changePassword(physicalDevice, password) {
         // TODO: to be implemented
     }
 
-    log(...args) {
-        this.driver.log('[PhysicalDeviceFactory]', ...args);
+    static log(...args) {
+        this.getInstance().driver.log('[PhysicalDeviceManager]', ...args);
     }
 }
 

@@ -28,6 +28,9 @@ const NATIVE_API_RECONNECTION_DELAY = 3000;
 const ATTRIBUTS_TO_IGNORE_PER_TYPE = Object.freeze({
     'Cover': ['legacyState'] // Deprecated
 });
+const ATTRIBUTS_TO_IGNORE = Object.freeze([
+    'missingState'
+]);
 
 class Client extends EventEmitter {
     physicalDevice = null;
@@ -125,6 +128,23 @@ class Client extends EventEmitter {
             .on('newEntity', (entity) => this.newEntityListener(entity));
     }
 
+    /**
+     * deviceInfo : {
+     *     usesPassword: false,
+     *     name: 'volet_1er_cuisine',
+     *     macAddress: '4C:EB:D6:D9:36:08',
+     *     esphomeVersion: '2023.7.0-dev',
+     *     compilationTime: 'Aug  7 2023, 20:29:27',
+     *     model: 'esp8285',
+     *     hasDeepSleep: false,
+     *     projectName: 'baldhor.athom_sw03_time_based_cover',
+     *     projectVersion: '1.0.0',
+     *     webserverPort: 80,
+     *     bluetoothProxyVersion: 0,
+     *     manufacturer: 'Espressif',
+     *     friendlyName: 'Volet 1er Cuisine'
+     * }
+     */
     initializedListener() {
         this.log('Connected:', this.nativeApiClient.deviceInfo);
 
@@ -152,7 +172,8 @@ class Client extends EventEmitter {
 
 
     newEntityListener(entity) {
-        this.log('Received a newentity:', entity);
+        this.log('Received a newentity');
+
         this.startRemoteEntityListener(entity.id);
     }
 
@@ -189,17 +210,18 @@ class Client extends EventEmitter {
         // List of attributs to ignore
         let attributsToIgnore = ATTRIBUTS_TO_IGNORE_PER_TYPE[entityType];
         attributsToIgnore = attributsToIgnore ? attributsToIgnore : [];
+        attributsToIgnore = [].concat(attributsToIgnore, ATTRIBUTS_TO_IGNORE);
 
         // Emit all state attibuts separatly
-        Object.keys(state).forEach((element) => {
-            if (element === 'key')
+        Object.keys(state).forEach((attribut) => {
+            if (attribut === 'key')
                 return;
 
-            if (attributsToIgnore.includes(element))
+            if (attributsToIgnore.includes(attribut))
                 return;
 
-            this.log('Emit event:', 'stateChanged', entityId, 'state.' + element, state[element]);
-            this.emit('stateChanged', entityId, 'state.' + element, state[element]);
+            this.log('Emit event:', 'stateChanged', entityId, attribut, state[attribut]);
+            this.emit('stateChanged', entityId, attribut, state[attribut]);
         });
     }
 
@@ -207,11 +229,11 @@ class Client extends EventEmitter {
      * Send a command to the remote device
      * 
      * @param {*} entityId Identifier of the entity
-     * @param {*} native_capability native_capability in the format: state.<remote_attribut>
+     * @param {*} attribut Attribut to modify
      * @param {*} newValue The new value to set
      */
-    sendCommand(entityId, native_capability, newValue) {
-        this.log('Sending command to remote for entity', entityId, ':', native_capability, '==', newValue);
+    sendCommand(entityId, attribut, newValue) {
+        this.log('Sending command to remote for entity', entityId, 'and attribut', attribut, '==>', newValue);
 
         // Retrieve entity type
         let entity = this.client.nativeApiClient.entities[entityId];
@@ -220,11 +242,10 @@ class Client extends EventEmitter {
 
         switch (entityType) {
             case 'Cover':
-                if (native_capability.startsWith('position.'))
+                if (attribut === 'position')
                     this.nativeApiClient.connection.coverCommandService({ key: entityId, position: newValue });
-                else if (native_capability.startsWith('tilt.'))
+                else if (attribut === 'tilt')
                     this.nativeApiClient.connection.coverCommandService({ key: entityId, tilt: newValue });
-
                 break;
 
             case 'Switch':
@@ -241,9 +262,10 @@ class Client extends EventEmitter {
 
             default:
                 this.log('Unsopported entityType:', entityType);
+                return;
         }
 
-        this.log('Command sent to remote for entity', entityId, ':', native_capability, '==', newValue);
+        this.log('Command sent to remote for entity', entityId, 'and attribut', attribut, '==>', newValue);
     }
 
     /**
@@ -287,8 +309,6 @@ class Client extends EventEmitter {
 
         this.expectConnected = false;
         this.nativeApiClient.disconnect();
-
-        this.log('Disconnected');
     }
 }
 

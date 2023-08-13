@@ -164,8 +164,8 @@ number:
             id(cover1).set_open_duration(x * 1000);
     entity_category: config
 
-  - id: close_duration
-    platform: template
+  - platform: template
+    id: close_duration
     name: "Close duration in seconds"
     disabled_by_default: true
     optimistic: true

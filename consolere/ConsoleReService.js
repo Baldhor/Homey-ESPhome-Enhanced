@@ -235,17 +235,6 @@ class ConsoleReService {
             return;
         }
 
-        // Filtering out connection attributs of object to avoid callstack overflow
-        // Yes, it's very very dirty, but the socket.io-parser doesn't handle that much :)
-        let i = 0;
-        let len = args.length;
-
-        for( ; i < len; i += 1 ){
-            if (typeof args[i] === 'object' && args[i].connection) {
-                args[i].connection = 'connection filtered to avoid stack overflow';
-            }
-        }
-
         instance.sendLog(...args);
     }
 
@@ -309,7 +298,11 @@ class ConsoleReService {
                         }
                     });
                 } catch (e) {
-                    instance.internalLog('ConsoleRe emit error:', e);
+                    if (e instanceof RangeError) {
+                        instance.internalLog('ConsoleRe emit error, probably because the log include a circular reference:', e);
+                    } else {
+                        instance.internalLog('ConsoleRe emit error:', e);
+                    }
                 }
             });
         })();

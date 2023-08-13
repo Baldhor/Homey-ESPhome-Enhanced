@@ -8,15 +8,23 @@
     Homey.setTitle(Homey.__('wizard.welcome.title') );
     Homey.setNavigationClose();
 </script>
-<header class="homey-header" data-i18n="wizard.welcome.description"></header>
-<button id="new_device" class="homey-button-primary-full" data-i18n="wizard.welcome.new"></button>
-<button id="update_device" class="homey-button-primary-full" data-i18n="wizard.welcome.update"></button>
+<header class="homey-header">
+    <p class="homey-subtitle" data-i18n="wizard.welcome.description">
+      <!-- This field will also be translated -->
+    </p>
+</header>
+<div class="homey-form-group">
+    <button id="new_device" class="homey-button-primary-full" data-i18n="wizard.welcome.new"></button>
+    <button id="update_device" class="homey-button-primary-full" data-i18n="wizard.welcome.update"></button>
+</div>
 <script>
     function newDevice(event) {
+        Homey.setViewStoreValue('store', 'mode', 'new_physical_device');
         Homey.showView('new_device');
     }
 
     function updateDevice(event) {
+        Homey.setViewStoreValue('store', 'mode', 'existing_physical_device');
         Homey.showView('update_device');
     }
 
