@@ -15,17 +15,25 @@
 </header>
 <div class="homey-form-group">
     <button id="new_device" class="homey-button-primary-full" data-i18n="wizard.welcome.new"></button>
+    <br>
     <button id="update_device" class="homey-button-primary-full" data-i18n="wizard.welcome.update"></button>
+</div>
+<br>
+<br>
+<div class="homey-form-group">
+    <label class="homey-form-label" data-i18n="wizard.welcome.beta_disclaimer" style="color:red;"></label>
 </div>
 <script>
     function newDevice(event) {
-        Homey.setViewStoreValue('store', 'mode', 'new_physical_device');
-        Homey.showView('new_device');
+        Homey.setViewStoreValue('store', 'mode', 'new_physical_device').then(() => {
+            Homey.showView('new_device');
+        });
     }
 
     function updateDevice(event) {
-        Homey.setViewStoreValue('store', 'mode', 'existing_physical_device');
-        Homey.showView('update_device');
+        Homey.setViewStoreValue('store', 'mode', 'existing_physical_device').then(() => {
+            Homey.showView('update_device');
+        });
     }
 
     document.getElementById('new_device').onclick = newDevice;

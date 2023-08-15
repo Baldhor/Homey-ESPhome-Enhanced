@@ -3,19 +3,6 @@
 const Homey = require('homey');
 const PhysicalDeviceManager = require('./physical-device-manager');
 
-// Some config of native_capability can/should be ignored
-const CONFIG_TO_IGNORE = Object.freeze([
-    'key', // Duplicate
-    'objectId', // Useless
-    'uniqueId', // Useless
-    'icon', // Useless => maybe later ???
-    'entityCategory', // Useless
-    'supportsPosition', // Useless => refer to position attribut for Cover
-    'supportsTilt', // Useless => refer to tilt attribut for Cover
-    'assumedState', // Useless
-    'supportsStop' // Useless
-]);
-
 class Driver extends Homey.Driver {
     async onInit() {
         PhysicalDeviceManager.init(this);
@@ -23,24 +10,6 @@ class Driver extends Homey.Driver {
         this.log('ESPhomeWizard initialized');
     }
 
-    /**
-     * Filter config object to remove useless stuff
-     */
-    filter_config(config) {
-        let newConfig = {};
-
-        this.log('Config:', config);
-        Object.keys(config).forEach(key => {
-            if (!CONFIG_TO_IGNORE.includes(key)) {
-                newConfig[key] = config[key];
-            }
-        });
-
-        this.log('newConfig:', newConfig);
-
-        return newConfig;
-    }
-    
     async onPair(session) {
         /**
          * Used by new_device view
@@ -92,7 +61,7 @@ class Driver extends Homey.Driver {
 
                     if (session.newPhysicalDevice === physicalDevice) {
                         session.emit('new-device-failed', 'Could not connect to the device, or something went wrong');
-                        PhysicalDeviceManager._delete(physicalDevice);
+                        PhysicalDeviceManager.checkDelete(null, physicalDevice);
                         this.newPhysicalDevice = null;
                     }
                 });
@@ -171,7 +140,8 @@ class Driver extends Homey.Driver {
                 result.physical_device = {
                     'id' : physical_device.id,
                     'ipAddress' : physical_device.client.ipAddress,
-                    'port' :physical_device.client.port
+                    'port' : physical_device.client.port,
+                    'password' : physical_device.client.password
                 }
 
                 // We will build a list of bound_native_capabilities
@@ -186,6 +156,7 @@ class Driver extends Homey.Driver {
                             let capabilitiesConfig = device.getStoreValue('capabilitiesConfig');
 
                             let tmp = {
+                                'id' : device_id,
                                 'homey_id' : device.id,
                                 'name' : device.getName(),
                                 'nameMustBeChanged' : false,

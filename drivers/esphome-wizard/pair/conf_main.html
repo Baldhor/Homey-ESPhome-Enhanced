@@ -11,26 +11,27 @@
 -->
 <style>
     table {
-      font-family: arial, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
     }
-    
-    td, th {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 8px;
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
     }
-    
+
     tr:nth-child(even) {
-      background-color: #dddddd;
+        background-color: #dddddd;
     }
 </style>
 
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.conf_main.title'));
     Homey.setNavigationClose();
-    
+
     Homey.showLoadingOverlay();
 </script>
 <label class="homey-form-label" data-i18n="wizard.conf_main.description"></label>
@@ -38,9 +39,11 @@
 <!--
     physical_device
 -->
+<br>
+<br>
 <header class="homey-header">
     <p class="homey-subtitle" data-i18n="wizard.conf_main.physical_device.title">
-      <!-- This field will also be translated -->
+        <!-- This field will also be translated -->
     </p>
 </header>
 <div class="homey-form-group">
@@ -51,12 +54,14 @@
     </div>
     -->
     <div class="homey-form-group">
-        <label class="homey-form-label" for="physical_device.ipAddress" data-i18n="wizard.conf_main.physical_device.ipAddress"></label>
-        <input class="homey-form-input" id="physical_device.ipAddress" type="text" value="" readonly/>
+        <label class="homey-form-label" for="physical_device.ipAddress"
+            data-i18n="wizard.conf_main.physical_device.ipAddress"></label>
+        <input class="homey-form-input" id="physical_device.ipAddress" type="text" value="" readonly />
     </div>
     <div class="homey-form-group">
-        <label class="homey-form-label" for="physical_device.port" data-i18n="wizard.conf_main.physical_device.port"></label>
-        <input class="homey-form-input" id="physical_device.port" type="text" value="" readonly/>
+        <label class="homey-form-label" for="physical_device.port"
+            data-i18n="wizard.conf_main.physical_device.port"></label>
+        <input class="homey-form-input" id="physical_device.port" type="text" value="" readonly />
     </div>
 </div>
 
@@ -68,14 +73,17 @@
     - Virtual device 'first line', include first native capability
     - Virtual device 'more lines', for other native capability (doesn't repeat the name of the virtual device)
 -->
+<br>
+<br>
 <header class="homey-header">
     <p class="homey-subtitle" data-i18n="wizard.conf_main.virtual_devices.title">
-      <!-- This field will also be translated -->
+        <!-- This field will also be translated -->
     </p>
 </header>
 <div class="homey-form-group">
-    <label id="virtual_devices.none" class="homey-form-label" data-i18n="wizard.conf_main.virtual_devices.none" style="color:red;"></label>
-    <table id="virtual_devices">
+    <label id="virtual_devices.none" class="homey-form-label" data-i18n="wizard.conf_main.virtual_devices.none"
+        style="color:red;"></label>
+    <table id="virtual_devices" style="width:400% !important;">
         <tr>
             <th>
                 <legend class="homey-form-legend" data-i18n="wizard.conf_main.virtual_device.name"></legend>
@@ -84,37 +92,42 @@
                 <legend class="homey-form-legend" data-i18n="wizard.conf_main.virtual_device.stateLabel"></legend>
             </th>
             <th>
-                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.name"></legend>
-            </th>
-            <th>
-                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.attribut"></legend>
-            </th>
-            <th>
                 <legend class="homey-form-legend" data-i18n="wizard.conf_main.homey_capability.name"></legend>
             </th>
             <th>
                 <legend class="homey-form-legend" data-i18n="wizard.conf_main.homey_capability.options"></legend>
             </th>
             <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.name"></legend>
+            </th>
+            <th>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.attribut"></legend>
+            </th>
+            <th>
                 <legend class="homey-form-legend" data-i18n="wizard.conf_main.virtual_devices.actions.title"></legend>
             </th>
         </tr>
     </table>
-    <button id="create_virtual_device" class="homey-button-primary-full" data-i18n="wizard.conf_main.virtual_devices.create" onclick="create_virtual_device()"></button>
+    <button id="create_virtual_device" class="homey-button-primary-full"
+        data-i18n="wizard.conf_main.virtual_devices.create" onclick="create_virtual_device();"></button>
 </div>
 
 <!--
     Unbind native capabilities
 -->
+<br>
+<br>
 <header class="homey-header">
     <p class="homey-subtitle" data-i18n="wizard.conf_main.unbind_native_capabilities.title">
-      <!-- This field will also be translated -->
+        <!-- This field will also be translated -->
     </p>
 </header>
 <div class="homey-form-group">
-    <label id="unbind_native_capabilities.info" class="homey-form-label" data-i18n="wizard.conf_main.unbind_native_capabilities.info"></label>
-    <label id="unbind_native_capabilities.none" class="homey-form-label" data-i18n="wizard.conf_main.unbind_native_capabilities.none"></label>
-    <table id="unbind_native_capabilities">
+    <label id="unbind_native_capabilities.info" class="homey-form-label"
+        data-i18n="wizard.conf_main.unbind_native_capabilities.info"></label>
+    <label id="unbind_native_capabilities.none" class="homey-form-label"
+        data-i18n="wizard.conf_main.unbind_native_capabilities.none"></label>
+    <table id="unbind_native_capabilities" style="width:400% !important;">
         <tr>
             <!-- Seems useless, it is built from: <entityId> + ':' + <attribut>
             <th>
@@ -140,7 +153,8 @@
                 <legend class="homey-form-legend" data-i18n="wizard.conf_main.native_capability.constraints"></legend>
             </th>
             <th>
-                <legend class="homey-form-legend" data-i18n="wizard.conf_main.unbind_native_capabilities.action.label"></legend>
+                <legend class="homey-form-legend" data-i18n="wizard.conf_main.unbind_native_capabilities.action.label">
+                </legend>
             </th>
         </tr>
     </table>
@@ -150,11 +164,19 @@
 <!--
     Confirm button
 -->
-<button id="confirm" class="homey-button-primary-full" data-i18n="wizard.conf_main.confirm" onclick="confirm()"></button>
+<button id="confirm" class="homey-button-primary-full" data-i18n="wizard.conf_main.confirm"
+    onclick="confirm()"></button>
 
 
 <script type="application/javascript">
-    let ongoing_configuration = null;
+    ongoing_configuration = null;
+
+    /**
+     * Some flags to handle confirm button
+     */
+    nb_alert = 0; // Increase everytime we show a red message (alert => blocking)
+    nb_warning = 0; // Increase everytime we show an orange message (warning => not blocking)
+
 
     /**
      * Emit event to Homey to retrieve the initial configuration from the Driver
@@ -171,15 +193,14 @@
             console.log('Retrieved mode from store:', mode);
             console.log('Retrieved physical_device_id from store:', physical_device_id);
 
-            Homey.emit("get-initial-configuration", {'mode' : mode, 'physical_device_id' : physical_device_id}).then(function (result) {
+            Homey.emit("get-initial-configuration", { 'mode': mode, 'physical_device_id': physical_device_id }).then(function (result) {
                 console.log('Initial configuration:', result);
+
+                // We need a deep copy, so the ongoing configuration can evolve and we can compare to the initial configuration when needed
+                ongoing_configuration = JSON.parse(JSON.stringify(result));
+
                 Homey.setViewStoreValue('store', 'initial_configuration', result);
-
-                // Copy it as the ongoing configuration
-                // FIXME: Should we make a deep copy ???
-                Homey.setViewStoreValue('store', 'ongoing_configuration', result);
-
-                ongoing_configuration = result;
+                Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration);
 
                 // Finished, init of the view
                 init_view();
@@ -195,6 +216,8 @@
 
         init_unbind_native_capabilities();
 
+        checkConfirm();
+
         // Finished init of the view
         Homey.hideLoadingOverlay();
     }
@@ -207,17 +230,465 @@
 
     function init_virtual_devices() {
         let listElement = document.getElementById('virtual_devices');
-        let count = 0;
-        ongoing_configuration.virtual_devices.forEach(element => {
-            ++count;
 
-            // TODO: To be completed
-        });
-
-        if (count === 0) {
+        // Any virtual device?
+        if (ongoing_configuration.virtual_devices.length === 0) {
+            // Hide the table, we keep the warning
             document.getElementById('virtual_devices').remove();
+
+            // This count as an alert
+            ++nb_alert;
         } else {
+            // Hide the warning
             document.getElementById('virtual_devices.none').remove();
+
+            // Fill up the table
+            ongoing_configuration.virtual_devices.forEach(virtual_device => {
+                // Calculate the flags (used for special cases)
+                // - no_capability: virtual device doesn't have any capability
+                // - no_active_capability: virtual device has capability, but they are all deleted and none has been added
+                // - at_least_one_deleted_capability : at least one 'existing' capability has been removed, it may breack the user flows!
+                let no_capability = (virtual_device.capabilities.length === 0);
+                let no_active_capability = (virtual_device.capabilities.filter((capability) => capability.state !== 'deleted').length === 0);
+                let at_least_one_deleted_capability = (virtual_device.capabilities.filter((capability) => capability.state === 'deleted').length >= 1);
+
+                // Helper variables
+                let row = null;
+                let cellIndex = 0;
+
+                // Cell variables (in order)
+                let cellName = null;
+                let cellState = null;
+                let cellCapability = null;
+                let cellOptions = null;
+                let cellNativeCapabilityName = null;
+                let cellNativeCapabilityAttribut = null;
+                let cellActions = null;
+
+
+                // ***************
+                // First, we add a virtual device row
+                // ***************
+                { // Just for indent
+                    row = listElement.insertRow(-1);
+                    cellIndex = 0;
+                    cellName = row.insertCell(cellIndex++);
+                    cellState = row.insertCell(cellIndex++);
+                    cellCapability = row.insertCell(cellIndex++);
+                    cellCapability.colSpan = 4; // We do not show any capability info on a virtual device line
+                    cellActions = row.insertCell(cellIndex++);
+
+                    if (virtual_device.homey_id === null) {
+                        // New virtual device, we allow modification of its name
+                        cellName.innerHTML = '<input class="homey-form-input" type="text" value="' + virtual_device.name + '" onchange="virtualDeviceNameChanged(' + "'" + virtual_device.id + "'" + ', this.value);" style="margin-top:0px !important;"/>';
+                    } else {
+                        // Old virtual device, we do not allow modification of its name
+                        cellName.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + virtual_device.name + '</label>';
+                    }
+                    // State of the virtual device, in red if deleted!
+                    cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;' + (virtual_device.state === 'deleted' ? ' color:red;">' : '">') + Homey.__('wizard.conf_main.virtual_device.state.' + virtual_device.state) + '</label>';
+
+                    // Nothing in those columns
+                    cellCapability.innerHTML = '';
+
+                    // Add the actions
+                    cellActions.innerHTML = '';
+                    if (virtual_device.state === 'deleted') {
+                        // Add restore action
+                        cellActions.innerHTML += '<button class="homey-button-primary-full" onclick="restore_virtual_device(' + "'" + virtual_device.id + "'" + ');">' + Homey.__('wizard.conf_main.virtual_devices.actions.restore_virtual_device') + '</button>';
+                    } else if (no_active_capability) {
+                        // Add delete action
+                        cellActions.innerHTML += '<button class="homey-button-primary-full" onclick="delete_virtual_device(' + "'" + virtual_device.id + "'" + ');">' + Homey.__('wizard.conf_main.virtual_devices.actions.delete_virtual_device') + '</button>';
+                    }
+
+                    // Existing virtual device deleted ?
+                    if (virtual_device.state === 'deleted') {
+                        // We add a warning message (in orange)
+                        ++nb_warning;
+
+                        row = listElement.insertRow(-1);
+                        cellIndex = 0;
+                        cellName = row.insertCell(cellIndex++);
+                        cellState = row.insertCell(cellIndex++);
+                        cellState.colSpan = 5; // warning row
+                        cellActions = row.insertCell(cellIndex++);
+                        cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;color:orange;">' + Homey.__('wizard.conf_main.virtual_devices.virtual_device_deleted_warning') + '</label>';
+                    }
+
+                    // Name must be changed?
+                    if (virtual_device.nameMustBeChanged) {
+                        // We add an alert message (in red)
+                        ++nb_alert;
+
+                        row = listElement.insertRow(-1);
+                        cellIndex = 0;
+                        cellName = row.insertCell(cellIndex++);
+                        cellState = row.insertCell(cellIndex++);
+                        cellState.colSpan = 5; // warning row
+                        cellActions = row.insertCell(cellIndex++);
+                        cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;color:red;">' + Homey.__('wizard.conf_main.virtual_devices.name_must_be_changed_alert') + '</label>';
+                    }
+                }
+
+
+                // ***************
+                // Second, we add capabilities rows
+                // ***************
+                { // Just for indent
+                    // Any capability?
+                    if (no_capability) {
+                        // No capabilities, we add an alert message (in red)
+                        ++nb_alert;
+
+                        row = listElement.insertRow(-1);
+                        cellIndex = 0;
+                        cellName = row.insertCell(cellIndex++);
+                        cellState = row.insertCell(cellIndex++);
+                        cellState.colSpan = 5; // warning row
+                        cellActions = row.insertCell(cellIndex++);
+                        cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important; color:red;">' + Homey.__('wizard.conf_main.virtual_devices.no_native_capability_alert') + '</label>';
+                    } else {
+                        // Loop on all capabilities, and add them to the table
+                        virtual_device.capabilities.forEach(capability => {
+                            // Get related native_capability
+                            let native_capability = ongoing_configuration.native_capabilities.filter((native_capability) => native_capability.id === capability.native_capability_id)[0];
+
+                            // We will use all the cells
+                            row = listElement.insertRow(-1);
+                            cellIndex = 0;
+                            cellName = row.insertCell(cellIndex++);
+                            cellState = row.insertCell(cellIndex++);
+                            cellCapability = row.insertCell(cellIndex++);
+                            cellOptions = row.insertCell(cellIndex++);
+                            cellNativeCapabilityName = row.insertCell(cellIndex++);
+                            cellNativeCapabilityAttribut = row.insertCell(cellIndex++);
+                            cellActions = row.insertCell(cellIndex++);
+
+                            // It's a capability row, virtual device name stay empty
+                            cellName.innerHTML = '';
+
+                            // Show the state of the capability
+                            // If the state is 'deleted', it means it is an existing native capability deleted => show it in orange
+                            cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;' + (capability.state === 'deleted' ? ' color:orange;">' : '">') + capability.state + '</label>';
+
+                            // Show the capability (homey)
+                            // If the capability is 'deleted', we can just show the capability name
+                            // Otherwise, it must be a select box
+                            if (capability.state === 'deleted') {
+                                cellCapability.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + capability.name + '</label>';
+                            } else {
+                                // TODO: select box ... in meantime, just show the name
+                                //cellCapability.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + capability.name + '</label>';
+
+                                let tmpSelect = '<select class="homey-form-select" onchange="assign_capability(' + "'" + virtual_device.id + "', '" + native_capability.id + "', this.value" + ');">';
+                                // Add a default if the capability is not yet choosen
+                                if (capability.name === null) {
+                                    // This count as an alert
+                                    ++nb_alert;
+
+                                    // TODO: actually, the option is not red ... need some css magic to do it seems
+                                    tmpSelect += '<option value="default" selected style="color:red;">' + Homey.__('wizard.conf_main.virtual_devices.actions.no_capability_selected') + '</option>';
+                                }
+
+                                // Add comaptible capabilities
+                                // Ensure the current capability is selected by default
+                                let compatibleCapabilities = getCompatibleCapabilities(native_capability);
+                                compatibleCapabilities.forEach(compatibleCapability => {
+                                    // TODO: We may want to translate the capability name ...
+                                    tmpSelect += '<option value="' + compatibleCapability + '" ' + (capability.name === compatibleCapability ? 'selected' : '') + '>' + compatibleCapability + '</option>';
+                                });
+                                tmpSelect += '</select>';
+                                cellCapability.innerHTML = tmpSelect;
+                            }
+
+                            // Show the capability options
+                            // If the capability is 'deleted', we can just show the capability options
+                            // Otherwise, they can be modified ...
+                            if (capability.state === 'deleted') {
+                                cellOptions.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(capability.options, null, 2) + '</pre></label>';
+                            } else {
+                                // TODO: lot of things here ... in meantime, just show the options
+                                //cellOptions.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(capability.options, null, 2) + '</pre></label>';
+
+                                let tmpOptions = '';
+
+                                let options = capability.options;
+                                Object.keys(options).forEach(key => {
+                                    // Build a unique id
+                                    let uniqueId = 'option_' + native_capability.id + '_' + key;
+                                    switch (key) {
+                                        case 'units':
+                                            // Must be a text field, empty means unset
+                                            tmpOptions += '<label class="homey-form-label" for="' + uniqueId + '" style="margin-top:0px !important;">' + key + '</label>'; // TODO: translation?
+                                            tmpOptions += '<input class="homey-form-input" id="' + uniqueId + '" type="text" value="' + (options[key] ?? '') + '" onchange="capability_option_changed(' + "'" + virtual_device.id + "', '" + native_capability.id + "', '" + key + "'" + ', this.value);" style="margin-top:0px !important;"/>';
+                                            break;
+
+                                        case 'decimals':
+                                            // Must be a select with values from 0 to 10 and unset value
+                                            tmpOptions += '<label class="homey-form-label" for="' + uniqueId + '" style="margin-top:0px !important;">' + key + '</label>'; // TODO: translation?
+                                            tmpOptions += '<select class="homey-form-select" id="' + uniqueId + '" onchange="capability_option_changed(' + "'" + virtual_device.id + "', '" + native_capability.id + "', '" + key + "'" + ', this.value);" style="margin-top:0px !important;">';
+                                            tmpOptions += '<option value=""' + (options[key] === null ? ' selected' : '') + '>unset</option>';
+                                            for (let i = 1; i <= 10; i++) {
+                                                tmpOptions += '<option value="' + i + '" ' + (options[key] === i ? 'selected' : '') + '>' + i + '</option>';
+                                            }
+                                            tmpOptions += '</select>';
+                                            break;
+
+                                        case 'min':
+                                        case 'max':
+                                        case 'step':
+                                            // Must be a text field (float), empty means unset
+                                            tmpOptions += '<label class="homey-form-label" for="' + uniqueId + '" style="margin-top:0px !important;">' + key + '</label>'; // TODO: translation?
+                                            tmpOptions += '<input class="homey-form-input" id="' + uniqueId + '" type="text" oninput="this.value = this.value.replace(/[^0-9.-]/g, ' + "''" + ').replace(/(\..*)\./g, ' + "'$1'" + ').replace(/(\-.*)\-/g, ' + "'$1'" + ');" value="' + (options[key] ?? '') + '" onchange="capability_option_changed(' + "'" + virtual_device.id + "', '" + native_capability.id + "', '" + key + "'" + ', this.value);" style="margin-top:0px !important;"/>';
+                                            break;
+
+                                        case 'zoneActivity':
+                                        case 'approximated':
+                                        case 'getable':
+                                        case 'setable':
+                                            // Must be a check box
+                                            tmpOptions += '<label class="homey-form-checkbox" style="margin-top:0px !important;">';
+                                            tmpOptions += '<input class="homey-form-checkbox-input" type="checkbox"' + (options[key] ? ' checked' : '') + ' onchange="capability_option_changed(' + "'" + virtual_device.id + "', '" + native_capability.id + "', '" + key + "'" + ', this.checked);" style="margin-top:0px !important;"/>';
+                                            tmpOptions += '<span class="homey-form-checkbox-checkmark" style="margin-top:0px !important;"></span>';
+                                            tmpOptions += '<span class="homey-form-checkbox-text" style="margin-top:0px !important;">' + key + '</span>'; // TODO: translation?
+                                            tmpOptions += '</label>';
+                                            break;
+                                    }
+                                });
+
+                                cellOptions.innerHTML = tmpOptions;
+                            }
+
+                            // Show the native capability name
+                            cellNativeCapabilityName.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.entity_name + '</label>';
+
+                            // Show the native capability attribut
+                            cellNativeCapabilityAttribut.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.attribut + '</label>';
+
+                            // Add the actions
+                            cellActions.innerHTML = '';
+                            if (capability.state !== 'deleted') {
+                                // We can delete a capability
+                                cellActions.innerHTML += '<button class="homey-button-primary-full" onclick="delete_native_capability(' + "'" + virtual_device.id + "', '" + native_capability.id + "'" + ');">' + Homey.__('wizard.conf_main.virtual_devices.actions.delete_capability') + '</button>';
+                            }
+                        });
+
+                        // Any existing capability deleted?
+                        if (at_least_one_deleted_capability) {
+                            // We need to add a warning (in orange)
+                            ++nb_warning;
+
+                            // The user must use the native_capability table to add them back! If he wants to do so ...
+                            row = listElement.insertRow(-1);
+                            cellIndex = 0;
+                            cellName = row.insertCell(cellIndex++);
+                            cellState = row.insertCell(cellIndex++);
+                            cellState.colSpan = 5; // warning row
+                            cellActions = row.insertCell(cellIndex++);
+                            cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;color:orange;">' + Homey.__('wizard.conf_main.virtual_devices.native_capability_deleted_warning') + '</label>';
+                        }
+                    }
+                }
+            });
+
+        }
+    }
+
+    function capability_option_changed(virtual_device_id, native_capability_id, option_id, newValue) {
+        let virtual_device = ongoing_configuration.virtual_devices.filter(virtual_device => virtual_device.id === virtual_device_id)[0];
+        let capability = virtual_device.capabilities.filter(capability => capability.native_capability_id === native_capability_id)[0];
+
+        // Value changed ?
+        newValue = newValue === '' ? null : newValue;
+
+        // Need to convert new value to the right type?
+        console.log('New option value:', newValue, 'of type', typeof newValue);
+        switch (option_id) {
+            case 'units':
+                break;
+
+            case 'decimals':
+                newValue = newValue === null ? null : parseInt(newValue);
+                break;
+
+            case 'min':
+            case 'max':
+            case 'step':
+                newValue = newValue === null ? null : parseFloat(newValue);
+                break;
+
+            case 'zoneActivity':
+            case 'approximated':
+            case 'getable':
+            case 'setable':
+                break;
+
+            default:
+                return;
+        }
+
+        if (capability.options[option_id] !== newValue) {
+            Homey.showLoadingOverlay();
+
+            capability.options[option_id] = newValue;
+
+            // Let's store it and refresh the view
+            Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+                Homey.hideLoadingOverlay();
+                Homey.showView('conf_main');
+            });
+        }
+    }
+
+    function getCompatibleCapabilities(native_capability) {
+        result = [];
+
+        // We use a multicriterea list to obtain the compatible capabilities
+        // We just need to filter it
+
+        // Prepare criterea
+        let type_criterea = null; // One of boolean, number or string
+        let getable_criterea = null; // boolean
+        let setable_criterea = null; // boolean
+        let native_capability_criterea = null // format: native_capability.type + '.' native_capability.attribut
+
+        // Compute type
+        switch (native_capability.type) {
+            case 'BinarySensor':
+            case 'Button':
+            case 'Switch':
+                type_criterea = 'boolean';
+                break;
+
+            case 'Cover':
+            case 'Number':
+            case 'Sensor':
+                type_criterea = 'number';
+                break;
+
+            case 'TextSensor':
+                type_criterea = 'string';
+                break;
+        }
+
+        // Compute getable/setable
+        if (native_capability.configs['readOnly']) {
+            getable_criterea = true;
+            setable_criterea = false;
+        } else if (native_capability.configs['writeOnly']) {
+            getable_criterea = false;
+            setable_criterea = true;
+        }
+
+        // Compute native_capability
+        native_capability_criterea = native_capability.type + '.' + native_capability.attribut;
+
+        // Apply critera
+        // A null criterea means don't apply it
+        capabilityList = capabilityTable;
+        if (type_criterea !== null) {
+            capabilityList = capabilityList.filter(capabilityConf => capabilityConf.type === type_criterea);
+        }
+        if (getable_criterea !== null) {
+            capabilityList = capabilityList.filter(capabilityConf => capabilityConf.getable === getable_criterea);
+        }
+        if (setable_criterea !== null) {
+            capabilityList = capabilityList.filter(capabilityConf => capabilityConf.setable === setable_criterea);
+        }
+        capabilityList = capabilityList.filter(capabilityConf => capabilityConf.native_capability_supported === null || capabilityConf.native_capability_supported.includes(native_capability_criterea));
+        capabilityList = capabilityList.filter(capabilityConf => capabilityConf.native_capability_unsupported === null || !capabilityConf.native_capability_unsupported.includes(native_capability_criterea));
+
+        // Extract capabilities
+        capabilityList.forEach(capability => result.push(capability.capability));
+
+        return result;
+    }
+
+    function assign_capability(virtual_device_id, native_capability_id, newValue) {
+        // Ignore default choice
+        if (newValue !== 'default') {
+            Homey.showLoadingOverlay();
+
+            // Get our objects from ongoing configuration
+            let virtual_device = ongoing_configuration.virtual_devices.filter(virtual_device => virtual_device.id === virtual_device_id)[0];
+            let native_capability = ongoing_configuration.native_capabilities.filter(native_capability => native_capability.id === native_capability_id)[0];
+
+            // Let's find the capability of the virtual device
+            let capability = virtual_device.capabilities.filter(capability => capability.native_capability_id === native_capability_id)[0];
+
+            // The value changed?
+            if (capability.name !== newValue) {
+                // modified?
+                if (capability.state === 'unmodified') {
+                    // It's an existing capability and it has been modified!
+                    capability.state = 'modified';
+                }
+                capability.name = newValue;
+
+                // We need to initialize the options
+                {
+                    // Get the capability configuration
+                    let capabilityConf = capabilityTable.filter(compatibleCapability => compatibleCapability.capability === capability.name)[0];
+
+                    // We need to initialize the options
+                    let options = {};
+                    capabilityConf.options.forEach(option => options[option] = null);
+
+                    // Let's check if we can init some values from the native_capability itself
+                    Object.keys(options).forEach(key => {
+                        switch (key) {
+                            case 'units':
+                                options[key] = native_capability.configs['unit'] ?? null;
+                                break;
+
+                            case 'decimals':
+                                options[key] = native_capability.configs['precision'] ?? null;
+                                break;
+
+                            case 'min':
+                                options[key] = native_capability.constraints['min'] ?? null;
+                                break;
+
+                            case 'max':
+                                options[key] = native_capability.constraints['max'] ?? null;
+                                break;
+
+                            case 'step':
+                                options[key] = native_capability.constraints['step'] ?? null;
+                                break;
+
+                            case 'zoneActivity':
+                                // no match, default to true
+                                options[key] = true;
+                                break;
+
+                            case 'approximated':
+                                // no match, default to false
+                                options[key] = false;
+                                break;
+
+                            case 'getable':
+                                options[key] = native_capability.configs['writeOnly'] ?? null;
+                                break;
+
+                            case 'setable':
+                                options[key] = native_capability.configs['readOnly'] ?? null;
+                                break;
+                        }
+                    });
+
+                    capability.options = options;
+                }
+
+                // Let's store it and refresh the view
+                Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+                    Homey.hideLoadingOverlay();
+                    Homey.showView('conf_main');
+                });
+            } else {
+                // Nothing to do
+                Homey.hideLoadingOverlay();
+            }
         }
     }
 
@@ -229,7 +700,7 @@
                 ++count;
 
                 let row = listElement.insertRow(-1);
-                let cellIndex= 0; // Easier to add/remove cells if need in the future
+                let cellIndex = 0; // Easier to add/remove cells if need in the future
                 let cellEntityName = row.insertCell(cellIndex++);
                 let cellType = row.insertCell(cellIndex++);
                 let cellAttribut = row.insertCell(cellIndex++);
@@ -242,17 +713,22 @@
                 cellType.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.type + '</label>';
                 cellAttribut.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.attribut + '</label>';
                 cellValue.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + native_capability.value + '</label>';
-                cellConfigs.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(native_capability.configs, null, 2) + '</pre></label>'; // TODO: Need some formatting
-                cellConstraints.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(native_capability.constraints, null, 2) + '</pre></label>'; //TODO: Need some formatting
+                cellConfigs.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(native_capability.configs, null, 2) + '</pre></label>';
+                cellConstraints.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;"><pre>' + JSON.stringify(native_capability.constraints, null, 2) + '</pre></label>';
 
-                let tmpAction = '<label class="homey-form-label" style="margin-top:0px !important;">' + Homey.__('wizard.conf_main.unbind_native_capabilities.action.no_virtual_device') + '</label>';
-                if (ongoing_configuration.virtual_devices.length > 0) {
-                    tmpAction = '<select class="homey-form-select" onchange="assignNativeCapability()">';
-                    tmpAction += '<option value="default"><span data-i18n="wizard.conf_main.unbind_native_capabilities.action.no_virtual_device_selected"/></option>';
-                    ongoing_configuration.virtual_devices.foreach(element => {
-                        tmpAction += '<option value="' + element.homey_id + '">' + element.name + '</option>';
+                let tmpAction = '';
+                // Exclude deleted virtual devices!
+                let filteredVirtualDevices = ongoing_configuration.virtual_devices.filter((virtual_device) => virtual_device.state !== 'deleted');
+                if (filteredVirtualDevices.length > 0) {
+                    tmpAction = '<select class="homey-form-select" onchange="assign_native_capability(this.value, ' + "'" + native_capability.id + "'" + ');">';
+                    tmpAction += '<option value="default">' + Homey.__('wizard.conf_main.unbind_native_capabilities.action.no_virtual_device_selected') + '</option>';
+                    filteredVirtualDevices.forEach(virtual_device => {
+                        tmpAction += '<option value="' + virtual_device.id + '">' + virtual_device.name + '</option>';
                     });
-                    tmpAction+= '</select>';
+                    tmpAction += '</select>';
+                } else {
+                    // This message is in orange, but no need to count it (warning), an alert will be created because there are no virtual device
+                    tmpAction = '<label class="homey-form-label" style="margin-top:0px !important; color:orange;">' + Homey.__('wizard.conf_main.unbind_native_capabilities.action.no_virtual_device') + '</label>';
                 }
                 cellAction.innerHTML = tmpAction;
             }
@@ -266,12 +742,96 @@
         }
     }
 
-    function assign_native_capability(event) {
+    function compareVirtualDeviceCapabilityOptions(left_options, right_options) {
+        // We compare the keys from left to right
+        // And then make sure if there are even more keys on right
+
+        let result = true; // Same by default
+
+        let count_left_options = 0;
+        Object.keys(left_options).forEach((key) => {
+            count_left_options++;
+            if (left_options[key] !== right_options[key]) {
+                result = false;
+            }
+        });
+
+        if (result && Object.keys(right_options).length !== count_left_options) {
+            result = false;
+        }
+
+        return result;
+    }
+
+    function assign_native_capability(virtual_device_id, native_capability_id) {
         console.log('assign_native_capability:', event);
 
-        // TODO: To be implemented
-        // Exclude processing of first choice in the list => no_virtual_device_selected
-        // Change view to itself after processing to refresh (just a little trick)
+        if (virtual_device_id !== 'default') {
+            Homey.showLoadingOverlay();
+
+            // Get the virtual device and native capability
+            let virtual_device = ongoing_configuration.virtual_devices.filter((virtual_device) => virtual_device.id === virtual_device_id)[0];
+            let native_capability = ongoing_configuration.native_capabilities.filter((native_capability) => native_capability.id === native_capability_id)[0];
+
+            // If the virtual device is 'added', then the native capability is just 'added' too
+            // If the native capability was previously removed from the same virtual device, we just need to restore it
+            // But could be in 'unmodified' or 'modified' state, need to check the initial configuration to make sure
+            // Otherwise, it means the native capability is 'added'
+            let state = 'added'; // Cover first and last cases
+            if (virtual_device.state !== 'added') {
+                let filter_virtual_device_capabilities = virtual_device.capabilities.filter((capability) => capability.native_capability_id === native_capability_id);
+                if (filter_virtual_device_capabilities.length === 1) {
+                    // Found it, it is either 'unmodified' or 'modifie
+                    // No need to check if it was previously 'deleted' (let's trust the code ...)
+                    virtual_device_capability = filter_virtual_device_capabilities[0];
+
+                    let initial_virtual_device_capability = initial_configuration.virtual_devices.filter((virtual_device) => virtual_device.id === virtual_device_id)[0].capabilities.filter((capability) => capability.native_capability_id === native_capability_id)[0];
+                    if (compareVirtualDeviceCapabilityOptions(initial_virtual_device_capability.options, virtual_device_capability.options)) {
+                        // Same
+                        state = 'unmodified';
+                    } else {
+                        state = 'modified';
+                    }
+
+                    // Actually, we just need to restore it with the correct state
+                    virtual_device_capability.state = state;
+                    native_capability.state = 'bound';
+
+                    // Let's store it and refresh the view
+                    Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+                        Homey.hideLoadingOverlay();
+                        Homey.showView('conf_main');
+                    });
+                    return;
+                }
+            }
+
+            let capabilityName = null;
+            /**
+             * TODO: Need to add the options too ..
+            // Let's test if there are only one capability compatible
+            let compatibleCapabilities = getCompatibleCapabilities(native_capability);
+            if (compatibleCapabilities.length === 1) {
+                capabilityName = compatibleCapabilities[0].capability;
+            }
+             */
+
+            // It's a new capability for the virtual device
+            let capability = {
+                name: capabilityName,
+                'native_capability_id': native_capability_id,
+                'state': state,
+                options: []
+            };
+            virtual_device.capabilities.push(capability);
+            native_capability.state = 'bound';
+
+            // Let's store it and refresh the view
+            Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+                Homey.hideLoadingOverlay();
+                Homey.showView('conf_main');
+            });
+        }
     }
 
     /**
@@ -284,21 +844,127 @@
      * /!\ Name must be changed and at least one native capaibility must be added, otherwise the confirm button is disabled
      */
     function create_virtual_device() {
-        function get_next_virtual_device_id() {
-            // Get nextValue from the store
-            let nextId = Homey.getStoreValue('store', 'last_virtual_device_id');
-            if (!nextId){
-                nextId = 1;
-            } else {
-                ++nextId;
+        Homey.showLoadingOverlay();
+
+        // Get nextValue from the store
+        Homey.getViewStoreValue('store', 'last_virtual_device_id').then((lastId) => {
+            if (!lastId) {
+                lastId = 0;
             }
-            // Store new value
-            Homey.setStoreValue('store', 'last_virtual_device_id', nextId);
+
+            let nextId = lastId + 1;
+            Homey.setViewStoreValue('store', 'last_virtual_device_id', nextId).then(() => {
+                // finaly, we got an id, let's create a virtual device
+                new_virtual_device = {
+                    id: 'new_' + nextId,
+                    homey_id: null,
+                    name: 'new_' + nextId,
+                    nameMustBeChanged: true,
+                    state: 'added',
+                    capabilities: []
+                };
+
+                // We can add it to the ongoing_configuration
+                ongoing_configuration.virtual_devices.push(new_virtual_device);
+
+                // Let's store it and refresh the view
+                Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+                    Homey.hideLoadingOverlay();
+                    Homey.showView('conf_main');
+                });
+            });
+        });
+    }
+
+    function virtualDeviceNameChanged(virtual_device_id, newName) {
+        // Let's check the newName format
+        if (/^[A-Za-z0-9][A-Za-z0-9-_ ]{1,28}[A-Za-z0-9]{1,1}$/.test(newName)) {
+            Homey.showLoadingOverlay();
+            ongoing_configuration.virtual_devices.forEach(virtual_device => {
+                if (virtual_device.id === virtual_device_id) {
+                    virtual_device.name = newName;
+                    virtual_device.nameMustBeChanged = false;
+                }
+            });
+
+            // Let's store it and refresh the view
+            Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+                Homey.hideLoadingOverlay();
+                Homey.showView('conf_main');
+            });
+        } else {
+            // Not nice, alert and reload
+            // TODO: There are must be better way to handle it, but it is simple :)
+            Homey.alert(Homey.__('wizard.conf_main.virtual_devices.change_name_format'));
+            Homey.showView('conf_main');
+        }
+    }
+
+    function delete_virtual_device(virtual_device_id) {
+        // Only autorized if there are no more native capability
+        // No need to check, the button is available only if authorized :)
+        // No need to alert about the risk, the user has already been alerted when he removed the capability.ies
+        Homey.showLoadingOverlay();
+
+        let virtual_device = ongoing_configuration.virtual_devices.filter((virtual_device) => virtual_device.id === virtual_device_id)[0];
+        if (virtual_device.homey_id === null) {
+            // It's a new device, we need to delete it for real
+            let index = ongoing_configuration.virtual_devices.indexOf(virtual_device);
+            console.log('Index to delete:', index);
+            ongoing_configuration.virtual_devices.splice(index, 1);
+        } else {
+            // It's a previously existing device, we just change its state to 'deleted'
+            virtual_device.state = 'deleted';
         }
 
-        nextId = get_next_virtual_device_id();
+        // Let's store it and refresh the view
+        Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+            Homey.hideLoadingOverlay();
+            Homey.showView('conf_main');
+        });
+    }
 
-        // TODO: to be completed
+    function modify_native_capability(virtual_device_id, native_capability_id) {
+        // Modify the native capability of a virtual device!
+        // In practice, we mean to modify the capability and its options, not the native capability itself :)
+
+        // TODO: Not sure how to handle it .. using a different view seems useless
+    }
+
+    function delete_native_capability(virtual_device_id, native_capability_id) {
+        // Delete a native capability from a virtual device! => unbind
+        // Need to alert the user if he removes an existing native capability (ie. initial configuration)
+        let virtual_device = ongoing_configuration.virtual_devices.filter((virtual_device) => virtual_device.id === virtual_device_id)[0];
+        let virtual_device_capability = virtual_device.capabilities.filter((capability) => capability.native_capability_id === native_capability_id)[0];
+        if (virtual_device_capability.state !== 'added') {
+            Homey.confirm('Removing this capability can/will break your flows! Are you sure?', 'warning').then(() => {
+                _delete_native_capability(virtual_device, virtual_device_capability);
+            });
+        } else {
+            _delete_native_capability(virtual_device, virtual_device_capability);
+        }
+    }
+
+    function _delete_native_capability(virtual_device, virtual_device_capability) {
+        // Even if its an existing capability, the user confirmed, peace to his soul ...
+        Homey.showLoadingOverlay();
+
+        if (virtual_device_capability.state === 'added') {
+            // delete it
+            let index = virtual_device.capabilities.indexOf(virtual_device_capability);
+            virtual_device.capabilities.splice(index, 1);
+        } else {
+            // Change state to 'deleted'
+            virtual_device_capability.state = 'deleted';
+        }
+        let native_capability = ongoing_configuration.native_capabilities.filter((native_capability) => native_capability.id === virtual_device_capability.native_capability_id)[0];
+        native_capability.state = 'unbind';
+
+        // Let's store it and refresh the view
+        Homey.setViewStoreValue('store', 'ongoing_configuration', ongoing_configuration).then(() => {
+            Homey.hideLoadingOverlay();
+            Homey.showView('conf_main');
+        });
     }
 
     /**
@@ -307,7 +973,7 @@
      */
     function hideAll(element) {
         element.hidden = true;
-        Array.from(element.children).forEach(function(subElement){
+        Array.from(element.children).forEach(function (subElement) {
             subElement.hidden = true;
         });
     }
@@ -334,11 +1000,7 @@
      * Check if the confirm button should be available
      */
     function checkConfirm() {
-        let enable = false;
-
-        // TODO: to be completed
-
-        enable ? enableButton(document.getElementById('confirm')) : disableButton(document.getElementById('confirm'));
+        nb_alert === 0 ? enableButton(document.getElementById('confirm')) : disableButton(document.getElementById('confirm'));
     }
 
     /**
@@ -347,7 +1009,155 @@
      * /!\ Cannot go back ...
      */
     function confirm() {
+        // The confirm button has been clicked!
 
+        // There are no errors, otherwise, the button cannot be clicked
+        // But maybe there are warning!
+        if (nb_warning > 0) {
+            Homey.confirm(Homey.__('confirm_warning'), 'warning').then(() => {
+                _confirm();
+            });
+        } else {
+            _confirm();
+        }
+    }
+
+    /**
+     * For internal use only
+     * Let's apply ...
+     */
+    async function _confirm() {
+        console.log('How dare you ...');
+
+        Homey.showLoadingOverlay();
+
+        /**
+         * We want to process in this order:
+         * - Build all objects as expected by Homey
+         * - Delete deleted virtual devices
+         * - Modify modified virtual devices
+         * - Create added virtual devices
+         * 
+         * This order will ensure that the native capabilities moved from one virtual device to another is succesfull!
+         */
+
+
+        // ***********
+        // Step 1 - Build all the virtual devices object as expected by Homey
+        // ***********
+        let devicesToDelete = [];
+        let devicesToUpdate = [];
+        let devicesToCreate = [];
+        
+        ongoing_configuration.virtual_devices.forEach(virtual_device => {
+            // If unmodified, there are nothing to modify :)
+            if (virtual_device.state === 'unmodified') {
+                return;
+            }
+
+            // Blueprint of a Homey device
+            var device = {
+                name: null,
+                class: "socket",
+                capabilities: [],
+                capabilitiesOptions: {},
+                store: {
+                    capabilityKeys: {} // pair of capability -> native_capability_id
+                },
+                data: {
+                    id: null // Will generate it later
+                },
+                settings: { // Allows to reconnect to the physical device
+                    ipAddress: null,
+                    port: null,
+                    password: null
+                }
+            };
+
+            // Add name
+            device.name = virtual_device.name;
+
+            // Add capabilities, their options and capabilityKeys
+            let capabilityIndex = {};
+            virtual_device.capabilities.forEach(capability => {
+                if (capability.state === 'deleted') {
+                    return;
+                }
+
+                let capabilityName = capability.name;
+
+                // If the same capability is used several times, we need to add index to the capability name
+                if (capabilityIndex.capabilityName) {
+                    capabilityIndex[capabilityName] += 1;
+                    capabilityName = capabilityName + capabilityIndex[capabilityName];
+                } else {
+                    capabilityIndex[capabilityName] = 0;
+                }
+
+                device.capabilities.push(capabilityName);
+                device.capabilitiesOptions[capabilityName]= capability.options;
+                device.store.capabilityKeys[capabilityName] = capability.native_capability_id;
+            });
+
+            // Add data => unique identifier!
+            if (virtual_device.state === 'added') {
+                // We will generate it later
+            } else {
+                device.data = {
+                    id: virtual_device.homey_id
+                }
+            }
+
+            // Add settings
+            // FIXME: We just bring password around and not crypted ... how nice
+            device.settings['ipAddress'] = ongoing_configuration.physical_device.ipAddress;
+            device.settings['port'] = ongoing_configuration.physical_device.port;
+            device.settings['password'] = ongoing_configuration.physical_device.password;
+
+            // Which list
+            switch(virtual_device.state) {
+                case 'deleted':
+                    devicesToDelete.push(device);
+                    break;
+
+                case 'modified':
+                    devicesToUpdate.push(device);
+                    break;
+
+                case 'added':
+                    devicesToCreate.push(device);
+                    break;
+            }
+        });
+
+        // ***********
+        // Step 2 - Delete
+        // ***********
+        // TODO: to be implemented
+        console.log('Device to delete:', devicesToDelete);
+
+        // ***********
+        // Step 3 - Update
+        // ***********
+        // TODO: to be implemented
+        console.log('Device to update:', devicesToUpdate);
+
+        // ***********
+        // Step 4 - Create
+        // ***********
+        // TODO: to be implemented
+        console.log('Device to create:', devicesToCreate);
+
+        let deviceIndex = 1;
+        await devicesToCreate.forEach(async deviceToCreate => {
+            // Let's make some test
+            deviceToCreate.data.id = 'Wizard' + Date.now() + deviceIndex++;
+
+            await Homey.createDevice(deviceToCreate);
+        });
+        
+        Homey.hideLoadingOverlay();
+        Homey.done();
     }
 
     /**
@@ -358,7 +1168,7 @@
     // Check if initial configuration is already in the store view
     // If not, emit get-initial-configuration and store the initial configuration in the store view (also stored as ongoing configuration)
     // We can then init the view based on ongoing configuration from the store
-    let initial_configuration = null;
+    initial_configuration = null;
     Homey.getViewStoreValue('store', 'ongoing_configuration').then(function (result) {
         console.log('Ongoing configuration from store:', result);
 
@@ -371,4 +1181,596 @@
             init_view();
         }
     });
+
+    // Kind of a global variable ...
+    // The list is compiled from the sdk : https://apps-sdk-v3.developer.homey.app/tutorial-device-capabilities.html
+    // I skiped some of them (lazy / cannot test them)
+    // Added 2 customs : number and text
+    capabilityTable = [
+        {
+            capability: 'number',
+            type: 'number',
+            getable: true,
+            setable: true,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals', 'min', 'max', 'step', 'setable']
+        },
+        {
+            capability: 'text',
+            type: 'string',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'media',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: ['decimals']
+        },
+        {
+            capability: 'onoff',
+            type: 'boolean',
+            getable: true,
+            setable: true,
+            quickaction: true,
+            uielement: 'toggle',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: ['decimals', 'min', 'max', 'step', 'getable']
+        },
+        {
+            capability: 'dim',
+            type: 'number',
+            getable: true,
+            setable: true,
+            quickaction: false,
+            uielement: 'slider',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals', 'min', 'max', 'step']
+        },
+        // Skip light_hue
+        // Skip light_saturation
+        // Skip light_temperature
+        // Skip light_mode
+        // Skip vacuumcleaner_state
+        // thermostat_mode
+        {
+            capability: 'target_temperature',
+            type: 'number',
+            getable: true,
+            setable: true,
+            quickaction: false,
+            uielement: 'thermostat',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals', 'min', 'max', 'step']
+        },
+        {
+            capability: 'measure_temperature',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_co',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_co2',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_pm25',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_humidity',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_pressure',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_noise',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_rain',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_wind_strength',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_wind_angle',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_gust_strength',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_gust_angle',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_battery',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'battery',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_power',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals', 'approximated']
+        },
+        {
+            capability: 'measure_voltage',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_current',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_luminance',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_ultraviolet',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'measure_water',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'alarm_generic',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_motion',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: ['zoneActivity']
+        },
+        {
+            capability: 'alarm_contact',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: ['zoneActivity']
+        },
+        {
+            capability: 'alarm_co',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_co2',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_pm25',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_tamper',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_smoke',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_fire',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_heat',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_water',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_battery',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'battery',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'alarm_night',
+            type: 'boolean',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'meter_power',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'meter_water',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'meter_gas',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'meter_rain',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'sensor',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        // Skip homealarm_state
+        {
+            capability: 'volume_set',
+            type: 'number',
+            getable: true,
+            setable: false,
+            quickaction: false,
+            uielement: 'slider',
+            native_capability_supported: null,
+            native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+            options: ['units', 'decimals']
+        },
+        {
+            capability: 'volume_up',
+            type: 'boolean',
+            getable: false,
+            setable: true,
+            quickaction: false,
+            uielement: 'button',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'volume_down',
+            type: 'boolean',
+            getable: false,
+            setable: true,
+            quickaction: false,
+            uielement: 'button',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'volume_mute',
+            type: 'boolean',
+            getable: true,
+            setable: true,
+            quickaction: false,
+            uielement: 'button',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: ['getable']
+        },
+        {
+            capability: 'channel_up',
+            type: 'boolean',
+            getable: false,
+            setable: true,
+            quickaction: false,
+            uielement: 'button',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'channel_down',
+            type: 'boolean',
+            getable: false,
+            setable: true,
+            quickaction: false,
+            uielement: 'button',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        {
+            capability: 'locked',
+            type: 'boolean',
+            getable: true,
+            setable: true,
+            quickaction: false,
+            uielement: 'toggle',
+            native_capability_supported: null,
+            native_capability_unsupported: null,
+            options: []
+        },
+        // Skip lock_mode
+        // Skip garagedoor_closed
+        // Skip windowcoverings_state
+        // Skip windowcoverings_tilt_up
+        // Skip windowcoverings_tilt_down
+        {
+            capability: 'windowcoverings_tilt_set',
+            type: 'number',
+            getable: true,
+            setable: true,
+            quickaction: false,
+            uielement: 'slider',
+            native_capability_supported: ['Cover.tilt'],
+            native_capability_unsupported: ['Cover.position'],
+            options: []
+        },
+        // Skip windowcoverings_closed
+        {
+            capability: 'windowcoverings_set',
+            type: 'number',
+            getable: true,
+            setable: true,
+            quickaction: false,
+            uielement: 'slider',
+            native_capability_supported: ['Cover.position'],
+            native_capability_unsupported: ['Cover.tilt'],
+            options: []
+        },
+        {
+            capability: 'button',
+            type: 'boolean',
+            getable: false,
+            setable: true,
+            quickaction: true,
+            uielement: 'button',
+            native_capability_supported: ['Button.state'],
+            native_capability_unsupported: null,
+            options: []
+        }
+        // Skip speaker_playing
+        // Skip speaker_next
+        // Skip speaker_prev
+        // Skip speaker_shuffle
+        // Skip speaker_repeat
+        // Skip speaker_artist
+        // Skip speaker_album
+        // Skip speaker_track
+        // Skip speaker_duration
+        // Skip speaker_position
+    ];
+
 </script>

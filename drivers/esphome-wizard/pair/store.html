@@ -40,10 +40,12 @@
         physical_device : {
             id : string,
             ipAddress : string,
-            port : string
+            port : string,
+            password: string
         },
         virtual_devices : [
             {
+                id : string (either homey_id or new_<idx>),
                 homey_id : string,
                 name : string,
                 nameMustBeChanged : boolean (false by default, true if new virtual device),
@@ -52,7 +54,7 @@
                     {
                         name : string,
                         native_capability_id : string (format: <entity_id>:<attribut> => refer to a physical_device native capability),
-                        state : string (one of: unmodified, added, modified, deleted. unmodified by default),
+                        state : string (one of: unmodified, added, modified, deleted. unmodified by default, added if new native_capability),
                         options : [
                             name -> value ???
                         ]
@@ -64,6 +66,7 @@
             {
                 id : string (format: <entity_id>:<attribut>)
                 entity_id : string,
+                entity_name : string,
                 type : string,
                 attribut : string,
                 state : string (one of: unbind, bound),

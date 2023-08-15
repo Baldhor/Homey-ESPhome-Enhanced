@@ -20,7 +20,7 @@
 const EventEmitter = require('events');
 const Driver = require('./driver');
 const Client = require('./client');
-const NativeCapability = require('./native_capability');
+const NativeCapability = require('./native-capability');
 const Utils = require('./utils');
 
 class PhysicalDevice extends EventEmitter {
@@ -232,6 +232,7 @@ class PhysicalDevice extends EventEmitter {
             let constraints = {};
             let nativeCapability = null;
 
+            // TODO: Add more supported device type here
             switch (entity.type) {
                 case 'BinarySensor':
                     // Has a state, but cannot be modified
@@ -362,7 +363,7 @@ class PhysicalDevice extends EventEmitter {
     sendCommand(nativeCapabilityId, newValue) {
         this.log('Sending command:', ...arguments);
 
-        let native_capability = this.native_capabilities[NativeCapability.buildId(entityId, attribut)];
+        let native_capability = this.native_capabilities[nativeCapabilityId];
         if (!native_capability) {
             this.log('Unknown native capability, ignoring:', ...arguments);
             return;

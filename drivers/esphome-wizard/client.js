@@ -236,7 +236,7 @@ class Client extends EventEmitter {
         this.log('Sending command to remote for entity', entityId, 'and attribut', attribut, '==>', newValue);
 
         // Retrieve entity type
-        let entity = this.client.nativeApiClient.entities[entityId];
+        let entity = this.nativeApiClient.entities[entityId];
         Utils.assert(entity, 'Entity undefined');
         let entityType = entity.type;
 
@@ -253,11 +253,11 @@ class Client extends EventEmitter {
                 break;
 
             case 'Button':
-                this.client.connection.buttonCommandService({ key: entityId, state: newValue });
+                this.nativeApiClient.connection.buttonCommandService({ key: entityId, state: newValue });
                 break;
 
             case 'Number':
-                this.client.connection.buttonCommandService({ key: entityId, state: newValue });
+                this.nativeApiClient.connection.buttonCommandService({ key: entityId, state: newValue });
                 break;
 
             default:

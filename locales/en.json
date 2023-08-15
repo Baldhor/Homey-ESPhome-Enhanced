@@ -29,7 +29,8 @@
             "title": "ESPhome Wizard",
             "description": "How my magic can assist you?",
             "new": "Configure a new physical device",
-            "update": "Update an existing physical device"
+            "update": "Update an existing physical device",
+            "beta_disclaimer": "This driver is in BETA! In may be broken, or make broken stuff :) Be warned!"
         },
         "new_device": {
             "title": "Connect to the new device",
@@ -70,10 +71,19 @@
                 "create": "Create",
                 "actions": {
                     "title": "Available action(s)",
-                    "modify": "Modify",
-                    "delete": "Delete"
+                    "delete_virtual_device": "Delete virtual device",
+                    "restore_virtual_device": "Restore vitual device",
+                    "delete_capability": "Delete capability",
+                    "modify_capability": "Modify capability",
+                    "no_capability_selected": "Select a capability"
                 },
-                "delete_warning": "Deletetion of a virtual device can break your flows! Are you sure?"
+                "delete_warning": "Deletetion of a virtual device can break your flows! Are you sure?",
+                "no_native_capability_alert": "Add at least one native capability",
+                "change_name_format": "The name you input is not nice, try again!",
+                "native_capability_deleted": "Deleted!",
+                "virtual_device_deleted_warning" : "This virtual device has been deleted, it can/will break your flows!",
+                "name_must_be_changed_alert" : "Don't forget to change the name!",
+                "native_capability_deleted_warning" : "This virtual device doesn't have any capability anymore, you must either delete or restore it"
             },
             "settings": {
                 "title": "List of settings",
@@ -92,6 +102,7 @@
                 }
             },
             "confirm": "Confirm",
+            "confirm_warning": "There are at least one warning (orange), are you sure?",
             "virtual_device": {
                 "name": "Name",
                 "stateLabel": "State",
@@ -134,16 +145,6 @@
                     "slidder": "Slidder"
                 }
             }
-        },
-        "conf_virtual_device": {
-            "title": "Configure your virtual device",
-            "notimplemented": "Not yet implemented"
-        },
-        "conf_settings": {
-            "title": "My magic has its limits",
-            "notimplemented": "Not yet implemented",
-            "info": "Your physical device web server probably do the equivalent!",
-            "goback" : "Go back"
         }
     },
     "settings": {

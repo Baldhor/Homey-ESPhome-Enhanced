@@ -1,5 +1,5 @@
 [
-  {"id": "ip4",
+  {"id": "ipAddress",
     "type": "text",
     "label": { 
       "en": "IP address" 
@@ -10,13 +10,11 @@
     }
   },
   {"id": "port",
-    "type": "number",
+    "type": "text",
     "label": { 
       "en": "Port" 
     },
-    "value": 6053,
-    "min": 1,
-    "max": 65535,
+    "value": "6053",
     "hint": { 
       "en": "TCP port used. Default is 6053"
     }
@@ -30,45 +28,5 @@
     "hint": { 
       "en": "The password of the device" 
     }
-  },
-  {"id": "esphome_model",
-    "type": "label",
-    "label": { 
-      "en": "ESP model" 
-    },
-    "hint": { 
-      "en": "The model type of the ESP" 
-    },
-    "value": ""
-  },
-  {"id": "esphome_version",
-    "type": "label",
-    "label": { 
-      "en": "ESPhome version" 
-    },
-    "hint": { 
-      "en": "The version of the ESPhome firmware" 
-    },
-    "value": ""
-  },
-  {"id": "esphome_compilationTime",
-    "type": "label",
-    "label": { 
-      "en": "Compilation time" 
-    },
-    "hint": { 
-      "en": "The compilation time of the device firmware" 
-    },
-    "value": ""
-  },
-  {"id": "esphome_macaddress",
-    "type": "label",
-    "label": { 
-      "en": "MAC address" 
-    },
-    "hint": { 
-      "en": "The mac address of the ESPhome" 
-    },
-    "value": ""
   }
 ]

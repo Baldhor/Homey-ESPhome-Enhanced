@@ -61,8 +61,8 @@
 
     // Get existing device from homey
     var existingDevices = null;
-    Homey.emit("get-existing-device").then(function (result) {
-        console.log('Existing devices:', result); // result is: Hello!
+    Homey.emit("get-existing-devices").then(result => {
+        console.log('Existing devices:', result);
         existingDevices = result;
 
         if (existingDevices.length === 0) {
