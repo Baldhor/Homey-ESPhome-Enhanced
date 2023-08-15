@@ -9,90 +9,64 @@
 </script>
 <header class="homey-header" data-i18n="wizard.new_device.description"></header>
 <label class="homey-form-label" for="ipAddress" data-i18n="wizard.new_device.ipAddress"></label>
-<input class="homey-form-input" id="ipAddress" type="text" maxlength="15" />
+<input class="homey-form-input" id="ipAddress" type="text" maxlength="15" oninput="onInputCheckConnectButton(event);" />
 <label class="homey-form-label" for="port" data-i18n="wizard.new_device.port"></label>
-<input class="homey-form-input" id="port" type="text" maxlength="5" placeholder="6053"/>
+<input class="homey-form-input" id="port" type="text" maxlength="5" placeholder="6053"
+    oninput="onInputCheckConnectButton(event);" />
 <label class="homey-form-label" for="password" data-i18n="wizard.new_device.password"></label>
 <input class="homey-form-input" id="password" type="text" maxlength="20" />
 
 <br>
-<button id="connect" class="homey-button-primary-full" data-i18n="wizard.new_device.connect"></button>
+<button id="connect" class="homey-button-primary-full" data-i18n="wizard.new_device.connect"
+    onclick="onClickConnect(event);"></button>
 <script type="application/javascript">
-    const connectElement = document.getElementById('connect');
+    /***************
+     * HTML Events *
+     ***************/
 
-    const ipAddressElement = document.getElementById("ipAddress");
-    const portElement = document.getElementById("port");
-    const passwordElement = document.getElementById("password");
+    function onInputCheckConnectButton(event) {
+        console.log('onInputCheckConnectButton:', ...arguments);
 
-    function getPort() {
-        let port = '6053';
-        try {
-            tmpPort = parseInt(portElement.value, 10);
-            if(!isNaN(tmpPort))
-                port = String(tmpPort);
-        } catch (error) {
-            // Well that didn't work, let assume standard port
-        }
-        
-        return port;
-    }
-    
-    function checkIfValidIpAddress(input) {
-        // Regular expression to check if input is a valide ip address
-        return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(input);
-    }
-
-    function checkIfValidPortnumber(input) {
-        // Regular expression to check if input is a valid port number
-        return /^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$/.test(input);
-    }
-
-    function checkConnectButton() {
-        let ipAddress = ipAddressElement.value;
-        let port = getPort();
+        let ipAddress = document.getElementById("ipAddress").value;
+        let port = getPortOrDefault(document.getElementById("port").value);
 
         // check ipAddress is not empty
-        if(!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPortnumber(port))
-            disableButton(connectElement);
+        if (!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPort(port))
+            disableButton(document.getElementById('connect'));
         else
-            enableButton(connectElement);
+            enableButton(document.getElementById('connect'));
     }
 
-    function enableConnectButton() {
-        if (connectElement.classList.contains("is-disabled"))
-            connectElement.classList.remove("is-disabled");
-        connectElement.disabled = false;
-    }
+    function onClickConnect(event) {
+        console.log('onClickConnect:', ...arguments);
 
-    function disableConnectButton() {
-        if (!connectElement.classList.contains("is-disabled"))
-            connectElement.classList.add("is-disabled");
-        connectElement.disabled = true;
-    }
-
-    function connect(event) {
         Homey.showLoadingOverlay();
 
         // Don't actually submit the form just yet
         event.preventDefault();
 
-        Homey.emit('connect-new-device', {
-            'ipAddress': ipAddressElement.value,
-            'port': getPort(),
-            'password': passwordElement.value
-        });
+        let data = {
+            'ipAddress': document.getElementById("ipAddress").value,
+            'port': getPortOrDefault(document.getElementById("port").value),
+            'password': document.getElementById("password").value
+        };
+
+        console.log('Send event connect-new-device with data:', data);
+        Homey.emit('connect-new-device', data);
     }
 
-    // Disable connect button by default
-    disableButton(connectElement);
-    connectElement.onclick = connect;
 
-    ipAddressElement.oninput = checkConnectButton;
-    portElement.oninput = checkConnectButton;
+    /*************
+     * MAIN CODE *
+     *************/
+
+    // Disable connect button by default
+    disableButton(document.getElementById('connect'));
 
     Homey.on('new-device-connected', function () {
-        console.log('Even received: new-device-connected');
-        Homey.setViewStoreValue('store', 'physical_device_id', ipAddressElement.value + ':' + getPort()).then(() => {
+        console.log('Event new-device-connected received');
+
+        Homey.setViewStoreValue('store', 'physical_device_id', document.getElementById("ipAddress").value + ':' + getPortOrDefault(document.getElementById("port").value)).then(() => {
             // Let's wait a few seconds to make sure the driver finished collecting data about the device
             setTimeout(() => {
                 Homey.hideLoadingOverlay();
@@ -102,7 +76,8 @@
     });
 
     Homey.on('new-device-failed', function (message) {
-        console.log('Even received: new-device-failed', message);
+        console.log('Event new-device-failedreceived:', message);
+
         Homey.hideLoadingOverlay();
         Homey.alert(message, 'error');
     });

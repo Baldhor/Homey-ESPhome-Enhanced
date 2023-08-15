@@ -1,7 +1,6 @@
 <!--
     Allows to choose an existing physical device to modify
 -->
-
 <script src="front_utils.js"></script>
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.update_device.title'));
@@ -32,14 +31,40 @@
     </tr>
 </table>
 
-<button id="select" class="homey-button-primary-full" data-i18n="wizard.update_device.select"></button>
+<button id="select" class="homey-button-primary-full" data-i18n="wizard.update_device.select"
+    onclick="onClickSelect(event);"></button>
 <script type="application/javascript">
-    const noneElement = document.getElementById('none');
-    const listElement = document.getElementById('existing_devices');
-    const selectElement = document.getElementById('select');
+    /***************
+     * HTML Events *
+     ***************/
+
+    function onChangeRadio(event) {
+        console.log('onChangeRadio:', ...arguments);
+
+        enableButton(document.getElementById('select'));
+    }
+
+    function onClickSelect(event) {
+        console.log('onChangeSelect:', ...arguments);
+
+        Homey.showLoadingOverlay();
+
+        // Don't actually submit the form just yet
+        event.preventDefault();
+
+        Homey.setViewStoreValue('store', 'physical_device_id', document.querySelector('input[name="radio-buttons"]:checked').value).then(() => {
+            Homey.hideLoadingOverlay();
+            Homey.showView('conf_main');
+        });
+    }
+
+
+    /*************
+     * MAIN CODE *
+     *************/
 
     // Make sure the select button is disabled by default: need to select one device in the list!
-    disableButton(selectElement);
+    disableButton(document.getElementById('select'));
 
     // Get existing device from homey
     var existingDevices = null;
@@ -49,11 +74,11 @@
 
         if (existingDevices.length === 0) {
             // Hide list and select button
-            hideAll(listElement);
-            hideAll(selectElement);
+            hideAll(document.getElementById('existing_devices'));
+            hideAll(document.getElementById('select'));
         } else {
             // Hide none
-            hideAll(noneElement);
+            hideAll(document.getElementById('none'));
 
             // Loop on each device and add them to the list with a radio button
             // Using physical device id to identify the radio button
@@ -65,33 +90,15 @@
                 var cellPort = row.insertCell(3);
                 var cellBound = row.insertCell(4);
 
-                cellSelect.innerHTML = '<input class="homey-form-radio-input" type="radio" name="radio-buttons" id="' + element.id + '"/>';
+                cellSelect.innerHTML = '<input class="homey-form-radio-input" type="radio" name="radio-buttons" id="' + element.id + '" onchange="onChangeRadio(event);"/>';
                 cellId.innerHTML = '<label class="homey-form-label">' + element.id + '</label>';
                 cellIpAddress.innerHTML = '<label class="homey-form-label">' + element.ipAddress + '</label>';
                 cellPort.innerHTML = '<label class="homey-form-label">' + element.port + '</label>';
                 cellBound.innerHTML = '<label class="homey-form-label">' + element.bound + '</label>';
-
-                // Add a listener to update the select button
-                document.getElementById(element.id).onchange = enableButton(selectElement);
             });
         }
 
         // Finished init of the view
         Homey.hideLoadingOverlay();
     });
-
-    // Add submit function
-    function select(event) {
-        Homey.showLoadingOverlay();
-
-        // Don't actually submit the form just yet
-        event.preventDefault();
-
-        Homey.setViewStoreValue('store', 'physical_device_id', document.querySelector('input[name="radio-buttons"]:checked').value).then(() => {
-            Homey.hideLoadingOverlay();
-            Homey.showView('conf_main');
-        });
-    }
-    
-    selectElement.onclick = select;
 </script>
