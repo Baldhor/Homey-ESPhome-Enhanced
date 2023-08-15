@@ -25,5 +25,8 @@
   },
   "0.3.6": {
     "en": "Fixed a timeout handling in console.re client"
+  },
+  "0.4.0": {
+    "en": "BETA: new wizard driver, fully independant from legacy driver, so no risk of collision. USE AT YOUR OWN RISK"
   }
 }
