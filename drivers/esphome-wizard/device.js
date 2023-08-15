@@ -96,6 +96,9 @@ class VirtualDevice extends Device {
 
             this.log('Init capability', capability, 'for', nativeCapabilityId);
             this.physicalDevice.on('stateChanged', (nativeCapabilityId, value) => this.stateChangedListener(nativeCapabilityId, value));
+
+            // Get current value
+            this.stateChangedListener(nativeCapabilityId, this.physicalDevice.getCurrentValue(nativeCapabilityId));
         });
     }
 
