@@ -5,9 +5,9 @@
  * Its purpose is to convert the "ESPhome" world to "Homey" world and the opposite.
  * 
  * A physical device:
- * - Has a list of native_capability : built from the remote device newEntity message
- * - Emit native_capability events when remote state change and captured by the virtual device
- * - Expose a sendCommand function to modify a native_capability value
+ * - Has a list of nativeCapability : built from the remote device newEntity message
+ * - Emit stateChanged events when remote state change and captured by the virtual device
+ * - Expose a sendCommand function to modify a nativeCapability value
  * - Expose a function to retrieve the remote configuration (used by the wizard)
  * 
  * A Physical device has no idea which native capabilities are used, by which virtual device and for which purpose
@@ -40,7 +40,7 @@ class PhysicalDevice extends EventEmitter {
      * 
      * The key is built using: <entityId+":"+state>
      */
-    native_capabilities = null;
+    nativeCapabilities = null;
 
     /**
      * Create a new ESPhome native api client and _start_ connection process
@@ -59,7 +59,7 @@ class PhysicalDevice extends EventEmitter {
         super();
         this.driver = driver;
         this.id = PhysicalDevice.buildPhysicalDeviceId(ipAddress, port);
-        this.native_capabilities = {};
+        this.nativeCapabilities = {};
 
         this.client = new Client(this, reconnect, ipAddress, port, password);
 
@@ -84,7 +84,7 @@ class PhysicalDevice extends EventEmitter {
         this.client
             .on('connected', () => this.connectedListener())
             .on('disconnected', () => this.disconnectedListener())
-            .on('stateChanged', (entityId, native_capability, value) => this.stateChangedListener(entityId, native_capability, value));
+            .on('stateChanged', (entityId, nativeCapability, value) => this.stateChangedListener(entityId, nativeCapability, value));
     }
 
     connectedListener() {
@@ -199,15 +199,15 @@ class PhysicalDevice extends EventEmitter {
         // little stupid way to find it, but I don't know better one :)
         // Assuming step is a float (even if it is actually an integer)
         for (let i = 0; i <= 10; i++) {
-            let step_multiplied = step * i * 10;
+            let stepMultiplied = step * i * 10;
 
             // For precision 0, we just use initial step value, not 0 :)
             if (i === 0) {
-                step_multiplied = step;
+                stepMultiplied = step;
             }
 
             // Now we compare using double convert trick
-            if (parseFloat(parseInt(step_multiplied)) == step_multiplied) {
+            if (parseFloat(parseInt(stepMultiplied)) == stepMultiplied) {
                 // Same result, it means the precision is correct!
                 this.log('Found precision', i, 'for step', step);
                 configs['precision'] = i;
@@ -241,7 +241,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigReadOnly(entity, configs);
                     nativeCapability = new NativeCapability(entityId, entity.config.name, entity.type, 'state', configs, constraints);
-                    this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
 
                 case 'Button':
@@ -251,7 +251,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigWriteOnly(entity, configs);
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
-                    this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
 
                 case 'Cover':
@@ -263,11 +263,11 @@ class PhysicalDevice extends EventEmitter {
                     // In the UI, it is shown as a %
                     if (entity.config.supportsPosition && entity.config.supportsPosition) {
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'position', configs, constraints);
-                        this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
                     if (entity.config.supportsTilt && entity.config.supportsTilt) {
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'tilt', configs, constraints);
-                        this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
                     break;
 
@@ -288,7 +288,7 @@ class PhysicalDevice extends EventEmitter {
                     this.log('Constraints after minMaxStep:', constraints);
                     this.computeConfigPrecisionFromStepConstraint(entity, configs, constraints);
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
-                    this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
             
                 case 'Sensor':
@@ -301,7 +301,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigUnit(entity, configs);
                     this.computeConfigPrecision(entity, configs);
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
-                    this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
                 
                 case 'Switch':
@@ -310,7 +310,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
-                    this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
                 
                 case 'TextSensor':
@@ -320,7 +320,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigReadOnly(entity, configs);
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
-                    this.native_capabilities[nativeCapability.getId()] = nativeCapability;
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
                 
                 default:
@@ -329,7 +329,7 @@ class PhysicalDevice extends EventEmitter {
             }
         });
 
-        this.log('Native capabilities computed:', this.native_capabilities);
+        this.log('Native capabilities computed:', this.nativeCapabilities);
     }
 
     disconnectedListener() {
@@ -341,43 +341,43 @@ class PhysicalDevice extends EventEmitter {
     stateChangedListener(entityId, attribut, value) {
         this.log('State received:', ...arguments);
 
-        let native_capability = this.native_capabilities[NativeCapability.buildId(entityId, attribut)];
-        this.log('Native capability:', native_capability);
-        if (!native_capability) {
+        let nativeCapability = this.nativeCapabilities[NativeCapability.buildId(entityId, attribut)];
+        this.log('Native capability:', nativeCapability);
+        if (!nativeCapability) {
             this.log('Unknown native capability, ignoring:', ...arguments);
             return;
         }
 
         // Check if writeOnly (just to detect unexpected issues)
-        if (native_capability.getConfig('writeOnly')) {
+        if (nativeCapability.getConfig('writeOnly')) {
             this.log('Received an unexpected stateChanged event for a writeOnly native capability:', ...arguments);
         }
 
         // Save new value
-        native_capability.setValue(value);
+        nativeCapability.setValue(value);
 
-        this.log('Emit event stateChanged', native_capability.getId(), value);
-        this.emit('stateChanged', native_capability.getId(), value);
+        this.log('Emit event stateChanged', nativeCapability.getId(), value);
+        this.emit('stateChanged', nativeCapability.getId(), value);
     }
 
     getCurrentValue(nativeCapabilityId) {
         this.log('Get current value:', nativeCapabilityId);
 
-        let native_capability = this.native_capabilities[nativeCapabilityId];
-        return native_capability ? native_capability.getValue() : null;
+        let nativeCapability = this.nativeCapabilities[nativeCapabilityId];
+        return nativeCapability ? nativeCapability.getValue() : null;
     }
 
     sendCommand(nativeCapabilityId, newValue) {
         this.log('Sending command:', ...arguments);
 
-        let native_capability = this.native_capabilities[nativeCapabilityId];
-        if (!native_capability) {
+        let nativeCapability = this.nativeCapabilities[nativeCapabilityId];
+        if (!nativeCapability) {
             this.log('Unknown native capability, ignoring:', ...arguments);
             return;
         }
 
         // Check if readOnly (just to detect unexpected issues)
-        if (native_capability.getConfig('readOnly')) {
+        if (nativeCapability.getConfig('readOnly')) {
             this.log('Received an unexpected command for a readOnly native capability:', ...arguments);
             return;
         }
@@ -387,7 +387,7 @@ class PhysicalDevice extends EventEmitter {
         // Maybe later, we will support optimistic mode
 
         // Sending ...
-        this.client.sendCommand(native_capability.entityId, native_capability.attribut, newValue);
+        this.client.sendCommand(nativeCapability.entityId, nativeCapability.attribut, newValue);
     }
 
     log(...args) {

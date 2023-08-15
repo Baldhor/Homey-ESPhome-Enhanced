@@ -2,7 +2,7 @@
 // The list is compiled from the sdk : https://apps-sdk-v3.developer.homey.app/tutorial-device-capabilities.html
 // I skiped some of them (lazy / cannot test them)
 // Added 2 customs : number and text
-capabilityTable = [
+CAPABILITY_CONFIGURATION = [
     {
         capability: 'number',
         type: 'number',
@@ -10,8 +10,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals', 'min', 'max', 'step', 'setable']
     },
     {
@@ -21,8 +21,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'media',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: ['decimals']
     },
     {
@@ -32,8 +32,8 @@ capabilityTable = [
         setable: true,
         quickaction: true,
         uielement: 'toggle',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: ['decimals', 'min', 'max', 'step', 'getable']
     },
     {
@@ -43,8 +43,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'slider',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals', 'min', 'max', 'step']
     },
     // Skip light_hue
@@ -60,8 +60,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'thermostat',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals', 'min', 'max', 'step']
     },
     {
@@ -71,8 +71,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -82,8 +82,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -93,8 +93,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -104,8 +104,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -115,8 +115,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -126,8 +126,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -137,8 +137,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -148,8 +148,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -159,8 +159,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -170,8 +170,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -181,8 +181,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -192,8 +192,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -203,8 +203,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'battery',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -214,8 +214,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals', 'approximated']
     },
     {
@@ -225,8 +225,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -236,8 +236,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -247,8 +247,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -258,8 +258,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -269,8 +269,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -280,8 +280,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -291,8 +291,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: ['zoneActivity']
     },
     {
@@ -302,8 +302,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: ['zoneActivity']
     },
     {
@@ -313,8 +313,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -324,8 +324,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -335,8 +335,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -346,8 +346,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -357,8 +357,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -368,8 +368,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -379,8 +379,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -390,8 +390,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -401,8 +401,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'battery',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -412,8 +412,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -423,8 +423,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -434,8 +434,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -445,8 +445,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -456,8 +456,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'sensor',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     // Skip homealarm_state
@@ -468,8 +468,8 @@ capabilityTable = [
         setable: false,
         quickaction: false,
         uielement: 'slider',
-        native_capability_supported: null,
-        native_capability_unsupported: ['Cover.position', 'Cover.tilt'],
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
         options: ['units', 'decimals']
     },
     {
@@ -479,8 +479,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'button',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -490,8 +490,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'button',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -501,8 +501,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'button',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: ['getable']
     },
     {
@@ -512,8 +512,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'button',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -523,8 +523,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'button',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     {
@@ -534,8 +534,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'toggle',
-        native_capability_supported: null,
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: null,
+        nativeCapabilityUnsupported: null,
         options: []
     },
     // Skip lock_mode
@@ -550,8 +550,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'slider',
-        native_capability_supported: ['Cover.tilt'],
-        native_capability_unsupported: ['Cover.position'],
+        nativeCapabilitySupported: ['Cover.tilt'],
+        nativeCapabilityUnsupported: ['Cover.position'],
         options: []
     },
     // Skip windowcoverings_closed
@@ -562,8 +562,8 @@ capabilityTable = [
         setable: true,
         quickaction: false,
         uielement: 'slider',
-        native_capability_supported: ['Cover.position'],
-        native_capability_unsupported: ['Cover.tilt'],
+        nativeCapabilitySupported: ['Cover.position'],
+        nativeCapabilityUnsupported: ['Cover.tilt'],
         options: []
     },
     {
@@ -573,8 +573,8 @@ capabilityTable = [
         setable: true,
         quickaction: true,
         uielement: 'button',
-        native_capability_supported: ['Button.state'],
-        native_capability_unsupported: null,
+        nativeCapabilitySupported: ['Button.state'],
+        nativeCapabilityUnsupported: null,
         options: []
     }
     // Skip speaker_playing

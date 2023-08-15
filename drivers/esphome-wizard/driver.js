@@ -126,29 +126,32 @@ class Driver extends Homey.Driver {
         session.setHandler('get-initial-configuration', (data) => {
             this.log('get-initial-configuration started:', data);
             let mode = data.mode;
-            let physical_device_id = data.physical_device_id;
+            let physicalDeviceId = data.physicalDeviceId;
 
-            this.log('Processed data:', mode, physical_device_id);
+            this.log('Processed data:', mode, physicalDeviceId);
 
-            let result = {};
+            let result = {
+                physicalDevice : null,
+                virtualDevices : [],
+                nativeCapabilities : []
+            };
 
             try {
                 // Get the physical device
-                let physical_device = PhysicalDeviceManager.getById(physical_device_id);
+                let physicalDevice = PhysicalDeviceManager.getById(physicalDeviceId);
 
                 // Add physical device to configuration
-                result.physical_device = {
-                    'id' : physical_device.id,
-                    'ipAddress' : physical_device.client.ipAddress,
-                    'port' : physical_device.client.port,
-                    'password' : physical_device.client.password
+                result.physicalDevice = {
+                    'id' : physicalDevice.id,
+                    'ipAddress' : physicalDevice.client.ipAddress,
+                    'port' : physicalDevice.client.port,
+                    'password' : physicalDevice.client.password
                 }
 
                 // We will build a list of bound_native_capabilities
-                let bound_native_capabilities = [];
+                let boundNativeCapabilities = [];
 
                 // Get the virtual devices and add them to configuration
-                result.virtual_devices = [];
                 if (mode === 'existing_physical_device') {
                     this.getDevices().foreach(device => {
                         if (device.physicalDevice === physicalDevice) {
@@ -156,8 +159,8 @@ class Driver extends Homey.Driver {
                             let capabilitiesConfig = device.getStoreValue('capabilitiesConfig');
 
                             let tmp = {
-                                'id' : device_id,
-                                'homey_id' : device.id,
+                                'id' : device.data.id,
+                                'homeyId' : device.data.id,
                                 'name' : device.getName(),
                                 'nameMustBeChanged' : false,
                                 'state' : 'unmodified',
@@ -168,37 +171,38 @@ class Driver extends Homey.Driver {
                                 let nativeCapabilityId = capabilitiesConfig[capability].nativeCapabilityId;
                                 tmp.capabilities.push({
                                     'name' : capability,
-                                    'native_capability_id' : nativeCapabilityId,
+                                    'nativeCapabilityId' : nativeCapabilityId,
                                     'state' : 'unmodified',
                                     'options' : device.getCapabilityOptions(capability)
                                 });
 
-                                bound_native_capabilities.push(nativeCapabilityId);
+                                boundNativeCapabilities.push(nativeCapabilityId);
                             });
+
+                            result.virtualDevices.push(tmp);
                         }
                     });
                 }
 
                 // Get the native capabilities and add them to configuration
-                result.native_capabilities = [];
-                this.log('Processing native capabilities:', physical_device.native_capabilities);
-                Object.keys(physical_device.native_capabilities).forEach(nativeCapabilityId => {
-                    let native_capability = physical_device.native_capabilities[nativeCapabilityId];
-                    this.log('Processing a native capability:', native_capability);
+                this.log('Processing native capabilities:', physicalDevice.nativeCapabilities);
+                Object.keys(physicalDevice.nativeCapabilities).forEach(nativeCapabilityId => {
+                    let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
+                    this.log('Processing a native capability:', nativeCapability);
 
                     let tmp = {
                         'id' : nativeCapabilityId,
-                        'entity_id' : native_capability.entityId,
-                        'entity_name' : native_capability.entityName,
-                        'type' : native_capability.type,
-                        'attribut' : native_capability.attribut,
-                        'state' : bound_native_capabilities.includes(nativeCapabilityId) ? 'bound' : 'unbind',
-                        'value' : native_capability.value,
-                        'configs' : native_capability.configs,
-                        'constraints' : native_capability.constraints
+                        'entityId' : nativeCapability.entityId,
+                        'entityName' : nativeCapability.entityName,
+                        'type' : nativeCapability.type,
+                        'attribut' : nativeCapability.attribut,
+                        'state' : boundNativeCapabilities.includes(nativeCapabilityId) ? 'bound' : 'unbind',
+                        'value' : nativeCapability.value,
+                        'configs' : nativeCapability.configs,
+                        'constraints' : nativeCapability.constraints
                     };
 
-                    result.native_capabilities.push(tmp);
+                    result.nativeCapabilities.push(tmp);
                 });
 
                 this.log('get-initial-configuration result:', result);

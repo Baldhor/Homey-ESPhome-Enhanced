@@ -27,8 +27,8 @@
 <!--
     Expected store content:
     - mode : new_physical_device, existing_physical_device
-    - physical_device_id : identifier of the  physical device
-    - last_virtual_device_id : Id of the last virtual device created, if null must be initialized to 1
+    - physical_device_id : identifier of the physical device
+    - last_virtual_device_id : last id generated for virtual device
     - initial_configuration : Initial configuration retrieved from the Driver, it can be usefull to keep it for debug purpose
     - ongoing_configuration : Ongoing configuration, initialized from initial_configuration
 -->
@@ -37,16 +37,16 @@
     Structure of configuration
 
     {
-        physical_device : {
+        physicalDevice : {
             id : string,
             ipAddress : string,
             port : string,
             password: string
         },
-        virtual_devices : [
+        virtualDevices : [
             {
                 id : string (either homey_id or new_<idx>),
-                homey_id : string,
+                homeyId : string,
                 name : string,
                 nameMustBeChanged : boolean (false by default, true if new virtual device),
                 state : string (one of: unmodfied, added, modified, deleted. unmodified by default, added if new virtual device)
@@ -62,15 +62,15 @@
                 ]
             }
         ],
-        native_capabilities : [
+        nativeCapabilities : [
             {
                 id : string (format: <entity_id>:<attribut>)
-                entity_id : string,
-                entity_name : string,
+                entityId : string,
+                entityName : string,
                 type : string,
                 attribut : string,
                 state : string (one of: unbind, bound),
-                current_value : string,
+                value : string,
                 configs : [
                     name : string => value : string
                 ],

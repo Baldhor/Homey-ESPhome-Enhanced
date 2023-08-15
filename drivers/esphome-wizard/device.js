@@ -39,7 +39,7 @@ class VirtualDevice extends Device {
     physicalDevice = null;
 
     // Customer trigger cards
-    esphome_number_custom = null;
+    esphomeNumberCustom = null;
 
     async onInit() {
         this.log(this.getName(), 'is inited');
@@ -64,7 +64,7 @@ class VirtualDevice extends Device {
     }
 
     registerCustomerTriggerCards() {
-        this.esphome_number_custom = this.homey.flow.getDeviceTriggerCard('esphome_number_custom2');
+        this.esphomeNumberCustom = this.homey.flow.getDeviceTriggerCard('esphome_number_custom2');
     }
 
     startAvailabilityListener() {
