@@ -2,6 +2,7 @@
     Allows to connect to a new physical device
 -->
 
+<script src="front_utils.js"></script>
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.new_device.title'));
     Homey.setNavigationClose();
@@ -52,9 +53,9 @@
 
         // check ipAddress is not empty
         if(!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPortnumber(port))
-            disableConnectButton();
+            disableButton(connectElement);
         else
-            enableConnectButton();
+            enableButton(connectElement);
     }
 
     function enableConnectButton() {
@@ -83,7 +84,7 @@
     }
 
     // Disable connect button by default
-    disableConnectButton();
+    disableButton(connectElement);
     connectElement.onclick = connect;
 
     ipAddressElement.oninput = checkConnectButton;

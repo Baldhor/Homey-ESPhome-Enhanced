@@ -2,6 +2,7 @@
     Allows to choose an existing physical device to modify
 -->
 
+<script src="front_utils.js"></script>
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.update_device.title'));
     Homey.setNavigationClose();
@@ -37,27 +38,8 @@
     const listElement = document.getElementById('existing_devices');
     const selectElement = document.getElementById('select');
 
-    function enableSelectButton() {
-        if (selectElement.classList.contains("is-disabled"))
-            selectElement.classList.remove("is-disabled");
-        selectElement.disabled = false;
-    }
-
-    function disableSelectButton() {
-        if (!selectElement.classList.contains("is-disabled"))
-            selectElement.classList.add("is-disabled");
-        selectElement.disabled = true;
-    }
-
-    function hideAll(element) {
-        element.hidden = true;
-        Array.from(element.children).forEach(function(subElement){
-            subElement.hidden = true;
-        });
-    }
-
     // Make sure the select button is disabled by default: need to select one device in the list!
-    disableSelectButton();
+    disableButton(selectElement);
 
     // Get existing device from homey
     var existingDevices = null;
@@ -90,7 +72,7 @@
                 cellBound.innerHTML = '<label class="homey-form-label">' + element.bound + '</label>';
 
                 // Add a listener to update the select button
-                document.getElementById(element.id).onchange = enableSelectButton;
+                document.getElementById(element.id).onchange = enableButton(selectElement);
             });
         }
 
