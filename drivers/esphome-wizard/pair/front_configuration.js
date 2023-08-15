@@ -4,8 +4,8 @@
 // Added 2 customs : number and text
 CAPABILITY_CONFIGURATION = [
     {
-        capability: 'number',
         type: 'number',
+        valueType: 'number',
         getable: true,
         setable: true,
         quickaction: false,
@@ -15,8 +15,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals', 'min', 'max', 'step', 'setable']
     },
     {
-        capability: 'text',
-        type: 'string',
+        type: 'text',
+        valueType: 'string',
         getable: true,
         setable: false,
         quickaction: false,
@@ -26,8 +26,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['decimals']
     },
     {
-        capability: 'onoff',
-        type: 'boolean',
+        type: 'onoff',
+        valueType: 'boolean',
         getable: true,
         setable: true,
         quickaction: true,
@@ -37,8 +37,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['decimals', 'min', 'max', 'step', 'getable']
     },
     {
-        capability: 'dim',
-        type: 'number',
+        type: 'dim',
+        valueType: 'number',
         getable: true,
         setable: true,
         quickaction: false,
@@ -54,8 +54,8 @@ CAPABILITY_CONFIGURATION = [
     // Skip vacuumcleaner_state
     // thermostat_mode
     {
-        capability: 'target_temperature',
-        type: 'number',
+        type: 'target_temperature',
+        valueType: 'number',
         getable: true,
         setable: true,
         quickaction: false,
@@ -65,8 +65,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals', 'min', 'max', 'step']
     },
     {
-        capability: 'measure_temperature',
-        type: 'number',
+        type: 'measure_temperature',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -76,8 +76,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_co',
-        type: 'number',
+        type: 'measure_co',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -87,8 +87,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_co2',
-        type: 'number',
+        type: 'measure_co2',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -98,8 +98,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_pm25',
-        type: 'number',
+        type: 'measure_pm25',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -109,8 +109,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_humidity',
-        type: 'number',
+        type: 'measure_humidity',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -120,8 +120,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_pressure',
-        type: 'number',
+        type: 'measure_pressure',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -131,8 +131,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_noise',
-        type: 'number',
+        type: 'measure_noise',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -142,8 +142,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_rain',
-        type: 'number',
+        type: 'measure_rain',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -153,8 +153,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_wind_strength',
-        type: 'number',
+        type: 'measure_wind_strength',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -164,8 +164,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_wind_angle',
-        type: 'number',
+        type: 'measure_wind_angle',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -175,8 +175,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_gust_strength',
-        type: 'number',
+        type: 'measure_gust_strength',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -186,8 +186,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_gust_angle',
-        type: 'number',
+        type: 'measure_gust_angle',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -197,8 +197,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_battery',
-        type: 'number',
+        type: 'measure_battery',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -208,8 +208,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_power',
-        type: 'number',
+        type: 'measure_power',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -219,8 +219,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals', 'approximated']
     },
     {
-        capability: 'measure_voltage',
-        type: 'number',
+        type: 'measure_voltage',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -230,8 +230,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_current',
-        type: 'number',
+        type: 'measure_current',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -241,8 +241,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_luminance',
-        type: 'number',
+        type: 'measure_luminance',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -252,8 +252,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_ultraviolet',
-        type: 'number',
+        type: 'measure_ultraviolet',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -263,8 +263,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'measure_water',
-        type: 'number',
+        type: 'measure_water',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -274,8 +274,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'alarm_generic',
-        type: 'boolean',
+        type: 'alarm_generic',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -285,8 +285,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_motion',
-        type: 'boolean',
+        type: 'alarm_motion',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -296,8 +296,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['zoneActivity']
     },
     {
-        capability: 'alarm_contact',
-        type: 'boolean',
+        type: 'alarm_contact',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -307,8 +307,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['zoneActivity']
     },
     {
-        capability: 'alarm_co',
-        type: 'boolean',
+        type: 'alarm_co',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -318,8 +318,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_co2',
-        type: 'boolean',
+        type: 'alarm_co2',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -329,8 +329,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_pm25',
-        type: 'boolean',
+        type: 'alarm_pm25',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -340,8 +340,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_tamper',
-        type: 'boolean',
+        type: 'alarm_tamper',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -351,8 +351,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_smoke',
-        type: 'boolean',
+        type: 'alarm_smoke',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -362,8 +362,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_fire',
-        type: 'boolean',
+        type: 'alarm_fire',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -373,8 +373,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_heat',
-        type: 'boolean',
+        type: 'alarm_heat',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -384,8 +384,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_water',
-        type: 'boolean',
+        type: 'alarm_water',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -395,8 +395,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_battery',
-        type: 'boolean',
+        type: 'alarm_battery',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -406,8 +406,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'alarm_night',
-        type: 'boolean',
+        type: 'alarm_night',
+        valueType: 'boolean',
         getable: true,
         setable: false,
         quickaction: false,
@@ -417,8 +417,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'meter_power',
-        type: 'number',
+        type: 'meter_power',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -428,8 +428,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'meter_water',
-        type: 'number',
+        type: 'meter_water',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -439,8 +439,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'meter_gas',
-        type: 'number',
+        type: 'meter_gas',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -450,8 +450,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'meter_rain',
-        type: 'number',
+        type: 'meter_rain',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -462,8 +462,8 @@ CAPABILITY_CONFIGURATION = [
     },
     // Skip homealarm_state
     {
-        capability: 'volume_set',
-        type: 'number',
+        type: 'volume_set',
+        valueType: 'number',
         getable: true,
         setable: false,
         quickaction: false,
@@ -473,8 +473,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['units', 'decimals']
     },
     {
-        capability: 'volume_up',
-        type: 'boolean',
+        type: 'volume_up',
+        valueType: 'boolean',
         getable: false,
         setable: true,
         quickaction: false,
@@ -484,8 +484,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'volume_down',
-        type: 'boolean',
+        type: 'volume_down',
+        valueType: 'boolean',
         getable: false,
         setable: true,
         quickaction: false,
@@ -495,8 +495,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'volume_mute',
-        type: 'boolean',
+        type: 'volume_mute',
+        valueType: 'boolean',
         getable: true,
         setable: true,
         quickaction: false,
@@ -506,8 +506,8 @@ CAPABILITY_CONFIGURATION = [
         options: ['getable']
     },
     {
-        capability: 'channel_up',
-        type: 'boolean',
+        type: 'channel_up',
+        valueType: 'boolean',
         getable: false,
         setable: true,
         quickaction: false,
@@ -517,8 +517,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'channel_down',
-        type: 'boolean',
+        type: 'channel_down',
+        valueType: 'boolean',
         getable: false,
         setable: true,
         quickaction: false,
@@ -528,8 +528,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'locked',
-        type: 'boolean',
+        type: 'locked',
+        valueType: 'boolean',
         getable: true,
         setable: true,
         quickaction: false,
@@ -544,8 +544,8 @@ CAPABILITY_CONFIGURATION = [
     // Skip windowcoverings_tilt_up
     // Skip windowcoverings_tilt_down
     {
-        capability: 'windowcoverings_tilt_set',
-        type: 'number',
+        type: 'windowcoverings_tilt_set',
+        valueType: 'number',
         getable: true,
         setable: true,
         quickaction: false,
@@ -556,8 +556,8 @@ CAPABILITY_CONFIGURATION = [
     },
     // Skip windowcoverings_closed
     {
-        capability: 'windowcoverings_set',
-        type: 'number',
+        type: 'windowcoverings_set',
+        valueType: 'number',
         getable: true,
         setable: true,
         quickaction: false,
@@ -567,8 +567,8 @@ CAPABILITY_CONFIGURATION = [
         options: []
     },
     {
-        capability: 'button',
-        type: 'boolean',
+        type: 'button',
+        valueType: 'boolean',
         getable: false,
         setable: true,
         quickaction: true,
