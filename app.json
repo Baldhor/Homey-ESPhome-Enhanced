@@ -248,6 +248,12 @@
         "en": "ESPHome Wizard (beta)"
       },
       "class": "other",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
       "capabilities": [
         "onoff",
         "windowcoverings_set",

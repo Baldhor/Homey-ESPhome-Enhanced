@@ -114,23 +114,39 @@ sensor:
     id: random_percentage
     unit_of_measurement: "%"
     lambda: |-
-      return rand() % 100;
+      return (rand() % 10000) / 100;
     update_interval: 60s
   
-  - platform: template  
+  - platform: template
     name: "Random temperature"
     id: random_temperature
     unit_of_measurement: "°c"
     lambda: |-
-      return rand() % 20 + 5;
+      return (rand() % 2000) / 100 + 5;
     update_interval: 60s
     
-  - platform: template  
+  - platform: template
+    name: "Random temperature2"
+    id: random_temperature2
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100 + 5;
+    update_interval: 60s
+    
+  - platform: template
     name: "Random humidity"
     id: random_humidity
     unit_of_measurement: "%rH"
     lambda: |-
-      return rand() % 90 + 5;
+      return (rand() % 9000) / 100 + 5;
+    update_interval: 60s
+
+  - platform: template
+    name: "Random humidity2"
+    id: random_humidity2
+    unit_of_measurement: "%rH"
+    lambda: |-
+      return (rand() % 9000) / 100 + 5;
     update_interval: 60s
 
 number:

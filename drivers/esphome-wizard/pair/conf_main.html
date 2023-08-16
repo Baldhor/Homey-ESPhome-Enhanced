@@ -930,15 +930,25 @@
 
         // Let's find the native capability
         let nativeCapabilities = ongoingConfiguration.nativeCapabilities.filter(nativeCapability => nativeCapability.id === capability.nativeCapabilityId);
-        if (nativeCapabilities.length === 0 || !getCompatibleCapabilityTypes(nativeCapabilities[0]).includes(capability.type)) {
+        if (nativeCapabilities.length === 0) {
             // This native capability doesn't exist anymore ...
-            // Or is not compatible anymore ...
             // How sad
             capability.state = 'deleted';
             capability.nativeCapabilityId = null;
             capability.options = null;
 
             return;
+        } else if (!getCompatibleCapabilityTypes(nativeCapabilities[0]).includes(capability.type)) {
+            // This native capability is not compatible anymore ...
+            // The user need to choose a new capability
+            // How sad
+            capability.state = 'modified';
+            capability.type = null;
+            capability.name = null;
+            capability.options = null;
+
+            return;
+            
         }
 
         // We use the default options for the native capability
@@ -1094,7 +1104,7 @@
 
         let countLeftOptions = 0;
         Object.keys(leftOptions).forEach((key) => {
-            count_left_options++;
+            countLeftOptions++;
             if (leftOptions[key] !== rightOptions[key]) {
                 result = false;
             }
