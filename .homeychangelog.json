@@ -37,5 +37,8 @@
   },
   "0.4.3": {
     "en": "A few fix to Wizard driver"
+  },
+  "0.4.4": {
+    "en": "FIX: few fix for edge cases"
   }
 }
