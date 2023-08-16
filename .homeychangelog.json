@@ -31,5 +31,8 @@
   },
   "0.4.1": {
     "en": "BETA: refacto of wizard driver, imply breaking changes (sorry). The wizard driver should be stable enough to avoid breaking changes in the future"
+  },
+  "0.4.2": {
+    "en": "Wizard is fully implemented. Still in BETA as more testing is necessary"
   }
 }
