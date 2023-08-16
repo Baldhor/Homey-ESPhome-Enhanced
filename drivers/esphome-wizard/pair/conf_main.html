@@ -262,7 +262,9 @@
                 capability.type = newValue;
                 switch (capability.state) {
                     case 'unmodified':
+                    case 'updated':
                         capability.name = null;
+                        capability.state = 'modified';
                         capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
                         break;
 
@@ -896,8 +898,8 @@
                     })
                 });
 
-                Homey.setViewStoreValue('store', 'initial configuration', result);
-                Homey.setViewStoreValue('store', 'ongoing configuration', ongoingConfiguration);
+                Homey.setViewStoreValue('store', 'initial_configuration', result);
+                Homey.setViewStoreValue('store', 'ongoing_configuration', ongoingConfiguration);
 
                 // Finished, init of the view
                 initView();
@@ -1018,6 +1020,8 @@
     }
 
     function getCompatibleCapabilityTypes(nativeCapability) {
+        console.log('getCompatibleCapabilityTypes:', ...arguments);
+
         // We use a multicriterea list to obtain the compatible capabilities
         // We just need to filter it
 
@@ -1081,6 +1085,8 @@
     }
 
     function compareVirtualDeviceCapabilityOptions(leftOptions, rightOptions) {
+        console.log('compareVirtualDeviceCapabilityOptions:', ...arguments);
+
         // We compare the keys from left to right
         // And then make sure if there are even more keys on right
 
@@ -1102,6 +1108,8 @@
     }
 
     function _delete_native_capability(virtualDevice, virtualDeviceCapability) {
+        console.log('_delete_native_capability:', ...arguments);
+
         // Even if its an existing capability, the user confirmed, peace to his soul ...
         Homey.showLoadingOverlay();
 
@@ -1128,7 +1136,7 @@
      * Let's apply ...
      */
     async function _confirm() {
-        console.log('How dare you ...');
+        console.log('_confirm');
 
         Homey.showLoadingOverlay();
 
@@ -1141,6 +1149,10 @@
          * - Create added virtual devices with their capabilities
          * 
          * This order will ensure that the native capabilities moved from one virtual device to another is succesfull!
+         * 
+         * /!\ An existing virtual device capability modified can be:
+         * - A change of the capability type => mean a 'remove' + an 'add'
+         * - A change of its options => mean a 'modify'
          */
 
 
@@ -1240,37 +1252,7 @@
 
                         case 'added':
                             console.log('Capability to add:', capability);
-
-                            // Compute a capabilityName
-                            // Index 0: '<capabilityType>'
-                            // Index >0: '<capabilityType>.<index>'
-                            let capabilityName = capability.type;
-                            let index = 0;
-                            while (capabilityNames.includes(capabilityName)) {
-                                index++;
-                                capabilityName = capability.type + '.' + index;
-                            }
-
-                            // Add the capabilityName to the list
-                            capabilityNames.push(capabilityName);
-
-                            // Build the capability object
-                            let capabilityToAdd = {
-                                'capabilityName': capabilityName,
-                                'nativeCapabilityId': capability.nativeCapabilityId,
-                                'options': capability.options
-                            };
-
-                            // Check if the device is already added to capabilitiesToAdd
-                            let capabilityToAddObject = capabilitiesToAdd.find(capabilityToAdd => capabilityToAdd.deviceId === virtualDevice.id);
-                            if (!capabilityToAddObject) {
-                                capabilityToAddObject = {
-                                    'deviceId': virtualDevice.id,
-                                    'capabilities': []
-                                }
-                                capabilitiesToAdd.push(capabilityToAddObject);
-                            }
-                            capabilityToAddObject.capabilities.push(capabilityToAdd);
+                            _addAddAction(virtualDevice, capability, capabilityNames, capabilitiesToAdd);
 
                             console.log('Capability processed:', capability);
                             break;
@@ -1278,39 +1260,27 @@
                         case 'modified':
                             console.log('Capability to modify:', capability);
 
-                            // Build the capability object
-                            let capabilityToModify = {
-                                'capabilityName': capability.name,
-                                'options': capability.options
-                            };
+                            // Is the capability type modified ? If so its name is null ..
+                            if (capability.name !== null) {
+                                // It's a simple modification of the options
+                                console.log('Capability options to modify:', capability);
+                                _addModifyAction(virtualDevice, capability, capabilitiesToModify);
+                            } else {
+                                // It's a change of capability type, we need to delete and add ...
 
-                            // Check if the device is already added to capabilitiesToAdd
-                            let capabilityToModifyObject = capabilitiesToModify.find(capabilityToModify => capabilityToModify.deviceId === virtualDevice.id);
-                            if (!capabilityToModifyObject) {
-                                capabilityToModifyObject = {
-                                    'deviceId': virtualDevice.id,
-                                    'capabilities': []
-                                }
-                                capabilitiesToModify.push(capabilityToModifyObject);
+                                // We search the initial capabilioty by nativeCapabilityId (name is null, and type may not be unique!)
+                                let initialCapability = initialConfiguration.virtualDevices.filter(initialVirtualDevice => initialVirtualDevice.id === virtualDevice.id)[0].capabilities.filter(initialCapability => initialCapability.nativeCapabilityId === capability.nativeCapabilityId)[0];
+                                console.log('Capability type to modify:', capability);
+                                _addDeleteAction(virtualDevice, initialCapability, capabilitiesToRemove);
+                                _addAddAction(virtualDevice, capability, capabilityNames, capabilitiesToAdd);
                             }
-                            capabilityToModifyObject.capabilities.push(capabilityToModify);
 
                             console.log('Capability processed:', capability);
                             break;
 
                         case 'deleted':
                             console.log('Capability to delete:', capability);
-
-                            // Check if the device is already added to capabilitiesToAdd
-                            let capabilityToRemoveObject = capabilitiesToRemove.find(capabilityToRemove => capabilityToRemove.deviceId === virtualDevice.id);
-                            if (!capabilityToRemoveObject) {
-                                capabilityToRemoveObject = {
-                                    'deviceId': virtualDevice.id,
-                                    'capabilities': []
-                                }
-                                capabilitiesToRemove.push(capabilityToRemoveObject);
-                            }
-                            capabilityToRemoveObject.capabilities.push(capability.name);
+                            _addDeleteAction(virtualDevice, capability, capabilitiesToRemove);
 
                             console.log('Capability processed:', capability);
                             break;
@@ -1327,83 +1297,9 @@
                 // New virtual device
                 // ****************
                 console.log('Processing new virtual device', virtualDevice.id);
+                _addCreateAction(virtualDevice, devicesToCreate);
 
-                // Blueprint of a Homey device
-                var device = {
-                    name: null,
-                    class: "socket",
-                    capabilities: [],
-                    capabilitiesOptions: {},
-                    store: {
-                        capabilityKeys: {} // pair of capability -> native_capability_id
-                    },
-                    data: {
-                        id: null // Will generate it later
-                    },
-                    settings: { // Allows to reconnect to the physical device
-                        ipAddress: null,
-                        port: null,
-                        password: null
-                    }
-                };
-
-                // Add name
-                device.name = virtualDevice.name;
-
-                // Add capabilities, their options and capabilityKeys
-                let capabilityIndex = {};
-                virtualDevice.capabilities.forEach(capability => {
-                    if (capability.state === 'deleted') {
-                        return;
-                    }
-
-                    // Convert capability type to capability name
-                    // A capability name is for exemple: 'windowcoverings_set.2'
-                    // It happens when the same capability type is used several times for the same device!
-                    let capabilityName = capability.type;
-
-                    // If the same capability is used several times, we need to add index to the capability name
-                    if (capabilityIndex.capabilityName) {
-                        capabilityIndex[capabilityName] += 1;
-                        capabilityName = capabilityName + capabilityIndex[capabilityName];
-                    } else {
-                        capabilityIndex[capabilityName] = 0;
-                    }
-
-                    device.capabilities.push(capabilityName);
-                    device.capabilitiesOptions[capabilityName] = capability.options;
-                    device.store.capabilityKeys[capabilityName] = capability.nativeCapabilityId;
-                });
-
-                // Add data => unique identifier!
-                if (virtualDevice.state === 'added') {
-                    // We will generate it later
-                } else {
-                    device.data = {
-                        id: virtualDevice.homeyId
-                    };
-                }
-
-                // Add settings
-                // FIXME: We just bring password around and not crypted ... how nice
-                device.settings['ipAddress'] = ongoingConfiguration.physicalDevice.ipAddress;
-                device.settings['port'] = ongoingConfiguration.physicalDevice.port;
-                device.settings['password'] = ongoingConfiguration.physicalDevice.password;
-
-                // Which list
-                switch (virtualDevice.state) {
-                    case 'deleted':
-                        devicesToDelete.push(device);
-                        break;
-
-                    case 'modified':
-                        devicesToUpdate.push(device);
-                        break;
-
-                    case 'added':
-                        devicesToCreate.push(device);
-                        break;
-                }
+                console.log('New virtual device processed:', virtualDevice);
             } else {
                 console.log('Unexpected state for device:', virtualDevice);
                 Homey.hideLoadingOverlay();
@@ -1462,6 +1358,136 @@
         Homey.done();
     }
 
+    function _addAddAction(virtualDevice, capability, capabilityNames, capabilitiesToAdd) {
+        console.log('_addAddAction:', ...arguments);
+
+        // Compute a capabilityName
+        // Index 0: '<capabilityType>'
+        // Index >0: '<capabilityType>.<index>'
+        let capabilityName = capability.type;
+        let index = 0;
+        while (capabilityNames.includes(capabilityName)) {
+            index++;
+            capabilityName = capability.type + '.' + index;
+        }
+
+        // Add the capabilityName to the list
+        capabilityNames.push(capabilityName);
+
+        // Build the capability object
+        let capabilityToAdd = {
+            'capabilityName': capabilityName,
+            'nativeCapabilityId': capability.nativeCapabilityId,
+            'options': capability.options
+        };
+
+        // Check if the device is already added to capabilitiesToAdd
+        let capabilityToAddObject = capabilitiesToAdd.find(capabilityToAdd => capabilityToAdd.deviceId === virtualDevice.id);
+        if (!capabilityToAddObject) {
+            capabilityToAddObject = {
+                'deviceId': virtualDevice.id,
+                'capabilities': []
+            }
+            capabilitiesToAdd.push(capabilityToAddObject);
+        }
+        capabilityToAddObject.capabilities.push(capabilityToAdd);
+    }
+
+    function _addModifyAction(virtualDevice, capability, capabilitiesToModify) {
+        console.log('_addModifyAction:', ...arguments);
+
+        // Build the capability object
+        let capabilityToModify = {
+            'capabilityName': capability.name,
+            'options': capability.options
+        };
+
+        // Check if the device is already added to capabilitiesToAdd
+        let capabilityToModifyObject = capabilitiesToModify.find(capabilityToModify => capabilityToModify.deviceId === virtualDevice.id);
+        if (!capabilityToModifyObject) {
+            capabilityToModifyObject = {
+                'deviceId': virtualDevice.id,
+                'capabilities': []
+            }
+            capabilitiesToModify.push(capabilityToModifyObject);
+        }
+        capabilityToModifyObject.capabilities.push(capabilityToModify);
+    }
+
+    function _addDeleteAction(virtualDevice, capability, capabilitiesToRemove) {
+        console.log('_addDeleteAction:', ...arguments);
+
+        // Check if the device is already added to capabilitiesToAdd
+        let capabilityToRemoveObject = capabilitiesToRemove.find(capabilityToRemove => capabilityToRemove.deviceId === virtualDevice.id);
+        if (!capabilityToRemoveObject) {
+            capabilityToRemoveObject = {
+                'deviceId': virtualDevice.id,
+                'capabilities': []
+            }
+            capabilitiesToRemove.push(capabilityToRemoveObject);
+        }
+        capabilityToRemoveObject.capabilities.push(capability.name);
+    }
+
+    function _addCreateAction(virtualDevice, devicesToCreate) {
+        console.log('_addCreateAction:', ...arguments);
+
+        // Blueprint of a Homey device
+        var device = {
+            name: null,
+            class: "socket",
+            capabilities: [],
+            capabilitiesOptions: {},
+            store: {
+                capabilityKeys: {} // pair of capability -> native_capability_id
+            },
+            data: {
+                id: null // Will generate it later
+            },
+            settings: { // Allows to reconnect to the physical device
+                ipAddress: null,
+                port: null,
+                password: null
+            }
+        };
+
+        // Add name
+        device.name = virtualDevice.name;
+
+        // Add capabilities, their options and capabilityKeys
+        let capabilityIndex = {};
+        virtualDevice.capabilities.forEach(capability => {
+            if (capability.state === 'deleted') {
+                return;
+            }
+
+            // Convert capability type to capability name
+            // A capability name is for exemple: 'windowcoverings_set.2'
+            // It happens when the same capability type is used several times for the same device!
+            let capabilityName = capability.type;
+
+            // If the same capability is used several times, we need to add index to the capability name
+            if (capabilityIndex.capabilityName) {
+                capabilityIndex[capabilityName] += 1;
+                capabilityName = capabilityName + capabilityIndex[capabilityName];
+            } else {
+                capabilityIndex[capabilityName] = 0;
+            }
+
+            device.capabilities.push(capabilityName);
+            device.capabilitiesOptions[capabilityName] = capability.options;
+            device.store.capabilityKeys[capabilityName] = capability.nativeCapabilityId;
+        });
+
+        // Add settings
+        // FIXME: We just bring password around and not crypted ... how nice
+        device.settings['ipAddress'] = ongoingConfiguration.physicalDevice.ipAddress;
+        device.settings['port'] = ongoingConfiguration.physicalDevice.port;
+        device.settings['password'] = ongoingConfiguration.physicalDevice.password;
+
+        devicesToCreate.push(device);
+    }
+
     function _logAlert(message) {
         console.log('Alert:', message);
         ++nbAlert;
@@ -1488,16 +1514,22 @@
     // Check if initial configuration is already in the store view
     // If not, emit get-initial-configuration and store the initial configuration in the store view (also stored as ongoing configuration)
     // We can then init the view based on ongoing configuration from the store
-    Homey.getViewStoreValue('store', 'ongoing_configuration').then(function (result) {
-        console.log('Ongoing configuration from store:', result);
+    Homey.getViewStoreValue('store', 'initial_configuration').then(function (result) {
+        console.log('Initial configuration from store:', result);
 
         if (!result) {
             retrieveInitialConfiguration();
         } else {
-            ongoingConfiguration = result;
+            initialConfiguration = result;
 
-            // Finished, init of the view
-            initView();
+            Homey.getViewStoreValue('store', 'ongoing_configuration').then(function (result) {
+                console.log('Ongoing configuration from store:', result);
+
+                ongoingConfiguration = result;
+
+                // Finished, init of the view
+                initView();
+            });
         }
     });
 </script>
