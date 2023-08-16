@@ -49,11 +49,11 @@
                 homeyId : string,
                 name : string,
                 nameMustBeChanged : boolean (false by default, true if new virtual device),
-                state : string (one of: unmodfied, added, modified, deleted. unmodified by default, added if new virtual device)
+                state : string (existing or added)
                 capabilities : [
                     {
                         type : string,
-                        //name : string, // TODO: Apply to existing virtual device with already assigned capabilities .. to be tested further before implementation
+                        name : string, // TODO: Apply to existing virtual device with already assigned capabilities .. to be tested further before implementation
                         nativeCapabilityId : string (format: <entity_id>:<attribut> => refer to a physical_device native capability),
                         state : string (one of: unmodified, added, modified, deleted. unmodified by default, added if new native_capability),
                         options : [

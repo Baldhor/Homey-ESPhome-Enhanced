@@ -1,6 +1,25 @@
 <!--
     Allows to choose an existing physical device to modify
 -->
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
 <script src="front_utils.js"></script>
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.update_device.title'));
@@ -15,22 +34,22 @@
 
 <table id="existing_devices">
     <tr>
-        <th></th>
         <th>
-            <legend class="homey-form-legend" data-i18n="wizard.update_device.id"></legend>
+            <legend class="homey-form-legend" data-i18n="wizard.update_device.physical_device_id"></legend>
         </th>
         <th>
-            <legend class="homey-form-legend" data-i18n="wizard.update_device.ipAddress"></legend>
+            <legend class="homey-form-legend" data-i18n="wizard.update_device.physical_device_ipAddress"></legend>
         </th>
         <th>
-            <legend class="homey-form-legend" data-i18n="wizard.update_device.port"></legend>
+            <legend class="homey-form-legend" data-i18n="wizard.update_device.physical_device_port"></legend>
         </th>
         <th>
-            <legend class="homey-form-legend" data-i18n="wizard.update_device.bound"></legend>
+            <legend class="homey-form-legend" data-i18n="wizard.update_device.physical_device_bound"></legend>
         </th>
     </tr>
 </table>
 
+<br>
 <button id="select" class="homey-button-primary-full" data-i18n="wizard.update_device.select"
     onclick="onClickSelect(event);"></button>
 <script type="application/javascript">
@@ -52,7 +71,7 @@
         // Don't actually submit the form just yet
         event.preventDefault();
 
-        Homey.setViewStoreValue('store', 'physical_device_id', document.querySelector('input[name="radio-buttons"]:checked').value).then(() => {
+        Homey.setViewStoreValue('store', 'physical_device_id', document.querySelector('input[name="radio_buttons"]:checked').value).then(() => {
             Homey.hideLoadingOverlay();
             Homey.showView('conf_main');
         });
@@ -67,34 +86,37 @@
     disableButton(document.getElementById('select'));
 
     // Get existing device from homey
-    var existingDevices = null;
-    Homey.emit("get-existing-devices").then(result => {
-        console.log('Existing devices:', result);
-        existingDevices = result;
+    Homey.emit("get-existing-physical-devices").then(existingPhysicalDevices => {
+        console.log('Event get-existing-physical-devices received:', existingPhysicalDevices);
 
-        if (existingDevices.length === 0) {
-            // Hide list and select button
-            hideAll(document.getElementById('existing_devices'));
-            hideAll(document.getElementById('select'));
+        if (existingPhysicalDevices.length === 0) {
+            // Remove list and select button
+            document.getElementById('existing_devices').remove();
+            document.getElementById('select').remove();
         } else {
-            // Hide none
-            hideAll(document.getElementById('none'));
+            // Remove none
+            document.getElementById('none').remove();
 
             // Loop on each device and add them to the list with a radio button
             // Using physical device id to identify the radio button
-            existingDevices.forEach(element => {
-                var row = listElement.insertRow(-1);
-                var cellSelect = row.insertCell(0);
-                var cellId = row.insertCell(1);
-                var cellIpAddress = row.insertCell(2);
-                var cellPort = row.insertCell(3);
-                var cellBound = row.insertCell(4);
+            existingPhysicalDevices.forEach(existingPhysicalDevice => {
+                let row = document.getElementById('existing_devices').insertRow(-1);
+                let index = 0;
+                let cellId = row.insertCell(index++);
+                let cellIpAddress = row.insertCell(index++);
+                let cellPort = row.insertCell(index++);
+                let cellBound = row.insertCell(index++);
 
-                cellSelect.innerHTML = '<input class="homey-form-radio-input" type="radio" name="radio-buttons" id="' + element.id + '" onchange="onChangeRadio(event);"/>';
-                cellId.innerHTML = '<label class="homey-form-label">' + element.id + '</label>';
-                cellIpAddress.innerHTML = '<label class="homey-form-label">' + element.ipAddress + '</label>';
-                cellPort.innerHTML = '<label class="homey-form-label">' + element.port + '</label>';
-                cellBound.innerHTML = '<label class="homey-form-label">' + element.bound + '</label>';
+                let tmpId = '';
+                tmpId += '<label class="homey-form-radio" style="margin-top:0px !important;">';
+                tmpId += '<input class="homey-form-radio-input" type="radio" name="radio_buttons" value="' + existingPhysicalDevice.id + '"" onchange="onChangeRadio(event);"/>';
+                tmpId += '<span class="homey-form-radio-checkmark"></span>';
+                tmpId += '<span class="homey-form-radio-text">' + existingPhysicalDevice.id + '</span>';
+                tmpId += '</label>';
+                cellId.innerHTML = tmpId;
+                cellIpAddress.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + existingPhysicalDevice.ipAddress + '</label>';
+                cellPort.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + existingPhysicalDevice.port + '</label>';
+                cellBound.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + existingPhysicalDevice.bound + '</label>';
             });
         }
 

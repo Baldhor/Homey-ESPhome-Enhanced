@@ -104,7 +104,7 @@ class PhysicalDeviceManager extends EventEmitter {
      */
     static checkDelete(virtualDeviceDeleted, physicalDevice) {
         this.log('Checking if still usefull:', physicalDevice.id);
-        const result = false;
+        let result = false;
         this.getInstance().driver.getDevices().forEach(device => {
             if (device !== virtualDeviceDeleted && device.physicalDevice === physicalDevice) {
                 result = true;

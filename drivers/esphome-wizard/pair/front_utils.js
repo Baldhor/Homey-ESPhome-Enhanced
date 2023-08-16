@@ -4,8 +4,8 @@
  */
 function hideAll(element) {
     element.hidden = true;
-    Array.from(element.children).forEach(function (subElement) {
-        subElement.hidden = true;
+    Array.from(element.children).forEach(child => {
+        hideAll(child);
     });
 }
 

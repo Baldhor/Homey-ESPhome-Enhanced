@@ -72,7 +72,6 @@
                 "actions": {
                     "title": "Available action(s)",
                     "delete_virtual_device": "Delete virtual device",
-                    "restore_virtual_device": "Restore vitual device",
                     "delete_capability": "Delete capability",
                     "modify_capability": "Modify capability",
                     "no_capability_selected": "Select a capability"
@@ -81,9 +80,9 @@
                 "no_native_capability_alert": "Add at least one native capability",
                 "change_name_format": "The name you input is not nice, try again!",
                 "native_capability_deleted": "Deleted!",
-                "virtual_device_deleted_warning" : "This virtual device has been deleted, it can/will break your flows!",
                 "name_must_be_changed_alert" : "Don't forget to change the name!",
-                "native_capability_deleted_warning" : "This virtual device doesn't have any capability anymore, you must either delete or restore it"
+                "native_capability_deleted_warning" : "This virtual device doesn't have any capability anymore, you must either delete or restore it",
+                "delete_existing_native_capability_warning" : "Removing this capability can/will break your flows! Are you sure?"
             },
             "settings": {
                 "title": "List of settings",
@@ -107,10 +106,8 @@
                 "name": "Name",
                 "stateLabel": "State",
                 "state" : {
-                    "unmodified" : "Unmodified",
-                    "added": "New",
-                    "modified": "Modified",
-                    "deleted": "Deleted"
+                    "existing" : "Existing",
+                    "added": "New"
                 }
             },
             "native_capability": {
