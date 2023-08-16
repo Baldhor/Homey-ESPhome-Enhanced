@@ -210,6 +210,24 @@
 
             capability.options[optionId] = newValue;
 
+            // We need to change the state of the capability
+            // Different cases:
+            // - added: we don't care
+            // - modified: If the user set back its old value, then we may need to set the state to unmodified
+            // - unmodified: jsut make it modified
+
+            if (capability.state === 'unmodified') {
+                capability.state = 'modified';
+            } else if (capability.state === 'modified') {
+                let initialVirtualDevice = initialConfiguration.virtualDevices.filter(virtualDevice => virtualDevice.id === virtualDeviceId)[0];
+                let initialCapability = initialVirtualDevice.capabilities.filter(capability => capability.nativeCapabilityId === nativeCapabilityId)[0];
+
+                if (compareVirtualDeviceCapabilityOptions(capability.options, initialCapability.options)) {
+                    // The same options, meaning the state is unmodified
+                    capability.state = 'unmodified';
+                }
+            }
+
             // Let's store it and refresh the view
             Homey.setViewStoreValue('store', 'ongoing_configuration', ongoingConfiguration).then(() => {
                 Homey.hideLoadingOverlay();
@@ -234,66 +252,40 @@
 
             // The value changed?
             if (capability.type !== newValue) {
-                // modified?
-                if (capability.state === 'unmodified') {
-                    // It's an existing capability and it has been modified!
-                    capability.state = 'modified';
-                }
+                // We need to consider several cases based on the state of the capability
+                // - added : just apply new capability and initialize its options
+                // - unmodified : set the capability as modified, nullify its name and initialize its options
+                // - modified :
+                //     - The user set its old capability? We need to reset its name and options to their initial values
+                //     - If not: initialize its options
+
                 capability.type = newValue;
+                switch (capability.state) {
+                    case 'unmodified':
+                        capability.name = null;
+                        capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
+                        break;
 
-                // We need to initialize the options
-                {
-                    // Get the capability configuration
-                    let capabilityConf = CAPABILITY_CONFIGURATION.filter(compatibleCapability => compatibleCapability.type === capability.type)[0];
+                    case 'added':
+                        capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
+                        break;
 
-                    // We need to initialize the options
-                    let options = {};
-                    capabilityConf.options.forEach(option => options[option] = null);
+                    case 'modified':
+                        let initialVirtualDevice = initialConfiguration.virtualDevices.filter(virtualDevice => virtualDevice.id === virtualDeviceId)[0];
+                        let initialCapability = initialVirtualDevice.capabilities.filter(capability => capability.nativeCapabilityId === nativeCapabilityId)[0];
 
-                    // Let's check if we can init some values from the native_capability itself
-                    Object.keys(options).forEach(key => {
-                        switch (key) {
-                            case 'units':
-                                options[key] = nativeCapability.configs['unit'] ?? null;
-                                break;
+                        if (initialCapability.type === capability.type) {
+                            // The user set its old capability
+                            capability.state = 'unmodified';
+                            capability.name = initialCapability.name;
+                            capability.options = JSON.parse(JSON.stringify(initialCapability).options); // Making sure to make a copy :)
 
-                            case 'decimals':
-                                options[key] = nativeCapability.configs['precision'] ?? null;
-                                break;
-
-                            case 'min':
-                                options[key] = nativeCapability.constraints['min'] ?? null;
-                                break;
-
-                            case 'max':
-                                options[key] = nativeCapability.constraints['max'] ?? null;
-                                break;
-
-                            case 'step':
-                                options[key] = nativeCapability.constraints['step'] ?? null;
-                                break;
-
-                            case 'zoneActivity':
-                                // no match, default to true
-                                options[key] = true;
-                                break;
-
-                            case 'approximated':
-                                // no match, default to false
-                                options[key] = false;
-                                break;
-
-                            case 'getable':
-                                options[key] = nativeCapability.configs['writeOnly'] ?? null;
-                                break;
-
-                            case 'setable':
-                                options[key] = nativeCapability.configs['readOnly'] ?? null;
-                                break;
+                            // However, the configuration of a capability may have changed
+                            _updateCapabilityForNewConfiguration(capability);
+                        } else {
+                            capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
                         }
-                    });
-
-                    capability.options = options;
+                        break;
                 }
 
                 // Let's store it and refresh the view
@@ -334,7 +326,7 @@
                     // No need to check if it was previously 'deleted' (let's trust the code ...)
                     virtualDeviceCapability = filterVirtualDeviceCapabilities[0];
 
-                    let initialVirtualDeviceCapability = initial_configuration.virtualDevices.filter((virtualDevice) => virtualDevice.id === virtualDeviceId)[0].capabilities.filter((capability) => capability.nativeCapabilityId === nativeCapabilityId)[0];
+                    let initialVirtualDeviceCapability = initialConfiguration.virtualDevices.filter((virtualDevice) => virtualDevice.id === virtualDeviceId)[0].capabilities.filter((capability) => capability.nativeCapabilityId === nativeCapabilityId)[0];
                     if (compareVirtualDeviceCapabilityOptions(initialVirtualDeviceCapability.options, virtualDeviceCapability.options)) {
                         // Same
                         state = 'unmodified';
@@ -549,9 +541,11 @@
                 // - noCapability: virtual device doesn't have any capability
                 // - noActiveCapability: virtual device has capability, but they are all deleted and none has been added
                 // - atLeastOneDeletedCapability : at least one 'existing' capability has been removed, it may breack the user flows!
+                // - atLeastOneUpdatedCapability : at least one capability has been updated to new configuration
                 let noCapability = (virtualDevice.capabilities.length === 0);
                 let noActiveCapability = (virtualDevice.capabilities.filter((capability) => capability.state !== 'deleted').length === 0);
                 let atLeastOneDeletedCapability = (virtualDevice.capabilities.filter((capability) => capability.state === 'deleted').length >= 1);
+                let atLeastOneUpdatedCapability = (virtualDevice.capabilities.filter((capability) => capability.state === 'updated').length >= 1);
 
                 // Helper variables
                 let row = null;
@@ -654,7 +648,7 @@
 
                             // Show the state of the capability
                             // If the state is 'deleted', it means it is an existing native capability deleted => show it in orange
-                            cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;' + (capability.state === 'deleted' ? ' color:orange;">' : '">') + capability.state + '</label>';
+                            cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;' + (capability.state === 'deleted' ? ' color:orange;">' : '">') + Homey.__('wizard.conf_main.native_capability.state.' + capability.state) + '</label>';
 
                             // Show the capability (homey)
                             // If the capability is 'deleted', we can just show the capability name
@@ -768,6 +762,50 @@
                             cellActions = row.insertCell(cellIndex++);
                             cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;color:orange;">' + Homey.__('wizard.conf_main.virtual_devices.native_capability_deleted_warning') + '</label>';
                         }
+
+                        // Any existing capability updated?
+                        if (atLeastOneUpdatedCapability) {
+                            // We need to add a warning (in orange)
+                            _logWarning('At least one updated capability');
+
+                            // The user must use the native_capability table to add them back! If he wants to do so ...
+                            row = listElement.insertRow(-1);
+                            cellIndex = 0;
+                            cellName = row.insertCell(cellIndex++);
+                            cellState = row.insertCell(cellIndex++);
+                            cellState.colSpan = 5; // warning row
+                            cellActions = row.insertCell(cellIndex++);
+                            cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;color:orange;">' + Homey.__('wizard.conf_main.virtual_devices.capability_updated_warning') + '</label>';
+                        }
+
+                        // There are no active capability
+                        if (noActiveCapability) {
+                            // We need to add an alert (in red)
+                            _logAlert('No active capability');
+
+                            // The user must use the native_capability table to add them back! If he wants to do so ...
+                            row = listElement.insertRow(-1);
+                            cellIndex = 0;
+                            cellName = row.insertCell(cellIndex++);
+                            cellState = row.insertCell(cellIndex++);
+                            cellState.colSpan = 5; // warning row
+                            cellActions = row.insertCell(cellIndex++);
+                            cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;color:red;">' + Homey.__('wizard.conf_main.virtual_devices.no_native_capability_alert') + '</label>';
+
+                            if (virtualDevice.state === 'existing') {
+                                // We need to add a warning (in orange)
+                                _logWarning('Use virtual device setting screen to delete');
+
+                                // The user must use the native_capability table to add them back! If he wants to do so ...
+                                row = listElement.insertRow(-1);
+                                cellIndex = 0;
+                                cellName = row.insertCell(cellIndex++);
+                                cellState = row.insertCell(cellIndex++);
+                                cellState.colSpan = 5; // warning row
+                                cellActions = row.insertCell(cellIndex++);
+                                cellState.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;color:orange;">' + Homey.__('wizard.conf_main.virtual_devices.delete_through_settings') + '</label>';
+                            }
+                        }
                     }
                 }
             });
@@ -848,7 +886,15 @@
                 console.log('Initial configuration:', result);
 
                 // We need a deep copy, so the ongoing configuration can evolve and we can compare to the initial configuration when needed
+                initialConfiguration = result;
                 ongoingConfiguration = JSON.parse(JSON.stringify(result));
+
+                // We need to check if the existing devices' capabilities are 'up to date'
+                ongoingConfiguration.virtualDevices.forEach(virtualDevice => {
+                    virtualDevice.capabilities.forEach(capability => {
+                        _updateCapabilityForNewConfiguration(capability);
+                    })
+                });
 
                 Homey.setViewStoreValue('store', 'initial configuration', result);
                 Homey.setViewStoreValue('store', 'ongoing configuration', ongoingConfiguration);
@@ -858,6 +904,117 @@
             });
 
         });
+    }
+
+    /**
+     * This function is used to:
+     * - 'update' the options of an existing capability
+     *   For the simple reason that the configuration may have changed: options removed or added
+     *   We exclude the case where an option type changed :)
+     * - 'delete' a capability if its native capability doesn't exist anymore or became not compatible
+     * 
+     * /!\ This function should be called only when the capability is 'unmodified'
+     * 
+     * A capability 'updated' by this function gain the state 'updated'.
+     * If the user modify it afterward, it will become 'modified'.
+     */
+    function _updateCapabilityForNewConfiguration(capability) {
+        console.log('_updateCapabilityForNewConfiguration:', ...arguments);
+
+        if (capability.state !== 'unmodified') {
+            console.log('Why call me for a', capability.state, 'capability');
+            return;
+        }
+
+        // Let's find the native capability
+        let nativeCapabilities = ongoingConfiguration.nativeCapabilities.filter(nativeCapability => nativeCapability.id === capability.nativeCapabilityId);
+        if (nativeCapabilities.length === 0 || !getCompatibleCapabilityTypes(nativeCapabilities[0]).includes(capability.type)) {
+            // This native capability doesn't exist anymore ...
+            // Or is not compatible anymore ...
+            // How sad
+            capability.state = 'deleted';
+            capability.nativeCapabilityId = null;
+            capability.options = null;
+
+            return;
+        }
+
+        // We use the default options for the native capability
+        let defaultOptions = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapabilities[0]);
+
+        // Compare defaultOptions with existing options
+        Object.keys(defaultOptions).forEach(optionKey => {
+            if (capability.options[optionKey] === undefined) {
+                // Option is missing, we need to add it
+                capability.options[optionKey] = defaultOptions[optionKey];
+                capability.state = 'updated';
+            }
+        });
+
+        // Let's compare in the other direction
+        Object.keys(capability.options).forEach(optionKey => {
+            if (defaultOptions[optionKey] === undefined) {
+                // Option is not supported anymore, we need to remove it
+                delete capability.options[optionKey];
+                capability.state = 'updated';
+            }
+        });
+    }
+
+    function _getCapabilityOptionsFromNativeCapability(capabilityType, nativeCapability) {
+        console.log('_getCapabilityOptionsFromNativeCapability:', ...arguments);
+
+        // Get the capability configuration
+        let capabilityConf = CAPABILITY_CONFIGURATION.filter(compatibleCapability => compatibleCapability.type === capabilityType)[0];
+
+        // We need to initialize the options
+        let options = {};
+        capabilityConf.options.forEach(option => options[option] = null);
+
+        // Let's check if we can init some values from the native_capability itself
+        Object.keys(options).forEach(key => {
+            switch (key) {
+                case 'units':
+                    options[key] = nativeCapability.configs['unit'] ?? null;
+                    break;
+
+                case 'decimals':
+                    options[key] = nativeCapability.configs['precision'] ?? null;
+                    break;
+
+                case 'min':
+                    options[key] = nativeCapability.constraints['min'] ?? null;
+                    break;
+
+                case 'max':
+                    options[key] = nativeCapability.constraints['max'] ?? null;
+                    break;
+
+                case 'step':
+                    options[key] = nativeCapability.constraints['step'] ?? null;
+                    break;
+
+                case 'zoneActivity':
+                    // no match, default to true
+                    options[key] = true;
+                    break;
+
+                case 'approximated':
+                    // no match, default to false
+                    options[key] = false;
+                    break;
+
+                case 'getable':
+                    options[key] = nativeCapability.configs['writeOnly'] ?? null;
+                    break;
+
+                case 'setable':
+                    options[key] = nativeCapability.configs['readOnly'] ?? null;
+                    break;
+            }
+        });
+
+        return options;
     }
 
     function getCompatibleCapabilityTypes(nativeCapability) {
@@ -1319,7 +1476,7 @@
      * MAIN CODE *
      *************/
 
-    initial_configuration = null;
+    initialConfiguration = null;
     ongoingConfiguration = null;
 
     /**

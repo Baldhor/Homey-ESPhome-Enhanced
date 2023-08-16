@@ -170,6 +170,7 @@ class Driver extends Homey.Driver {
                             capabilities.forEach(capability => {
                                 let nativeCapabilityId = capabilityKeys[capability];
                                 tmp.capabilities.push({
+                                    'type': capability.split(".")[0],
                                     'name': capability,
                                     'nativeCapabilityId': nativeCapabilityId,
                                     'state': 'unmodified',
@@ -309,7 +310,7 @@ class Driver extends Homey.Driver {
                             capabilityKeys[capability.capabilityName] = capability.nativeCapabilityId;
                         });
                         realDevice.setStoreValue('capabilityKeys', capabilityKeys);
-                        
+
                         // Force update current value
                         capabilities.forEach(capability => {
                             realDevice._forceUpdateCurrentValue(capability.capabilityName);
@@ -362,7 +363,7 @@ class Driver extends Homey.Driver {
                             this.log('Modify capability:', capability.capabilityName);
                             await realDevice.setCapabilityOptions(capability.capabilityName, capability.options);
                         });
-                        
+
                         this.log('Device with id', device.deviceId, 'is processed');
                     }
                 });

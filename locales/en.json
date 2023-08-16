@@ -78,11 +78,13 @@
                 },
                 "delete_warning": "Deletetion of a virtual device can break your flows! Are you sure?",
                 "no_native_capability_alert": "Add at least one native capability",
+                "delete_through_settings": "You can delete virtual device through their setting screen",
                 "change_name_format": "The name you input is not nice, try again!",
                 "native_capability_deleted": "Deleted!",
                 "name_must_be_changed_alert" : "Don't forget to change the name!",
-                "native_capability_deleted_warning" : "This virtual device doesn't have any capability anymore, you must either delete or restore it",
-                "delete_existing_native_capability_warning" : "Removing this capability can/will break your flows! Are you sure?"
+                "native_capability_deleted_warning" : "This virtual device has an (at least one) existing capability deleted",
+                "delete_existing_native_capability_warning" : "Removing this capability can/will break your flows! Are you sure?",
+                "capability_updated_warning": "A capability has been updated with new configuration"
             },
             "settings": {
                 "title": "List of settings",
@@ -121,7 +123,9 @@
                 "state" : {
                     "added": "Added",
                     "modified": "Modified",
-                    "deleted": "Deleted"
+                    "deleted": "Deleted",
+                    "unmodified": "Unmodified",
+                    "updated": "Updated"
                 }
             },
             "homey_capability": {
