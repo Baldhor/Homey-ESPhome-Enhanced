@@ -160,9 +160,37 @@ class VirtualDevice extends Device {
                 return;
             }
 
-            this.log('Init capability', capability, 'with :', nativeCapabilityId);
-            this.registerCapabilityListener(capability, (newValue) => this.capabilityListener(capability, nativeCapabilityId, newValue));
+            this._addCapabilityListener(capability, nativeCapabilityId);
         });
+    }
+
+    _addCapabilityListener(capability, nativeCapabilityId) {
+        this.log('Add capability listener:', ...arguments);
+
+        // Remember the callback so we can delete it if needed
+        if (this.callbackCapabilityListeners === undefined) {
+            this.callbackCapabilityListeners = {};
+        }
+        
+        // If listener already exist, no need to add it
+        if (this.callbackCapabilityListeners[capability] === undefined) {
+            this.callbackCapabilityListeners[capability] = (newValue) => this.capabilityListener(capability, nativeCapabilityId, newValue);
+            this.registerCapabilityListener(capability, this.callbackCapabilityListeners[capability]);
+        }
+    }
+    
+    _removeCapabilityListener(capability) {
+        this.log('Remove capability listener:', ...arguments);
+
+        // If no callback list, there are nothing to remove
+        if (this.callbackCapabilityListeners !== undefined) {
+            // If no callback registered, there are nothing to remove
+            if (this.callbackCapabilityListeners[capability] === undefined) {
+                // Actually we cannot remove a capability listener :)
+                delete this.callbackCapabilityListeners[capability];
+            }
+
+        }
     }
 
     capabilityListener(capability, nativeCapabilityId, newValue) {

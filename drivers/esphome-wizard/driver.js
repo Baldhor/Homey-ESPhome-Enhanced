@@ -301,6 +301,7 @@ class Driver extends Homey.Driver {
                             this.log('Adding capability:', capability.capabilityName);
                             await realDevice.addCapability(capability.capabilityName);
                             await realDevice.setCapabilityOptions(capability.capabilityName, capability.options);
+                            realDevice._addCapabilityListener(capability.capabilityName, capability.nativeCapabilityId);
                         });
 
                         // Adding capabilityKeys
