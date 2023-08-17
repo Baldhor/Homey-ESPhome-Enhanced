@@ -182,6 +182,7 @@
         // Need to convert new value to the right type?
         console.log('New option value:', newValue, 'of type', typeof newValue);
         switch (optionId) {
+            case 'title':
             case 'units':
                 break;
 
@@ -195,6 +196,8 @@
                 newValue = newValue === null ? null : parseFloat(newValue);
                 break;
 
+            case 'preventInsights':
+            case 'preventTag':
             case 'zoneActivity':
             case 'approximated':
             case 'getable':
@@ -216,7 +219,7 @@
             // - modified: If the user set back its old value, then we may need to set the state to unmodified
             // - unmodified: jsut make it modified
 
-            if (capability.state === 'unmodified') {
+            if (capability.state === 'unmodified' || capability.state === 'updated') {
                 capability.state = 'modified';
             } else if (capability.state === 'modified') {
                 let initialVirtualDevice = initialConfiguration.virtualDevices.filter(virtualDevice => virtualDevice.id === virtualDeviceId)[0];
@@ -693,7 +696,9 @@
                                 Object.keys(options).forEach(key => {
                                     // Build a unique id
                                     let uniqueId = 'option_' + nativeCapability.id + '_' + key;
+                                    // TODO: Add oninput constraints?
                                     switch (key) {
+                                        case 'title':
                                         case 'units':
                                             // Must be a text field, empty means unset
                                             tmpOptions += '<label class="homey-form-label" for="' + uniqueId + '" style="margin-top:0px !important;">' + key + '</label>'; // TODO: translation?
@@ -719,6 +724,8 @@
                                             tmpOptions += '<input class="homey-form-input" id="' + uniqueId + '" type="text" oninput="this.value = this.value.replace(/[^0-9.-]/g, ' + "''" + ').replace(/(\..*)\./g, ' + "'$1'" + ').replace(/(\-.*)\-/g, ' + "'$1'" + ');" value="' + (options[key] ?? '') + '" onchange="onChangeCapabilityOption(event, ' + "'" + virtualDevice.id + "', '" + nativeCapability.id + "', '" + key + "'" + ', this.value);" style="margin-top:0px !important;"/>';
                                             break;
 
+                                        case 'preventInsights':
+                                        case 'preventTag':
                                         case 'zoneActivity':
                                         case 'approximated':
                                         case 'getable':
@@ -948,7 +955,7 @@
             capability.options = null;
 
             return;
-            
+
         }
 
         // We use the default options for the native capability
@@ -1268,6 +1275,7 @@
                             break;
 
                         case 'modified':
+                        case 'updated':
                             console.log('Capability to modify:', capability);
 
                             // Is the capability type modified ? If so its name is null ..
@@ -1296,7 +1304,7 @@
                             break;
 
                         default:
-                            console.log('Device', virtualDevice.id, ' has a capability with an unexpected state:', capability);
+                            console.log('Device', virtualDevice.id, 'has a capability with an unexpected state:', capability);
                             Homey.hideLoadingOverlay();
                             return;
                     }

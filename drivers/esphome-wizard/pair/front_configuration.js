@@ -12,7 +12,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals', 'min', 'max', 'step', 'setable']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step', 'setable']
     },
     {
         type: 'text',
@@ -23,7 +23,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'media',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: ['decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'decimals']
     },
     {
         type: 'onoff',
@@ -34,7 +34,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'toggle',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: ['decimals', 'min', 'max', 'step', 'getable']
+        options: ['title', 'preventInsights', 'preventTag', 'decimals', 'min', 'max', 'step', 'getable']
     },
     {
         type: 'dim',
@@ -45,7 +45,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals', 'min', 'max', 'step']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
     },
     // Skip light_hue
     // Skip light_saturation
@@ -62,7 +62,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'thermostat',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals', 'min', 'max', 'step']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
     },
     {
         type: 'measure_temperature',
@@ -73,7 +73,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_co',
@@ -84,7 +84,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_co2',
@@ -95,7 +95,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_pm25',
@@ -106,7 +106,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_humidity',
@@ -117,7 +117,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_pressure',
@@ -128,7 +128,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_noise',
@@ -139,7 +139,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_rain',
@@ -150,7 +150,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_wind_strength',
@@ -161,7 +161,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_wind_angle',
@@ -172,7 +172,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_gust_strength',
@@ -183,7 +183,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_gust_angle',
@@ -194,7 +194,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_battery',
@@ -205,7 +205,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'battery',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_power',
@@ -216,7 +216,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals', 'approximated']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'approximated']
     },
     {
         type: 'measure_voltage',
@@ -227,7 +227,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_current',
@@ -238,7 +238,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_luminance',
@@ -249,7 +249,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_ultraviolet',
@@ -260,7 +260,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'measure_water',
@@ -271,7 +271,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'alarm_generic',
@@ -282,7 +282,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_motion',
@@ -293,7 +293,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: ['zoneActivity']
+        options: ['title', 'preventInsights', 'preventTag', 'zoneActivity']
     },
     {
         type: 'alarm_contact',
@@ -304,7 +304,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: ['zoneActivity']
+        options: ['title', 'preventInsights', 'preventTag', 'zoneActivity']
     },
     {
         type: 'alarm_co',
@@ -315,7 +315,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_co2',
@@ -326,7 +326,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_pm25',
@@ -337,7 +337,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_tamper',
@@ -348,7 +348,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_smoke',
@@ -359,7 +359,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_fire',
@@ -370,7 +370,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_heat',
@@ -381,7 +381,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_water',
@@ -392,7 +392,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_battery',
@@ -403,7 +403,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'battery',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'alarm_night',
@@ -414,7 +414,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'meter_power',
@@ -425,7 +425,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'meter_water',
@@ -436,7 +436,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'meter_gas',
@@ -447,7 +447,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'meter_rain',
@@ -458,7 +458,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     // Skip homealarm_state
     {
@@ -470,7 +470,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        options: ['units', 'decimals']
+        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
         type: 'volume_up',
@@ -481,7 +481,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'volume_down',
@@ -492,7 +492,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'volume_mute',
@@ -503,7 +503,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: ['getable']
+        options: ['title', 'preventInsights', 'preventTag', 'getable']
     },
     {
         type: 'channel_up',
@@ -514,7 +514,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'channel_down',
@@ -525,7 +525,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'locked',
@@ -536,7 +536,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'toggle',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     // Skip lock_mode
     // Skip garagedoor_closed
@@ -552,7 +552,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: ['Cover.tilt'],
         nativeCapabilityUnsupported: ['Cover.position'],
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     // Skip windowcoverings_closed
     {
@@ -564,7 +564,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: ['Cover.position'],
         nativeCapabilityUnsupported: ['Cover.tilt'],
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     },
     {
         type: 'button',
@@ -575,7 +575,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: ['Button.state'],
         nativeCapabilityUnsupported: null,
-        options: []
+        options: ['title', 'preventInsights', 'preventTag']
     }
     // Skip speaker_playing
     // Skip speaker_next
