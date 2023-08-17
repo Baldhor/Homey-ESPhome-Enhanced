@@ -246,7 +246,7 @@
     },
     {
       "name": {
-        "en": "ESPHome Wizard (beta)"
+        "en": "ESPHome Wizard"
       },
       "class": "other",
       "platforms": [

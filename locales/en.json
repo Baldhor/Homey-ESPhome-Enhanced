@@ -29,8 +29,7 @@
             "title": "ESPhome Wizard",
             "description": "How my magic can assist you?",
             "new": "Configure a new physical device",
-            "update": "Update an existing physical device",
-            "beta_disclaimer": "This driver is in BETA! In may be broken, or make broken stuff :) Be warned!"
+            "update": "Update an existing physical device"
         },
         "new_device": {
             "title": "Connect to the new device",
