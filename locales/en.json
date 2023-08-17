@@ -68,7 +68,7 @@
             "virtual_devices": {
                 "title": "List of virtual devices",
                 "none": "None yet, create your first one!",
-                "create": "Create",
+                "create": "Add a virtual device",
                 "actions": {
                     "title": "Available action(s)",
                     "delete_virtual_device": "Delete virtual device",
@@ -99,7 +99,7 @@
                 "action": {
                     "label": "Choose a virtual device to assign",
                     "no_virtual_device_selected": "Select a virtual device",
-                    "no_virtual_device": "Create a virtual device first"
+                    "new_virtual_device": "Create a virtual device"
                 }
             },
             "confirm": "Confirm",
