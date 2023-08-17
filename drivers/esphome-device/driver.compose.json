@@ -3,6 +3,7 @@
     "en": "ESPHome device"
   },
   "class": "other",
+  "deprecated": true,
   "capabilities": [
     "onoff",
     "windowcoverings_set",
