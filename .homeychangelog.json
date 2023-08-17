@@ -52,5 +52,8 @@
   },
   "0.5.1": {
     "en": "Wizard is not in BETA anymore, legacy driver is deprecated"
+  },
+  "0.5.2": {
+    "en": "Added community link"
   }
 }

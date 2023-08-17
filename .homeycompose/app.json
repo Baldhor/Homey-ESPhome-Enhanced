@@ -1,6 +1,6 @@
 {
   "id": "nl.inversion.esphome",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -29,6 +29,10 @@
         "name": "Robin van Kekem"
       }
     ]
+  },
+  "homeyCommunityTopicId": 87271,
+  "paypal": {
+    "username": "baldhors"
   },
   "source": "https://github.com/athombv/com.athom.myapp",
   "bugs": {
