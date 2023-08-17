@@ -239,11 +239,11 @@
         }
     }
 
-    function onChangeAssignCapability(event, virtualDeviceId, nativeCapabilityId, newValue) {
+    async function onChangeAssignCapability(event, virtualDeviceId, nativeCapabilityId, newCapabilityType) {
         console.log('onChangeAssignCapability:', ...arguments);
 
         // Ignore default choice
-        if (newValue !== 'default') {
+        if (newCapabilityType !== 'default') {
             Homey.showLoadingOverlay();
 
             // Get our objects from ongoing configuration
@@ -254,7 +254,7 @@
             let capability = virtualDevice.capabilities.filter(capability => capability.nativeCapabilityId === nativeCapabilityId)[0];
 
             // The value changed?
-            if (capability.type !== newValue) {
+            if (capability.type !== newCapabilityType) {
                 // We need to consider several cases based on the state of the capability
                 // - added : just apply new capability and initialize its options
                 // - unmodified : set the capability as modified, nullify its name and initialize its options
@@ -262,47 +262,55 @@
                 //     - The user set its old capability? We need to reset its name and options to their initial values
                 //     - If not: initialize its options
 
-                capability.type = newValue;
-                switch (capability.state) {
-                    case 'unmodified':
-                    case 'updated':
-                        capability.name = null;
-                        capability.state = 'modified';
-                        capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
-                        break;
+                await _changeCapabilityType(virtualDevice, capability, newCapabilityType);
 
-                    case 'added':
-                        capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
-                        break;
-
-                    case 'modified':
-                        let initialVirtualDevice = initialConfiguration.virtualDevices.filter(virtualDevice => virtualDevice.id === virtualDeviceId)[0];
-                        let initialCapability = initialVirtualDevice.capabilities.filter(capability => capability.nativeCapabilityId === nativeCapabilityId)[0];
-
-                        if (initialCapability.type === capability.type) {
-                            // The user set its old capability
-                            capability.state = 'unmodified';
-                            capability.name = initialCapability.name;
-                            capability.options = JSON.parse(JSON.stringify(initialCapability).options); // Making sure to make a copy :)
-
-                            // However, the configuration of a capability may have changed
-                            _updateCapabilityForNewConfiguration(capability);
-                        } else {
-                            capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
-                        }
-                        break;
-                }
-
-                // Let's store it and refresh the view
-                Homey.setViewStoreValue('store', 'ongoing_configuration', ongoingConfiguration).then(() => {
-                    Homey.hideLoadingOverlay();
-                    Homey.showView('conf_main');
-                });
+                Homey.hideLoadingOverlay();
+                Homey.showView('conf_main');
             } else {
                 // Nothing to do
                 Homey.hideLoadingOverlay();
             }
         }
+    }
+
+    async function _changeCapabilityType(virtualDevice, capability, newCapabilityType) {
+        console.log('_changeCapabilityType:', ...arguments);
+
+        let nativeCapability = ongoingConfiguration.nativeCapabilities.filter(nativeCapability => nativeCapability.id === capability.nativeCapabilityId)[0];
+
+        capability.type = newCapabilityType;
+        switch (capability.state) {
+            case 'unmodified':
+            case 'updated':
+                capability.name = null;
+                capability.state = 'modified';
+                capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
+                break;
+
+            case 'added':
+                capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
+                break;
+
+            case 'modified':
+                let initialVirtualDevice = initialConfiguration.virtualDevices.filter(initialVirtualDevice => initialVirtualDevice.id === virtualDeviceId)[0];
+                let initialCapability = initialVirtualDevice.capabilities.filter(initialCapability => initialCapability.nativeCapabilityId === capability.nativeCapabilityId)[0];
+
+                if (initialCapability.type === capability.type) {
+                    // The user set its old capability
+                    capability.state = 'unmodified';
+                    capability.name = initialCapability.name;
+                    capability.options = JSON.parse(JSON.stringify(initialCapability).options); // Making sure to make a copy :)
+
+                    // However, the configuration of a capability may have changed
+                    _updateCapabilityForNewConfiguration(capability);
+                } else {
+                    capability.options = _getCapabilityOptionsFromNativeCapability(capability.type, nativeCapability);
+                }
+                break;
+        }
+
+        // Let's store it and refresh the view
+        Homey.setViewStoreValue('store', 'ongoing_configuration', ongoingConfiguration).catch(error => { throw error; });
     }
 
     async function onChangeAssignNativeCapability(event, virtualDeviceId, nativeCapabilityId) {
@@ -321,7 +329,14 @@
 
             await _assignNativeCapability(newVirtualDevice, nativeCapabilityId).catch(error => { throw error; });
 
-            //TODO: Let's check if we can name the virtual device
+            // Let's use the entity name as virtual device name
+            // But we will make it pretty :)
+            let nativeCapabilityEntityName = ongoingConfiguration.nativeCapabilities.filter(nativeCapability => nativeCapability.id === nativeCapabilityId)[0].entityName;
+            newVirtualDevice.name = nativeCapabilityEntityName.replace(/(^\w)/g, g => g[0].toUpperCase()).replace(/([-_]\w)/g, g => " " + g[1].toUpperCase()).trim();
+            newVirtualDevice.nameMustBeChanged = false;
+
+            // Let's store it
+            Homey.setViewStoreValue('store', 'ongoing_configuration', ongoingConfiguration).catch(error => { throw error; });
 
             Homey.hideLoadingOverlay();
             Homey.showView('conf_main');
@@ -352,7 +367,7 @@
         if (virtualDevice.state !== 'added') {
             let filterVirtualDeviceCapabilities = virtualDevice.capabilities.filter((capability) => capability.nativeCapabilityId === nativeCapabilityId);
             if (filterVirtualDeviceCapabilities.length === 1) {
-                // Found it, it is either 'unmodified' or 'modifie
+                // Found it, it is either 'unmodified' or 'modified'
                 // No need to check if it was previously 'deleted' (let's trust the code ...)
                 virtualDeviceCapability = filterVirtualDeviceCapabilities[0];
 
@@ -361,6 +376,9 @@
                     // Same
                     state = 'unmodified';
                 } else {
+                    // Not so simple, it could be unmodified, but 'updated'!
+                    // TODO: how to implement this!?
+
                     state = 'modified';
                 }
 
@@ -370,6 +388,7 @@
 
                 // Let's store it and refresh the view
                 Homey.setViewStoreValue('store', 'ongoing_configuration', ongoingConfiguration).catch(error => { throw error; });
+                return;
             }
         }
 
@@ -382,13 +401,17 @@
             options: []
         };
 
-        // TODO: If only one capability compatible for the native capability, we could set it directly, meaning init the options too
-
         virtualDevice.capabilities.push(capability);
         nativeCapability.state = 'bound';
 
-        // Let's store it and refresh the view
+        // Let's store it
         await Homey.setViewStoreValue('store', 'ongoing_configuration', ongoingConfiguration).catch(error => { throw error; });
+
+        // TODO: If only one capability compatible for the native capability, we could set it directly, meaning init the options too
+        let compatibleCapabilityTypes = getCompatibleCapabilityTypes(nativeCapability);
+        if (compatibleCapabilityTypes.length === 1) {
+            await _changeCapabilityType(virtualDevice, capability, compatibleCapabilityTypes[0]);
+        }
     }
 
     /**
@@ -497,10 +520,10 @@
         let virtualDeviceCapability = virtualDevice.capabilities.filter(capability => capability.nativeCapabilityId === nativeCapabilityId)[0];
         if (virtualDeviceCapability.state !== 'added') {
             Homey.confirm(Homey.__('wizard.conf_main.virtual_devices.delete_existing_native_capability_warning'), 'warning').then(() => {
-                _delete_native_capability(virtualDevice, virtualDeviceCapability);
+                _deleteNativeCapability(virtualDevice, virtualDeviceCapability);
             });
         } else {
-            _delete_native_capability(virtualDevice, virtualDeviceCapability);
+            _deleteNativeCapability(virtualDevice, virtualDeviceCapability);
         }
     }
 
@@ -1144,8 +1167,8 @@
         return result;
     }
 
-    function _delete_native_capability(virtualDevice, virtualDeviceCapability) {
-        console.log('_delete_native_capability:', ...arguments);
+    function _deleteNativeCapability(virtualDevice, virtualDeviceCapability) {
+        console.log('_deleteNativeCapability:', ...arguments);
 
         // Even if its an existing capability, the user confirmed, peace to his soul ...
         Homey.showLoadingOverlay();
@@ -1306,7 +1329,7 @@
                             } else {
                                 // It's a change of capability type, we need to delete and add ...
 
-                                // We search the initial capabilioty by nativeCapabilityId (name is null, and type may not be unique!)
+                                // We search the initial capability by nativeCapabilityId (name is null, and type may not be unique!)
                                 let initialCapability = initialConfiguration.virtualDevices.filter(initialVirtualDevice => initialVirtualDevice.id === virtualDevice.id)[0].capabilities.filter(initialCapability => initialCapability.nativeCapabilityId === capability.nativeCapabilityId)[0];
                                 console.log('Capability type to modify:', capability);
                                 _addDeleteAction(virtualDevice, initialCapability, capabilitiesToRemove);

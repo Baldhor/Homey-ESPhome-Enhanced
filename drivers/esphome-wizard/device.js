@@ -99,7 +99,7 @@ class VirtualDevice extends Device {
             }
 
             this.log('Init capability', capability, 'for', nativeCapabilityId);
-            this.callbackStateChangedListener = (nativeCapabilityId, value) => this.stateChangedListener(nativeCapabilityId, value)
+            this.callbackStateChangedListener = (nativeCapabilityId, value) => this.stateChangedListener(nativeCapabilityId, value);
             this.physicalDevice.on('stateChanged', this.callbackStateChangedListener);
 
             // Get current value
@@ -199,13 +199,24 @@ class VirtualDevice extends Device {
     }
 
     _forceDisconnect() {
+        this.log('_forceDisconnect');
+
         if (this.physicalDevice) {
-            if (this.callbackStateChangedListener) {
-                this.physicalDevice.off('stateChanged', this.callbackStateChangedListener);
-                this.callbackStateChangedListener = null;
-            }
+            this.log('Found a physicalDevice');
+            _removeStateChangedListener();
             PhysicalDeviceManager.checkDelete(this, this.physicalDevice);
             this.physicalDevice = null;
+        }
+    }
+
+    _removeStateChangedListener() {
+        this.log('_removeStateChangedListener');
+
+        if (this.callbackStateChangedListener) {
+            this.log('Found a callbackStateChangedListener');
+
+            this.physicalDevice.off('stateChanged', this.callbackStateChangedListener);
+            this.callbackStateChangedListener = null;
         }
     }
 
