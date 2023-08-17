@@ -72,19 +72,21 @@ class VirtualDevice extends Device {
     }
 
     startAvailabilityListener() {
-        this.physicalDevice.on('available', () => {
+        this.callbackAvailableListener = () => {
             this.setAvailable().catch(this.error);
-        });
+        };
+        this.physicalDevice.on('available', this.callbackAvailableListener);
     }
 
     startUnavailabilityListener() {
-        this.physicalDevice.on('unavailable', () => {
+        this.callbackUnavailableListener = () => {
             this.setUnavailable().catch(this.error);
-        });
+        };
+        this.physicalDevice.on('unavailable', this.callbackUnavailableListener);
     }
 
     startNativeCapabilityListener() {
-        this.log('Start native capability listeners');
+        this.log('startNativeCapabilityListener');
 
         let capabilities = this.getCapabilities();
         let capabilityKeys = this.getStoreValue('capabilityKeys');
@@ -108,7 +110,7 @@ class VirtualDevice extends Device {
     }
 
     _forceUpdateCurrentValue(capability) {
-        this.log('Start _forceUpdateCurrentValue:', capability);
+        this.log('_forceUpdateCurrentValue:', ...arguments);
 
         let capabilityKeys = this.getStoreValue('capabilityKeys');
         let nativeCapabilityId = capabilityKeys[capability];
@@ -119,7 +121,7 @@ class VirtualDevice extends Device {
 
         this.stateChangedListener(nativeCapabilityId, this.physicalDevice.getCurrentValue(nativeCapabilityId));
     }
-    
+
     /**
      * Even we listen only to the stateChanged event we need, we use a unique function to process it
      * 
@@ -127,8 +129,10 @@ class VirtualDevice extends Device {
      * @param {*} value 
      */
     stateChangedListener(nativeCapabilityId, value) {
+        this.log('stateChangedListener:', ...arguments);
+
         let capabilityKeys = this.getStoreValue('capabilityKeys');
-        
+
         // Just in case the device was 'deleted' from the wizard ...
         if (!capabilityKeys)
             return;
@@ -146,7 +150,7 @@ class VirtualDevice extends Device {
      * 
      */
     startCapabilityListeners() {
-        this.log('Start capability listeners');
+        this.log('startCapabilityListeners');
 
         let capabilities = this.getCapabilities();
         let capabilityKeys = this.getStoreValue('capabilityKeys');
@@ -165,22 +169,27 @@ class VirtualDevice extends Device {
     }
 
     _addCapabilityListener(capability, nativeCapabilityId) {
-        this.log('Add capability listener:', ...arguments);
+        this.log('_addCapabilityListener:', ...arguments);
 
         // Remember the callback so we can delete it if needed
         if (this.callbackCapabilityListeners === undefined) {
             this.callbackCapabilityListeners = {};
         }
-        
+
         // If listener already exist, no need to add it
         if (this.callbackCapabilityListeners[capability] === undefined) {
             this.callbackCapabilityListeners[capability] = (newValue) => this.capabilityListener(capability, nativeCapabilityId, newValue);
             this.registerCapabilityListener(capability, this.callbackCapabilityListeners[capability]);
         }
     }
-    
+
+    /**
+     * Used when a capability is removed through the wizard
+     * 
+     * @param {*} capability 
+     */
     _removeCapabilityListener(capability) {
-        this.log('Remove capability listener:', ...arguments);
+        this.log('_removeCapabilityListener:', ...arguments);
 
         // If no callback list, there are nothing to remove
         if (this.callbackCapabilityListeners !== undefined) {
@@ -194,7 +203,7 @@ class VirtualDevice extends Device {
     }
 
     capabilityListener(capability, nativeCapabilityId, newValue) {
-        this.log('Processing new capability value', capability, nativeCapabilityId, newValue);
+        this.log('Processing new capability value:', ...arguments);
         this.physicalDevice.sendCommand(nativeCapabilityId, newValue);
     }
 
@@ -203,7 +212,10 @@ class VirtualDevice extends Device {
 
         if (this.physicalDevice) {
             this.log('Found a physicalDevice');
-            _removeStateChangedListener();
+            this._removeStateChangedListener();
+
+            this._removeAvailableListener();
+            this._removeUnavailableListener();
             PhysicalDeviceManager.checkDelete(this, this.physicalDevice);
             this.physicalDevice = null;
         }
@@ -220,13 +232,35 @@ class VirtualDevice extends Device {
         }
     }
 
+    _removeAvailableListener() {
+        this.log('_removeAvailableListener');
+
+        if (this.callbackAvailableListener) {
+            this.log('Found a callbackAvailableListener');
+
+            this.physicalDevice.off('available', this.callbackAvailableListener);
+            this.callbackAvailableListener = null;
+        }
+    }
+
+    _removeUnavailableListener() {
+        this.log('_removeUnavailableListener');
+
+        if (this.callbackUnavailableListener) {
+            this.log('Found a callbackUnavailableListener');
+
+            this.physicalDevice.off('unavailable', this.callbackUnavailableListener);
+            this.callbackUnavailableListener = null;
+        }
+    }
+
     async onUninit() {
-        this.log('onUnit called');
+        this.log('onUnit');
         this._forceDisconnect();
     }
 
     async onDeleted() {
-        this.log('onDeleted called');
+        this.log('onDeleted');
         this._forceDisconnect();
     }
 }

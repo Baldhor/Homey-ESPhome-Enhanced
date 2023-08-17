@@ -3,10 +3,10 @@
 const connect = require('socket.io-client');
 //import PQueue from 'p-queue';
 
-const QUEUE_INTERVAL_CAP = 5;
+const QUEUE_INTERVAL_CAP = 10;
 const QUEUE_INTERVAL = 1000;
 const QUEUE_MAX_SIZE = 100;
-const TOO_MANY_LOGS_DELAY = 30000; // Must be superior to: QUEUE_MAX_SIZE * (QUEUE_INTERVAL / QUEUE_INTERVAL_CAP)
+const TOO_MANY_LOGS_DELAY = 15000; // Must be superior to: QUEUE_MAX_SIZE * (QUEUE_INTERVAL / QUEUE_INTERVAL_CAP)
 
 class ConsoleReService {
 
