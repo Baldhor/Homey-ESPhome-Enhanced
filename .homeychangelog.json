@@ -43,5 +43,8 @@
   },
   "0.4.5": {
     "en": "WIZARD: Added support for title option a few more things"
+  },
+  "0.4.6": {
+    "en": "Can create a virtual device directly from the native capability list + some fix\""
   }
 }
