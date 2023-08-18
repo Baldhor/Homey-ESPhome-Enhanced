@@ -64,6 +64,7 @@ wifi:
   ap: {} # This spawns an AP with the device name and mac address with no password.
 
 api:
+  password: !secret ota_password
 
 #mqtt:
 #  broker: !secret mqtt_broker
@@ -72,7 +73,7 @@ api:
 #  password: !secret mqtt_password
 
 ota:
-  password: ""
+  password: !secret ota_password
 
 # Enable logging
 logger:

@@ -146,23 +146,17 @@ class PhysicalDeviceManager extends EventEmitter {
      * @param {*} physicalDevice The physical device to modify
      * @param {*} ipAddress The new IP address
      * @param {*} port The new port
+     * @param {*} password The new password
      */
-    static changeIpAdress(physicalDevice, ipAddress, port) {
-        // TODO: to be implemented
-    }
+    static changeSettings(physicalDeviceId, newIpAddress, newPort, newPassword) {
+        this.log('changeSettings:', ...arguments);
+        
+        // We need to update the settings of all the virtual devices using this physical device
+        // Then we need to force disconnect the old physical device
+        // Finaly, we can force the virtual devices to 'reconect'
 
-    /**
-     * This function handle a password change for a physical device
-     * 
-     * It implies a lot of things:
-     * - It is triggered by a virtual device, but there are maybe many others! => we need to change the password of all of them
-     * - The Physical device need to renew its client
-     * 
-     * @param {*} physicalDevice 
-     * @param {*} password 
-     */
-    static changePassword(physicalDevice, password) {
         // TODO: to be implemented
+
     }
 
     static log(...args) {

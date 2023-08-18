@@ -95,6 +95,7 @@ class Client extends EventEmitter {
             this.nativeApiClient = new NativeApiClient({
                 host: this.ipAddress,
                 port: this.port,
+                password: this.password,
                 initializeSubscribeLogs: true, // We want logs, we like logs
                 initializeListEntities: true, // We want the entities configuration²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
                 reconnect: this.reconnect,

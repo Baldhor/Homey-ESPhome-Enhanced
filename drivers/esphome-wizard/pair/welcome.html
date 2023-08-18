@@ -40,4 +40,8 @@
             Homey.showView('update_device');
         });
     }
+
+    // Let's make the small window larger!
+    console.log('To make the driver window larger, type the following code in the console:');
+    console.log('while (window.parent.document.querySelector("[data-is-small-view=true]") !== null) {document.querySelector("[data-is-small-view=true]").attributes["data-is-small-view"].nodeValue = "false";}');
 </script>
