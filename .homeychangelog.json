@@ -55,5 +55,8 @@
   },
   "0.5.2": {
     "en": "Added community link"
+  },
+  "0.5.3": {
+    "en": "password are now supported as expected"
   }
 }
