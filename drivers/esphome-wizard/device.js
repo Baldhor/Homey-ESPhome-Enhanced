@@ -36,7 +36,7 @@ const PhysicalDeviceManager = require('./physical-device-manager');
 
 class VirtualDevice extends Device {
     // Handle to the physical Device
-    physicalDevice = null;
+    physicalDeviceId = null;
 
     // Customer trigger cards
     esphomeNumberCustom = null;
@@ -50,12 +50,8 @@ class VirtualDevice extends Device {
         let settings = this.getSettings();
         this.log('Settings', settings);
 
-        // Just in case the device was 'deleted' from the wizard ...
-        if (settings.ipAddress === '')
-            return;
-
-        this.physicalDevice = PhysicalDeviceManager.create(true, settings.ipAddress, settings.port, settings.password);
-        if (this.physicalDevice.client.connected) {
+        this.physicalDeviceId = PhysicalDeviceManager.create(true, settings.ipAddress, settings.port, settings.password);
+        if (PhysicalDeviceManager.getById(this.physicalDeviceId).client.connected) {
             this.setAvailable().catch(this.error);
         }
 
@@ -75,14 +71,14 @@ class VirtualDevice extends Device {
         this.callbackAvailableListener = () => {
             this.setAvailable().catch(this.error);
         };
-        this.physicalDevice.on('available', this.callbackAvailableListener);
+        PhysicalDeviceManager.getById(this.physicalDeviceId).on('available', this.callbackAvailableListener);
     }
 
     startUnavailabilityListener() {
         this.callbackUnavailableListener = () => {
             this.setUnavailable().catch(this.error);
         };
-        this.physicalDevice.on('unavailable', this.callbackUnavailableListener);
+        PhysicalDeviceManager.getById(this.physicalDeviceId).on('unavailable', this.callbackUnavailableListener);
     }
 
     startNativeCapabilityListener() {
@@ -102,7 +98,7 @@ class VirtualDevice extends Device {
 
             this.log('Init capability', capability, 'for', nativeCapabilityId);
             this.callbackStateChangedListener = (nativeCapabilityId, value) => this.stateChangedListener(nativeCapabilityId, value);
-            this.physicalDevice.on('stateChanged', this.callbackStateChangedListener);
+            PhysicalDeviceManager.getById(this.physicalDeviceId).on('stateChanged', this.callbackStateChangedListener);
 
             // Get current value
             this._forceUpdateCurrentValue(capability);
@@ -119,7 +115,7 @@ class VirtualDevice extends Device {
             return;
         }
 
-        this.stateChangedListener(nativeCapabilityId, this.physicalDevice.getCurrentValue(nativeCapabilityId));
+        this.stateChangedListener(nativeCapabilityId, PhysicalDeviceManager.getById(this.physicalDeviceId).getCurrentValue(nativeCapabilityId));
     }
 
     /**
@@ -204,20 +200,20 @@ class VirtualDevice extends Device {
 
     capabilityListener(capability, nativeCapabilityId, newValue) {
         this.log('Processing new capability value:', ...arguments);
-        this.physicalDevice.sendCommand(nativeCapabilityId, newValue);
+        PhysicalDeviceManager.getById(this.physicalDeviceId).sendCommand(nativeCapabilityId, newValue);
     }
 
     _forceDisconnect() {
         this.log('_forceDisconnect');
 
-        if (this.physicalDevice) {
+        if (PhysicalDeviceManager.getById(this.physicalDeviceId)) {
             this.log('Found a physicalDevice');
             this._removeStateChangedListener();
 
             this._removeAvailableListener();
             this._removeUnavailableListener();
-            PhysicalDeviceManager.checkDelete(this, this.physicalDevice);
-            this.physicalDevice = null;
+            PhysicalDeviceManager.checkDelete(this, PhysicalDeviceManager.getById(this.physicalDeviceId));
+            this.physicalDeviceId = null;
         }
     }
 
@@ -227,7 +223,7 @@ class VirtualDevice extends Device {
         if (this.callbackStateChangedListener) {
             this.log('Found a callbackStateChangedListener');
 
-            this.physicalDevice.off('stateChanged', this.callbackStateChangedListener);
+            PhysicalDeviceManager.getById(this.physicalDeviceId).off('stateChanged', this.callbackStateChangedListener);
             this.callbackStateChangedListener = null;
         }
     }
@@ -238,7 +234,7 @@ class VirtualDevice extends Device {
         if (this.callbackAvailableListener) {
             this.log('Found a callbackAvailableListener');
 
-            this.physicalDevice.off('available', this.callbackAvailableListener);
+            PhysicalDeviceManager.getById(this.physicalDeviceId).off('available', this.callbackAvailableListener);
             this.callbackAvailableListener = null;
         }
     }
@@ -249,7 +245,7 @@ class VirtualDevice extends Device {
         if (this.callbackUnavailableListener) {
             this.log('Found a callbackUnavailableListener');
 
-            this.physicalDevice.off('unavailable', this.callbackUnavailableListener);
+            PhysicalDeviceManager.getById(this.physicalDeviceId).off('unavailable', this.callbackUnavailableListener);
             this.callbackUnavailableListener = null;
         }
     }
@@ -262,6 +258,12 @@ class VirtualDevice extends Device {
     async onDeleted() {
         this.log('onDeleted');
         this._forceDisconnect();
+    }
+
+    async onSettings({ oldSettings, newSettings, changedKeys }) {
+        if(changedKeys.includes('ipAddress') || changedKeys.includes('port') || changedKeys.includes('password')) {
+            PhysicalDeviceManager.changeSettings(this, this.physicalDeviceId, newSettings.ipAddress, newSettings.port, newSettings.password);
+        }
     }
 }
 

@@ -2,6 +2,7 @@
     Allows to connect to a new physical device
 -->
 
+<script src="logme.js"></script>
 <script src="front_utils.js"></script>
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.new_device.title'));
@@ -25,7 +26,7 @@
      ***************/
 
     function onInputCheckConnectButton(event) {
-        console.log('onInputCheckConnectButton:', ...arguments);
+        wizardlog('onInputCheckConnectButton:', ...arguments);
 
         let ipAddress = document.getElementById("ipAddress").value;
         let port = getPortOrDefault(document.getElementById("port").value);
@@ -38,7 +39,7 @@
     }
 
     function onClickConnect(event) {
-        console.log('onClickConnect:', ...arguments);
+        wizardlog('onClickConnect:', ...arguments);
 
         Homey.showLoadingOverlay();
 
@@ -51,7 +52,7 @@
             'password': document.getElementById("password").value
         };
 
-        console.log('Send event connect-new-device with data:', data);
+        wizardlog('Send event connect-new-device with data:', data);
         Homey.emit('connect-new-device', data);
     }
 
@@ -64,7 +65,7 @@
     disableButton(document.getElementById('connect'));
 
     Homey.on('new-device-connected', function () {
-        console.log('Event new-device-connected received');
+        wizardlog('Event new-device-connected received');
 
         Homey.setViewStoreValue('store', 'physical_device_id', document.getElementById("ipAddress").value + ':' + getPortOrDefault(document.getElementById("port").value)).then(() => {
             // Let's wait a few seconds to make sure the driver finished collecting data about the device
@@ -76,7 +77,7 @@
     });
 
     Homey.on('new-device-failed', function (message) {
-        console.log('Event new-device-failedreceived:', message);
+        wizardlog('Event new-device-failedreceived:', message);
 
         Homey.hideLoadingOverlay();
         Homey.alert(message, 'error');

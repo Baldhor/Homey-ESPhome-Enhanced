@@ -3,10 +3,10 @@
 const connect = require('socket.io-client');
 //import PQueue from 'p-queue';
 
-const QUEUE_INTERVAL_CAP = 10;
+const QUEUE_INTERVAL_CAP = 20;
 const QUEUE_INTERVAL = 1000;
-const QUEUE_MAX_SIZE = 100;
-const TOO_MANY_LOGS_DELAY = 15000; // Must be superior to: QUEUE_MAX_SIZE * (QUEUE_INTERVAL / QUEUE_INTERVAL_CAP)
+const QUEUE_MAX_SIZE = 200;
+const TOO_MANY_LOGS_DELAY = 6000; // Must be superior to: QUEUE_MAX_SIZE * (QUEUE_INTERVAL / QUEUE_INTERVAL_CAP)
 
 class ConsoleReService {
 
@@ -56,8 +56,8 @@ class ConsoleReService {
         // - Concurrency of 1: we expect the logs in the right order
         // - Interval of 5 logs every one seconds: to avoid performance issues
         const module = await import('p-queue');
-        instance.queue = new module.default({concurrency: 1, autoStart: false, intervalCap: QUEUE_INTERVAL_CAP, interval: QUEUE_INTERVAL});
-        
+        instance.queue = new module.default({ concurrency: 1, autoStart: false, intervalCap: QUEUE_INTERVAL_CAP, interval: QUEUE_INTERVAL });
+
         // init settings
         instance.initSettings();
 
@@ -98,7 +98,7 @@ class ConsoleReService {
         } else {
             instance.consolereEnabled = consolereEnabled;
         }
-  
+
         if (consolereChannel === null) {
             instance.consolereChannel = '';
             app.homey.settings.set('consolere.channel', instance.consolereChannel);
@@ -117,14 +117,14 @@ class ConsoleReService {
         // Set listener on settings
         // UIt is useless to handle unset event
         app.homey.settings.on('set', (key) => {
-            switch(key) {
+            switch (key) {
                 case 'consolere.enabled':
                     let newConsolereEnabled = app.homey.settings.get('consolere.enabled')
                     instance.internalLog('consolere.enabled changed:', newConsolereEnabled);
                     instance.consolereEnabled = newConsolereEnabled;
                     instance.renewConsolereConnection();
                     break;
-                
+
                 case 'consolere.channel':
                     let newConsolereChannel = app.homey.settings.get('consolere.channel')
                     instance.internalLog('consolere.channel changed:', newConsolereChannel);
@@ -143,9 +143,21 @@ class ConsoleReService {
         let homey = app.homey;
 
         // Set listener on __log
-        homey.on('__log', (...args) => {
-            instance.log(...args);
-        });
+        homey
+            .on('__log', (...args) => {
+                instance.log(...args);
+            })
+            .on('__error', (...args) => {
+                instance.log(...args);
+            });
+
+        process
+            .on('unhandledRejection', (reason, p) => {
+                this.log('Unhandled Rejection "' + reason + '" at Promise:', p);
+            })
+            .on('uncaughtException', err => {
+                this.log('Uncaught Exception thrown:', err.stack);
+            });
     }
 
     static renewConsolereConnection() {
@@ -174,7 +186,7 @@ class ConsoleReService {
         instance.socket = connect("https://console.re", {
             withCredentials: !1,
             transports: ["websocket"],
-            extraHeaders:{"x-consolere":"true"}
+            extraHeaders: { "x-consolere": "true" }
         });
 
         instance.socket.on("connect", () => {
@@ -265,9 +277,13 @@ class ConsoleReService {
 
         instance.sendLog('Too many logs, some of them are not logged');
     }
-    
-    static sendLog(...args) {
 
+    static sendLog(...args) {
+        // Need go through spread or it doesn't work, no idea why
+        this._sendLog(...this._filterArgs(args));
+    }
+
+    static _sendLog(...args) {
         // Get instance handle
         let instance = this.getInstance();
 
@@ -306,6 +322,44 @@ class ConsoleReService {
                 }
             });
         })();
+    }
+
+    static _filterArgs(args) {
+        let newArgs = [];
+
+        // Let's make a deep copy and filter anything that need to be
+        args.forEach(arg => {
+            if (arg === undefined) {
+                newArgs.push(undefined);
+            } else {
+                let obj = JSON.parse(JSON.stringify(arg));
+                this._filter(obj);
+                newArgs.push(obj);
+            }
+        });
+
+        return newArgs;
+    }
+
+    /**
+     * Currently only filter passwords
+     * 
+     * @param {*} obj 
+     */
+    static _filter(obj) {
+        if (obj !== null && typeof obj === 'object') {
+            if (obj.password !== undefined) {
+                if (obj.password === null || obj.password === '') {
+                    obj.password = '<no password>';
+                } else {
+                    obj.password = '<hidden password>';
+                }
+            }
+
+            Object.keys(obj).forEach(key => {
+                this._filter(obj[key]);
+            });
+        }
     }
 }
 

@@ -20,6 +20,7 @@
     }
 </style>
 
+<script src="logme.js"></script>
 <script src="front_utils.js"></script>
 <script type="application/javascript">
     Homey.setTitle(Homey.__('wizard.update_device.title'));
@@ -58,13 +59,13 @@
      ***************/
 
     function onChangeRadio(event) {
-        console.log('onChangeRadio:', ...arguments);
+        wizardlog('onChangeRadio:', ...arguments);
 
         enableButton(document.getElementById('select'));
     }
 
     function onClickSelect(event) {
-        console.log('onChangeSelect:', ...arguments);
+        wizardlog('onChangeSelect:', ...arguments);
 
         Homey.showLoadingOverlay();
 
@@ -87,7 +88,7 @@
 
     // Get existing device from homey
     Homey.emit("get-existing-physical-devices").then(existingPhysicalDevices => {
-        console.log('Event get-existing-physical-devices received:', existingPhysicalDevices);
+        wizardlog('Event get-existing-physical-devices received:', existingPhysicalDevices);
 
         if (existingPhysicalDevices.length === 0) {
             // Remove list and select button

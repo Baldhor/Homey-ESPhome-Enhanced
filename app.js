@@ -1,10 +1,7 @@
 'use strict';
 
 const Homey = require('homey');
-const { Client } = require('@2colors/esphome-native-api');
 const ConsoleReService = require('./consolere/ConsoleReService');
-
-const enableDebug = false;
 
 class MyApp extends Homey.App {
   /**
@@ -12,11 +9,6 @@ class MyApp extends Homey.App {
    */
   async onInit() {
     this.log('ESPHome app init');
-
-    if (process.env.DEBUG === '1' && enableDebug) {
-      this.log('Enabling remote debugging')
-      require('inspector').open(9222, '0.0.0.0', true);
-    }
 
     // Init ConsoleReService
     await ConsoleReService.init(this);
