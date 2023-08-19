@@ -61,5 +61,8 @@
   },
   "0.5.4": {
     "en": "Fixed #19, and now all logs from the browser will also be sent to console.re. Passwords are filtered out in a generic way to ensure even new logs will not include passwords!"
+  },
+  "0.5.5": {
+    "en": "No more circular reference in console.re and it is now possible to modify a device settings through the wizard (ip address, port and password)"
   }
 }
