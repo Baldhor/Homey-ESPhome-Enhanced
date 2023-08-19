@@ -384,6 +384,44 @@ class Driver extends Homey.Driver {
                 throw error;
             }
         });
+
+        session.setHandler('get-settings', (data) => {
+            this.log('get-settings started:', data);
+            let physicalDeviceId = data.physicalDeviceId;
+
+            let result = null;
+            try {
+                // Get the first virtual device linked to this physical device
+                let firstVirtualDevice = this.getDevices().filter(virtualDevice => virtualDevice.physicalDeviceId === physicalDeviceId)[0];
+                const settings = firstVirtualDevice.getSettings();
+
+                result = {
+                    'ipAddress' : settings.ipAddress,
+                    'port' : settings.port,
+                    'password' : settings.password
+                };
+            } catch (error) {
+                this.log(error.stack);
+                throw error;
+            }
+
+            return result;
+        });
+
+        session.setHandler('apply-new-settings', (data) => {
+            this.log('apply-new-settings started:', data);
+            let physicalDeviceId = data.physicalDeviceId;
+            let newIpAddress = data.ipAddress;
+            let newPort = data.port;
+            let newPassword = data.password;
+
+            try {
+                PhysicalDeviceManager.changeSettings(physicalDeviceId, newIpAddress, newPort, newPassword);
+            } catch (error) {
+                this.log(error.stack);
+                throw error;
+            }
+        });        
     }
 }
 

@@ -1,0 +1,137 @@
+<!--
+    Show a summary of ongoing configuration:
+    - Virtual device, its capabilities and related native capabilities => only offer a "goto" button (go to view 'conf_virtual_device')
+    - Settings, and its related native capabilities => only offer a "goto" button (go to view 'conf_settings')
+    - Unbind native capabilities => only offer a "create a new virtual device" button (then go to view 'conf_virtual_device')
+
+    Initialy, the ongoing configuration is based on current Homey configuration, and the current physical device configuration.
+    After each modifications, the ongoing configuration will update.
+
+    This view also has a "confirm" button which will apply definitively all the modifications.
+-->
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 1200px !important;
+    }
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+<script src="logme.js"></script>
+<script src="front_utils.js"></script>
+<script type="application/javascript">
+    Homey.setTitle(Homey.__('wizard.conf_settings.title'));
+    Homey.setNavigationClose();
+
+    Homey.showLoadingOverlay();
+</script>
+<label class="homey-form-label" data-i18n="wizard.conf_settings.description"></label>
+
+<!--
+    physical_device
+-->
+<br>
+<br>
+<div class="homey-form-group">
+    <!-- Seems useless, it is built from: <ipAddress> + ':' + <port>
+    <div class="homey-form-group">
+        <label class="homey-form-label" for="physical_device.id" data-i18n="wizard.conf_main.physical_device.id"></label>
+        <input class="homey-form-input" id="physical_device.id" type="text" value="" readonly/>
+    </div>
+    -->
+    <label class="homey-form-label" for="ipAddress" data-i18n="wizard.conf_settings.ipAddress"></label>
+    <input class="homey-form-input" id="ipAddress" type="text" maxlength="15"
+        oninput="onInputCheckApplyButton(event);" />
+    <label class="homey-form-label" for="port" data-i18n="wizard.conf_settings.port"></label>
+    <input class="homey-form-input" id="port" type="text" maxlength="5" placeholder="6053"
+        oninput="onInputCheckApplyButton(event);" />
+    <label class="homey-form-label" for="password" data-i18n="wizard.conf_settings.password"></label>
+    <input class="homey-form-input" id="password" type="text" maxlength="20" />
+</div>
+
+<br>
+<button id="apply" class="homey-button-primary-full" data-i18n="wizard.conf_settings.apply"
+    onclick="onClickApply(event);"></button>
+
+<script type="application/javascript">
+    /***************
+     * HTML Events *
+     ***************/
+
+    function onInputCheckApplyButton(event) {
+        wizardlog('onInputCheckApplyButton:', ...arguments);
+
+        let ipAddress = document.getElementById("ipAddress").value;
+        let port = getPortOrDefault(document.getElementById("port").value);
+
+        // check ipAddress is not empty
+        if (!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPort(port))
+            disableButton(document.getElementById('apply'));
+        else
+            enableButton(document.getElementById('apply'));
+    }
+
+    async function onClickApply(event) {
+        wizardlog('onClickApply:', ...arguments);
+
+        Homey.showLoadingOverlay();
+        try {
+
+            // Don't actually submit the form just yet
+            event.preventDefault();
+
+            let physicalDeviceId = await Homey.getViewStoreValue('store', 'physical_device_id')
+                .catch(e => { wizarderror(e); });
+
+            let data = {
+                'physicalDeviceId': physicalDeviceId,
+                'ipAddress': document.getElementById("ipAddress").value,
+                'port': getPortOrDefault(document.getElementById("port").value),
+                'password': document.getElementById("password").value
+            };
+
+            wizardlog('Send event apply-new-settings with data:', data);
+            Homey.emit('apply-new-settings', data)
+                .catch(e => { wizarderror(e); });
+            Homey.done();
+        } catch (e) {
+            wizarderror(e);
+        } finally {
+            Homey.hideLoadingOverlay();
+        }
+    }
+
+    async function _init() {
+        let physicalDeviceId = await Homey.getViewStoreValue('store', 'physical_device_id')
+            .catch(e => { wizarderror(e); });
+
+        let currentSettings = await Homey.emit('get-settings', { 'physicalDeviceId': physicalDeviceId })
+            .catch(e => { wizarderror(e); });
+
+        document.getElementById("ipAddress").value = currentSettings.ipAddress;
+        document.getElementById("port").value = currentSettings.port;
+        document.getElementById("password").value = currentSettings.password;
+
+        Homey.hideLoadingOverlay();
+    }
+
+    /*************
+     * MAIN CODE *
+     *************/
+
+    // Disable connect button by default
+    disableButton(document.getElementById('apply'));
+
+    _init();
+</script>

@@ -175,11 +175,19 @@ class PhysicalDeviceManager extends EventEmitter {
         // We need to update the settings of all the virtual devices using this physical device id
         // It includes the virtual device which has its settings modified by the user ... no idea if this create a conflict ...
         virtualDevices.forEach(async virtualDevice => {
-            this.log('Modify settings of', virtualDevice);
+            this.log('Modify ipAddress', newIpAddress);
             await virtualDevice.setSettings({
-                'ipAddress': newIpAddress,
-                'port': newPort,
-                'password': newPassword
+                ipAddress : newIpAddress
+            }).catch(error => { throw error; });
+
+            this.log('Modify port:', newPort);
+            await virtualDevice.setSettings({
+                port : newPort
+            }).catch(error => { throw error; });
+
+            this.log('Modify password:', newPassword);
+            await virtualDevice.setSettings({
+                password : newPassword
             }).catch(error => { throw error; });
 
             // We can force the virtual devices to 'reconect'

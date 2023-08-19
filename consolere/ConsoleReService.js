@@ -332,7 +332,18 @@ class ConsoleReService {
             if (arg === undefined) {
                 newArgs.push(undefined);
             } else {
-                let obj = JSON.parse(JSON.stringify(arg));
+                const stringifyCircularJSON = obj => {
+                    const seen = new WeakSet();
+                    return JSON.stringify(obj, (k, v) => {
+                        if (v !== null && typeof v === 'object') {
+                            if (seen.has(v)) return;
+                            seen.add(v);
+                        }
+                        return v;
+                    });
+                };
+
+                let obj = JSON.parse(stringifyCircularJSON(arg));
                 this._filter(obj);
                 newArgs.push(obj);
             }
@@ -342,7 +353,7 @@ class ConsoleReService {
     }
 
     /**
-     * Currently only filter passwords
+     * Currently only filter passwords and homey
      * 
      * @param {*} obj 
      */

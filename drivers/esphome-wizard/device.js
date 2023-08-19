@@ -261,9 +261,7 @@ class VirtualDevice extends Device {
     }
 
     async onSettings({ oldSettings, newSettings, changedKeys }) {
-        if(changedKeys.includes('ipAddress') || changedKeys.includes('port') || changedKeys.includes('password')) {
-            PhysicalDeviceManager.changeSettings(this, this.physicalDeviceId, newSettings.ipAddress, newSettings.port, newSettings.password);
-        }
+        throw new Error('Use the Wizard driver to modify those settings');
     }
 }
 

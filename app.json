@@ -313,6 +313,9 @@
           "id": "conf_main"
         },
         {
+          "id": "conf_settings"
+        },
+        {
           "id": "store"
         }
       ],
@@ -342,7 +345,7 @@
         },
         {
           "id": "password",
-          "type": "password",
+          "type": "text",
           "label": {
             "en": "Password"
           },

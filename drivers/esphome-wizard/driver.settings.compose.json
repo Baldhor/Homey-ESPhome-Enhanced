@@ -1,32 +1,34 @@
 [
-  {"id": "ipAddress",
+  {
+    "id": "ipAddress",
     "type": "text",
-    "label": { 
-      "en": "IP address" 
+    "label": {
+      "en": "IP address"
     },
     "value": "192.168.0.50",
-    "hint": { 
-      "en": "IP address of the device" 
+    "hint": {
+      "en": "IP address of the device"
     }
   },
   {"id": "port",
     "type": "text",
-    "label": { 
-      "en": "Port" 
+    "label": {
+      "en": "Port"
     },
     "value": "6053",
-    "hint": { 
+    "hint": {
       "en": "TCP port used. Default is 6053"
     }
   },
-  {"id": "password",
-    "type": "password",
-    "label": { 
-      "en": "Password" 
+  {
+    "id": "password",
+    "type": "text",
+    "label": {
+      "en": "Password"
     },
     "value": "",
-    "hint": { 
-      "en": "The password of the device" 
+    "hint": {
+      "en": "The password of the device"
     }
   }
 ]

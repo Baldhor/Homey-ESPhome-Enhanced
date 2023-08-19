@@ -53,7 +53,8 @@
             "physical_device_ipAddress": "IP address",
             "physical_device_port": "Port",
             "physical_device_bound": "Number of virtual device bound",
-            "select": "Select"
+            "select": "Select",
+            "update_settings" : "Update settings"
         },
         "conf_main": {
             "title": "There goes the magic",
@@ -145,6 +146,14 @@
                     "slidder": "Slidder"
                 }
             }
+        },
+        "conf_settings": {
+            "title": "There goes the magic",
+            "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
+            "ipAddress": "IP address",
+            "port": "Port",
+            "password" : "Password",
+            "apply" : "Apply"
         }
     },
     "settings": {

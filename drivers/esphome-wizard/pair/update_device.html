@@ -53,6 +53,9 @@
 <br>
 <button id="select" class="homey-button-primary-full" data-i18n="wizard.update_device.select"
     onclick="onClickSelect(event);"></button>
+<br>
+<button id="update_settings" class="homey-button-primary-full" data-i18n="wizard.update_device.update_settings"
+    onclick="onClickUpdateSettings(event);"></button>
 <script type="application/javascript">
     /***************
      * HTML Events *
@@ -62,6 +65,7 @@
         wizardlog('onChangeRadio:', ...arguments);
 
         enableButton(document.getElementById('select'));
+        enableButton(document.getElementById('update_settings'));
     }
 
     function onClickSelect(event) {
@@ -78,6 +82,20 @@
         });
     }
 
+    function onClickUpdateSettings(event) {
+        wizardlog('onChangeSelect:', ...arguments);
+
+        Homey.showLoadingOverlay();
+
+        // Don't actually submit the form just yet
+        event.preventDefault();
+
+        Homey.setViewStoreValue('store', 'physical_device_id', document.querySelector('input[name="radio_buttons"]:checked').value).then(() => {
+            Homey.hideLoadingOverlay();
+            Homey.showView('conf_settings');
+        });
+    }
+
 
     /*************
      * MAIN CODE *
@@ -85,6 +103,7 @@
 
     // Make sure the select button is disabled by default: need to select one device in the list!
     disableButton(document.getElementById('select'));
+    disableButton(document.getElementById('update_settings'));
 
     // Get existing device from homey
     Homey.emit("get-existing-physical-devices").then(existingPhysicalDevices => {
