@@ -58,5 +58,8 @@
   },
   "0.5.3": {
     "en": "password are now supported as expected"
+  },
+  "0.5.4": {
+    "en": "Fixed #19, and now all logs from the browser will also be sent to console.re. Passwords are filtered out in a generic way to ensure even new logs will not include passwords!"
   }
 }
