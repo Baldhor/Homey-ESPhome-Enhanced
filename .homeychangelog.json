@@ -64,5 +64,8 @@
   },
   "0.5.5": {
     "en": "No more circular reference in console.re and it is now possible to modify a device settings through the wizard (ip address, port and password)"
+  },
+  "0.6.0": {
+    "en": "Added support for encryption key. Improved new_device / update settyings views"
   }
 }
