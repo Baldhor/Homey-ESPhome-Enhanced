@@ -67,5 +67,8 @@
   },
   "0.6.0": {
     "en": "Added support for encryption key. Improved new_device / update settyings views"
+  },
+  "0.6.1": {
+    "en": "Added logs"
   }
 }
