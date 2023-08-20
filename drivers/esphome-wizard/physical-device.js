@@ -49,9 +49,10 @@ class PhysicalDevice extends EventEmitter {
      * @param {boolean} reconnect Connection mode: connect once or reconnect
      * @param {string} ipAddress IP address
      * @param {string} port Port number
+     * @param {string} encryptionKey Encryption key
      * @param {string} password (Optionnal) password
      */
-    constructor(driver, reconnect, ipAddress, port, password) {
+    constructor(driver, reconnect, ipAddress, port, encryptionKey, password) {
         Utils.assert(driver != null && typeof driver === 'object' && driver.constructor.name === 'Driver', 'Driver cannot be null or of wrong type');
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
         Utils.assert(Utils.checkIfValidPortnumber(port), 'Wrong format of port:', port)
@@ -61,7 +62,7 @@ class PhysicalDevice extends EventEmitter {
         this.id = PhysicalDevice.buildPhysicalDeviceId(ipAddress, port);
         this.nativeCapabilities = {};
 
-        this.client = new Client(this, reconnect, ipAddress, port, password);
+        this.client = new Client(this, reconnect, ipAddress, port, encryptionKey, password);
 
         // Add listener
         this.startClientListener();

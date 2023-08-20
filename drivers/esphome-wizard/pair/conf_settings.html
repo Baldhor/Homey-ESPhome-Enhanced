@@ -56,8 +56,12 @@
     <label class="homey-form-label" for="port" data-i18n="wizard.conf_settings.port"></label>
     <input class="homey-form-input" id="port" type="text" maxlength="5" placeholder="6053"
         oninput="onInputCheckApplyButton(event);" />
+    <label class="homey-form-label" for="encryptionKey" data-i18n="wizard.conf_settings.encryptionKey"></label>
+    <input class="homey-form-input" id="encryptionKey" type="text" maxlength="44"
+        oninput="onInputCheckApplyButton(event);" />
     <label class="homey-form-label" for="password" data-i18n="wizard.conf_settings.password"></label>
-    <input class="homey-form-input" id="password" type="text" maxlength="20" />
+    <input class="homey-form-input" id="password" type="text" maxlength="20"
+        oninput="onInputCheckApplyButton(event);" />
 </div>
 
 <br>
@@ -74,12 +78,18 @@
 
         let ipAddress = document.getElementById("ipAddress").value;
         let port = getPortOrDefault(document.getElementById("port").value);
+        let encryptionKey = document.getElementById("encryptionKey").value;
+        let password = document.getElementById("password").value;
 
         // check ipAddress is not empty
-        if (!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPort(port))
+        if (!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPort(port) || (encryptionKey && password) || !_unmodifiedSettings(ipAddress, port, encryptionKey, password))
             disableButton(document.getElementById('apply'));
         else
             enableButton(document.getElementById('apply'));
+    }
+
+    function _unmodifiedSettings(ipAddress, port, encryptionKey, password) {
+        return (currentSettings.ipAddress !== ipAddress) || (currentSettings.port !== port) || (currentSettings.encryptionKey !== encryptionKey) || (currentSettings.password !== password);
     }
 
     async function onClickApply(event) {
@@ -98,6 +108,7 @@
                 'physicalDeviceId': physicalDeviceId,
                 'ipAddress': document.getElementById("ipAddress").value,
                 'port': getPortOrDefault(document.getElementById("port").value),
+                'encryptionKey': document.getElementById("encryptionKey").value,
                 'password': document.getElementById("password").value
             };
 
@@ -116,11 +127,12 @@
         let physicalDeviceId = await Homey.getViewStoreValue('store', 'physical_device_id')
             .catch(e => { wizarderror(e); });
 
-        let currentSettings = await Homey.emit('get-settings', { 'physicalDeviceId': physicalDeviceId })
+        currentSettings = await Homey.emit('get-settings', { 'physicalDeviceId': physicalDeviceId })
             .catch(e => { wizarderror(e); });
 
         document.getElementById("ipAddress").value = currentSettings.ipAddress;
         document.getElementById("port").value = currentSettings.port;
+        document.getElementById("encryptionKey").value = currentSettings.encryptionKey;
         document.getElementById("password").value = currentSettings.password;
 
         Homey.hideLoadingOverlay();
@@ -129,6 +141,8 @@
     /*************
      * MAIN CODE *
      *************/
+
+     currentSettings = null;
 
     // Disable connect button by default
     disableButton(document.getElementById('apply'));

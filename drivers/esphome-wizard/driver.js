@@ -18,7 +18,8 @@ class Driver extends Homey.Driver {
          * data: {
          *     ipAddress,
          *     port,
-         *    password
+         *     encryptionKey,
+         *     password
          * }
          * 
          * Emit:
@@ -39,20 +40,37 @@ class Driver extends Homey.Driver {
 
                     // Let's check again
                     if (PhysicalDeviceManager.get(data.ipAddress, data.port)) {
-                        session.emit('new-device-failed', 'A physical device already exist');
+                        session.emit('new-device-failed', 'A physical device already exist')
+                            .catch(e => {
+                                if (e instanceof NotFoundException) {
+                                    // Session expired, just ignore it
+                                    this.log('Failed to connect with device before pair session expired:', data);
+                                } else {
+                                    throw e;
+                                }
+                            });
                         return;
                     }
                 }
 
                 // Create a new physical device and add listeners
-                let physicalDeviceId = PhysicalDeviceManager.create(false, data.ipAddress, data.port, data.password);
+                let physicalDeviceId = PhysicalDeviceManager.create(false, data.ipAddress, data.port, data.encryptionKey, data.password);
                 session.newPhysicalDeviceId = physicalDeviceId;
 
                 PhysicalDeviceManager.getById(physicalDeviceId).on('available', () => {
                     this.log('Received available event');
 
                     if (session.newPhysicalDeviceId === physicalDeviceId) {
-                        session.emit('new-device-connected', physicalDeviceId);
+                        session.emit('new-device-connected', physicalDeviceId)
+                            .catch(e => {
+                                if (e instanceof NotFoundException) {
+                                    // Session expired, cleaning up
+                                    this.log('Connected to device, but the pair session expired:', data);
+                                    PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
+                                } else {
+                                    throw e;
+                                }
+                            });
                     }
                 });
 
@@ -60,7 +78,14 @@ class Driver extends Homey.Driver {
                     this.log('Received unavailable event');
 
                     if (session.newPhysicalDeviceId === physicalDeviceId) {
-                        session.emit('new-device-failed', 'Could not connect to the device, or something went wrong');
+                        session.emit('new-device-failed', 'Could not connect to the device, or something went wrong')
+                            .catch(e => {
+                                if (e instanceof NotFoundException) {
+                                    // Session expired, just ignore it
+                                } else {
+                                    throw e;
+                                }
+                            });
                         PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
                         this.newPhysicalDeviceId = null;
                     }
@@ -145,6 +170,7 @@ class Driver extends Homey.Driver {
                     'id': physicalDevice.id,
                     'ipAddress': physicalDevice.client.ipAddress,
                     'port': physicalDevice.client.port,
+                    'encryptionKey': physicalDevice.client.encryptionKey,
                     'password': physicalDevice.client.password
                 }
 
@@ -396,9 +422,10 @@ class Driver extends Homey.Driver {
                 const settings = firstVirtualDevice.getSettings();
 
                 result = {
-                    'ipAddress' : settings.ipAddress,
-                    'port' : settings.port,
-                    'password' : settings.password
+                    'ipAddress': settings.ipAddress,
+                    'port': settings.port,
+                    'encryptionKey': settings.encryptionKey,
+                    'password': settings.password
                 };
             } catch (error) {
                 this.log(error.stack);
@@ -413,15 +440,16 @@ class Driver extends Homey.Driver {
             let physicalDeviceId = data.physicalDeviceId;
             let newIpAddress = data.ipAddress;
             let newPort = data.port;
+            let newEncryptionKey = data.encryptionKey;
             let newPassword = data.password;
 
             try {
-                PhysicalDeviceManager.changeSettings(physicalDeviceId, newIpAddress, newPort, newPassword);
+                PhysicalDeviceManager.changeSettings(physicalDeviceId, newIpAddress, newPort, newEncryptionKey, newPassword);
             } catch (error) {
                 this.log(error.stack);
                 throw error;
             }
-        });        
+        });
     }
 }
 

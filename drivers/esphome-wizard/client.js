@@ -7,9 +7,7 @@
  * 
  * Functions:
  * - new Client(driver): Create a new client object
- * - init(ipAddress, port, [password]): init the connection to a remote device
- * - reinit(ipAddress, port, [password]): change the connection parameters to a remote device, it may trigger the 'disconnected' event
- * - 
+ * 
  * Events:
  * - 'connected': The connection with the remote device is established
  * - 'disconnected': The connection with the remote device is lost (volunteer or not)
@@ -37,6 +35,7 @@ class Client extends EventEmitter {
 
     ipAddress = null;
     port = null;
+    encryptionKey = null;
     password = null;
 
     reconnect = true;
@@ -52,9 +51,10 @@ class Client extends EventEmitter {
      * @param {boolean} reconnect Connection mode: connect once or reconnect
      * @param {string} ipAddress IP address
      * @param {string} port Port number
+     * @param {string} encryptionKey Encryption key
      * @param {string} password (Optionnal) password
      */
-    constructor(physicalDevice, reconnect, ipAddress, port, password) {
+    constructor(physicalDevice, reconnect, ipAddress, port, encryptionKey, password) {
         // Check input
         Utils.assert(physicalDevice != null && typeof physicalDevice === 'object' && physicalDevice.constructor.name === 'PhysicalDevice', 'Physical device cannot be null or of wrong type');
         Utils.assert(reconnect != null && typeof reconnect === 'boolean', 'Connection mode cannot be null or of wrong type');
@@ -67,9 +67,15 @@ class Client extends EventEmitter {
 
         this.ipAddress = ipAddress;
         this.port = port;
+        this.encryptionKey = encryptionKey && encryptionKey !== '' ? encryptionKey : '';
         this.password = password && password !== '' ? password : '';
 
-        this.log('Initializing:', ipAddress, port, password !== '' ? '<password hidden>' : '<no password>');
+        this.log('Initializing:', {
+            'ipAddress' : ipAddress,
+            'port' : port,
+            'encryptionKey' : encryptionKey,
+            'password' : password
+        });
 
         // We obviosuly expect to connect, so let's start
         this.expectConnected = true;
@@ -95,7 +101,8 @@ class Client extends EventEmitter {
             this.nativeApiClient = new NativeApiClient({
                 host: this.ipAddress,
                 port: this.port,
-                password: this.password,
+                encryptionKey: this.encryptionKey === '' ? null : this.encryptionKey,
+                password: this.password === '' ? null : this.password,
                 initializeSubscribeLogs: true, // We want logs, we like logs
                 initializeListEntities: true, // We want the entities configuration²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
                 reconnect: this.reconnect,

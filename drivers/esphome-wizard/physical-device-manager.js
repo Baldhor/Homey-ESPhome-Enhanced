@@ -47,10 +47,11 @@ class PhysicalDeviceManager extends EventEmitter {
      * @param {*} reconnect Connection mode: connect once or reconnect
      * @param {*} ipAddress IP address
      * @param {*} port Port number
+     * @param {*} encryptionKey Encryption key
      * @param {*} password (Optionnal) password
      * @returns PhysicalDevice
      */
-    static create(reconnect, ipAddress, port, password) {
+    static create(reconnect, ipAddress, port, encryptionKey, password) {
         this.log('New Physical Device to create:', ipAddress, port);
 
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
@@ -65,7 +66,7 @@ class PhysicalDeviceManager extends EventEmitter {
             return id;
         } else {
             this.log("Physical Device doesn't exist, create a new one");
-            instance.physicalDevices.set(id, new PhysicalDevice(instance.driver, reconnect, ipAddress, port, password));
+            instance.physicalDevices.set(id, new PhysicalDevice(instance.driver, reconnect, ipAddress, port, encryptionKey, password));
             return id;
         }
     }
@@ -130,7 +131,8 @@ class PhysicalDeviceManager extends EventEmitter {
         this.log('Delete a physical device:', physicalDevice.id);
         this.getInstance().physicalDevices.delete(physicalDevice.id);
         physicalDevice.removeAllListeners();
-        physicalDevice.client.disconnect();
+        if (physicalDevice.client)
+            physicalDevice.client.disconnect();
     }
 
     /**
@@ -143,12 +145,13 @@ class PhysicalDeviceManager extends EventEmitter {
      * - The old physicalDevice must be disconnected / destroyed, and removed from the physicalDevices map
      * - There are no need to create the new physical device, it will be created by the virtual device(s) ... hopefully
      * 
-     * @param {*} physicalDevice The physical device to modify
-     * @param {*} ipAddress The new IP address
-     * @param {*} port The new port
-     * @param {*} password The new password
+     * @param {*} physicalDeviceId The physical device id to modify
+     * @param {*} newIpAddress The new IP address
+     * @param {*} newPort The new port
+     * @param {*} newEncryptionKey The new encryptionKey
+     * @param {*} newPassword The new password
      */
-    static changeSettings(physicalDeviceId, newIpAddress, newPort, newPassword) {
+    static changeSettings(physicalDeviceId, newIpAddress, newPort, newEncryptionKey, newPassword) {
         this.log('changeSettings:', ...arguments);
 
         // We need to:
@@ -157,14 +160,6 @@ class PhysicalDeviceManager extends EventEmitter {
         // - Then we need to force disconnect the old physical device
         // - Finaly, we can force the virtual devices to 'reconect'
 
-
-        // Make sure the newIpAddress/port is unused => otherwise, we throw an error (it will cancel the settings update)
-        let newPhysicalDevice = this.get(newIpAddress, newPort);
-        if (newPhysicalDevice !== undefined) {
-            this.log('Those IP address and Port are already used:', newPhysicalDevice);
-            throw Error('Those IP address and Port are already used');
-        }
-
         let virtualDevices = this.driver.getDevices().filter(virtualDevice => virtualDevice.physicalDeviceId === physicalDeviceId);
         // Should be at least one ...
         if (virtualDevices.length === 0) {
@@ -172,21 +167,25 @@ class PhysicalDeviceManager extends EventEmitter {
             throw Error('Could not find even a single virtual device ... strange');
         }
 
+        // The ipAddress and port have been changed ?
+        let virtualDevicesSettings = virtualDevices[0].getSettings();
+        if (virtualDevicesSettings.ipAddress !== newIpAddress || virtualDevicesSettings.port !== newPort) {
+            // Make sure the newIpAddress/port is unused => otherwise, we throw an error (it will cancel the settings update)
+            let newPhysicalDevice = this.get(newIpAddress, newPort);
+            if (newPhysicalDevice !== undefined) {
+                this.log('Those IP address and Port are already used:', newPhysicalDevice);
+                throw Error('Those IP address and Port are already used');
+            }
+        }
+        
         // We need to update the settings of all the virtual devices using this physical device id
         // It includes the virtual device which has its settings modified by the user ... no idea if this create a conflict ...
         virtualDevices.forEach(async virtualDevice => {
-            this.log('Modify ipAddress', newIpAddress);
+            this.log('Modify virtualDevice', virtualDevice);
             await virtualDevice.setSettings({
-                ipAddress : newIpAddress
-            }).catch(error => { throw error; });
-
-            this.log('Modify port:', newPort);
-            await virtualDevice.setSettings({
-                port : newPort
-            }).catch(error => { throw error; });
-
-            this.log('Modify password:', newPassword);
-            await virtualDevice.setSettings({
+                ipAddress : newIpAddress,
+                port : newPort,
+                encryptionKey : newEncryptionKey,
                 password : newPassword
             }).catch(error => { throw error; });
 

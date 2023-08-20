@@ -26,6 +26,14 @@ class ConsoleReService {
     tooManyLogsTimer = null;
     socket = null;
 
+    // Avoid using console.re for more than 2 days
+    // This timer is related to the application start on purpose
+    // If the app is restarted often, then we should not turn off console.re
+    timeout = null;
+    timeoutTimestamp = null; // Start timestamp of the application
+    timeoutInterval = 300; // seconds
+    timeoutMax = 172800; // 2 days in seconds
+
     // Singleton
     instance = new ConsoleReService();
 
@@ -353,20 +361,21 @@ class ConsoleReService {
     }
 
     /**
-     * Currently only filter passwords and homey
+     * Currently only filter encryption keys and passwords
      * 
      * @param {*} obj 
      */
     static _filter(obj) {
         if (obj !== null && typeof obj === 'object') {
-            if (obj.password !== undefined) {
-                if (obj.password === null || obj.password === '') {
-                    obj.password = '<no password>';
-                } else {
-                    obj.password = '<hidden password>';
+            ['encryptionKey', 'newEncryptionKey', 'password', 'newPassword'].forEach(propertyName => {
+                if (obj[propertyName] !== undefined) {
+                    if (obj[propertyName] === null || obj[propertyName] === '') {
+                        obj[propertyName] = '<no value>';
+                    } else {
+                        obj[propertyName] = '<hidden value>';
+                    }
                 }
-            }
-
+            });
             Object.keys(obj).forEach(key => {
                 this._filter(obj[key]);
             });

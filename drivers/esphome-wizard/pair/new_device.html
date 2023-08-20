@@ -10,12 +10,17 @@
 </script>
 <header class="homey-header" data-i18n="wizard.new_device.description"></header>
 <label class="homey-form-label" for="ipAddress" data-i18n="wizard.new_device.ipAddress"></label>
-<input class="homey-form-input" id="ipAddress" type="text" maxlength="15" oninput="onInputCheckConnectButton(event);" />
+<input class="homey-form-input" id="ipAddress" type="text" maxlength="15"
+    oninput="onInputCheckConnectButton(event);" />
 <label class="homey-form-label" for="port" data-i18n="wizard.new_device.port"></label>
 <input class="homey-form-input" id="port" type="text" maxlength="5" placeholder="6053"
     oninput="onInputCheckConnectButton(event);" />
+<label class="homey-form-label" for="encryptionKey" data-i18n="wizard.new_device.encryptionKey"></label>
+<input class="homey-form-input" id="encryptionKey" type="text" maxlength="20"
+    oninput="onInputCheckConnectButton(event);" />
 <label class="homey-form-label" for="password" data-i18n="wizard.new_device.password"></label>
-<input class="homey-form-input" id="password" type="text" maxlength="20" />
+<input class="homey-form-input" id="password" type="text" maxlength="20"
+    oninput="onInputCheckConnectButton(event);" />
 
 <br>
 <button id="connect" class="homey-button-primary-full" data-i18n="wizard.new_device.connect"
@@ -30,9 +35,11 @@
 
         let ipAddress = document.getElementById("ipAddress").value;
         let port = getPortOrDefault(document.getElementById("port").value);
+        let encryptionKey = document.getElementById("encryptionKey").value;
+        let password = document.getElementById("password").value;
 
         // check ipAddress is not empty
-        if (!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPort(port))
+        if (!ipAddress || !checkIfValidIpAddress(ipAddress) || !checkIfValidPort(port) || (encryptionKey && password))
             disableButton(document.getElementById('connect'));
         else
             enableButton(document.getElementById('connect'));
@@ -49,6 +56,7 @@
         let data = {
             'ipAddress': document.getElementById("ipAddress").value,
             'port': getPortOrDefault(document.getElementById("port").value),
+            'encryptionKey': document.getElementById("encryptionKey").value,
             'password': document.getElementById("password").value
         };
 
@@ -77,7 +85,7 @@
     });
 
     Homey.on('new-device-failed', function (message) {
-        wizardlog('Event new-device-failedreceived:', message);
+        wizardlog('Event new-device-failed received:', message);
 
         Homey.hideLoadingOverlay();
         Homey.alert(message, 'error');

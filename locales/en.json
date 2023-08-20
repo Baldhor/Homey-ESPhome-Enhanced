@@ -36,8 +36,8 @@
             "description": "To assist you, I need to connect to your physical device!",
             "ipAddress": "IP address",
             "port": "Port",
+            "encryptionKey": "Encryption key",
             "password": "Password",
-            "password_is_optionnal": "Optionnal",
             "already_exist": "I already know a physical device with those IP address and port, please use 'Update an existing physical device' in previous screen or correct your input",
             "connect": "Connect",
             "connected": "Great, I was able to connect, let's start to use magic",
@@ -46,7 +46,7 @@
         "update_device": {
             "title": "Choose an existing device",
             "description": "To assist you, I need you to choose an existing device",
-            "info": "To change the IP address, port or password, use the settings screen of any virtual device bound to the concerned physical device",
+            "info": "To change the IP address, port, encryption key or password, use the dedicated screen",
             "none": "I didn't find any existing physical device, are you sure?",
             "list": "Here is the list of the physical devices I know, please choose one!",
             "physical_device_id": "Id",
@@ -152,6 +152,7 @@
             "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
             "ipAddress": "IP address",
             "port": "Port",
+            "encryptionKey" : "Encryption key",
             "password" : "Password",
             "apply" : "Apply"
         }

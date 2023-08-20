@@ -1334,6 +1334,7 @@
         //         settings: { // Allows to reconnect to the physical device
         //             ipAddress: string,
         //             port: string,
+        //             encryptionKey: string,
         //             password: string
         //         }
         //     }
@@ -1570,6 +1571,7 @@
             settings: { // Allows to reconnect to the physical device
                 ipAddress: null,
                 port: null,
+                encryptionKey: null,
                 password: null
             }
         };
@@ -1606,6 +1608,7 @@
         // FIXME: We just bring password around and not crypted ... how nice
         device.settings['ipAddress'] = ongoingConfiguration.physicalDevice.ipAddress;
         device.settings['port'] = ongoingConfiguration.physicalDevice.port;
+        device.settings['encryptionKey'] = ongoingConfiguration.physicalDevice.encryptionKey;
         device.settings['password'] = ongoingConfiguration.physicalDevice.password;
 
         devicesToCreate.push(device);

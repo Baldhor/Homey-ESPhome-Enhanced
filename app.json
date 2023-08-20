@@ -344,6 +344,17 @@
           }
         },
         {
+          "id": "encryptionKey",
+          "type": "text",
+          "label": {
+            "en": "Encryption key"
+          },
+          "value": "",
+          "hint": {
+            "en": "A 32-byte base64 encoded string"
+          }
+        },
+        {
           "id": "password",
           "type": "text",
           "label": {
