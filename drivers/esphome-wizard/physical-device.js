@@ -222,12 +222,16 @@ class PhysicalDevice extends EventEmitter {
     }
 
     computeNativeCapabilities() {
+        this.log('computeNativeCapabilities');
+
         // Reset existing capabilities
         // In case of reconnection, maybe the remote device behaviour changed, so it's better to restart from the ground up
         this.native_capabilities = {};
 
         // For each entities, based on its type, we need to identify the native capabilities
         Object.keys(this.client.nativeApiClient.entities).forEach(entityId => {
+            this.log('computeNativeCapability for entityId', entityId + ':', this.client.nativeApiClient.entities[entityId]);
+
             let entity = this.client.nativeApiClient.entities[entityId];
             let configs = {};
             let constraints = {};
@@ -262,11 +266,11 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigUsage(entity, configs);
                     // Add of a unit config is useless and confusing, it's float between 0 (closed) and 1 (open)
                     // In the UI, it is shown as a %
-                    if (entity.config.supportsPosition && entity.config.supportsPosition) {
+                    if (entity.config.supportsPosition) {
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'position', configs, constraints);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
-                    if (entity.config.supportsTilt && entity.config.supportsTilt) {
+                    if (entity.config.supportsTilt) {
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'tilt', configs, constraints);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }

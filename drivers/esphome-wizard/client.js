@@ -180,7 +180,7 @@ class Client extends EventEmitter {
 
 
     newEntityListener(entity) {
-        this.log('Received a newentity');
+        this.log('Received a newentity:', entity);
 
         this.startRemoteEntityListener(entity.id);
     }
