@@ -1,7 +1,7 @@
 'use strict';
 
 const connect = require('socket.io-client');
-//import PQueue from 'p-queue';
+const util = require('node:util');
 
 const QUEUE_INTERVAL_CAP = 20;
 const QUEUE_INTERVAL = 1000;
@@ -63,8 +63,13 @@ class ConsoleReService {
         // - Doesn't autoStart: we are waiting for console.re connection to establish
         // - Concurrency of 1: we expect the logs in the right order
         // - Interval of 5 logs every one seconds: to avoid performance issues
-        const module = await import('p-queue');
-        instance.queue = new module.default({ concurrency: 1, autoStart: false, intervalCap: QUEUE_INTERVAL_CAP, interval: QUEUE_INTERVAL });
+        const pqueueModule = await import('p-queue');
+        instance.queue = new pqueueModule.default({ concurrency: 1, autoStart: false, intervalCap: QUEUE_INTERVAL_CAP, interval: QUEUE_INTERVAL });
+
+        // Import 
+        const serializeErrorModule = await import('serialize-error');
+        instance.serializeError = serializeErrorModule.serializeError;
+        instance.deserializeError = serializeErrorModule.deserializeError;
 
         // init settings
         instance.initSettings();
@@ -322,11 +327,7 @@ class ConsoleReService {
                         }
                     });
                 } catch (e) {
-                    if (e instanceof RangeError) {
-                        instance.internalLog('ConsoleRe emit error, probably because the log include a circular reference:', e);
-                    } else {
-                        instance.internalLog('ConsoleRe emit error:', e);
-                    }
+                    instance.internalLog('ConsoleRe emit error:', e);
                 }
             });
         })();
@@ -335,6 +336,8 @@ class ConsoleReService {
     static _filterArgs(args) {
         let newArgs = [];
 
+        let instance = this.getInstance();
+
         // Let's make a deep copy and filter anything that need to be
         args.forEach(arg => {
             if (arg === undefined) {
@@ -342,44 +345,38 @@ class ConsoleReService {
             } else {
                 const stringifyCircularJSON = obj => {
                     const seen = new WeakSet();
+                    const filterList = ['encryptionKey', 'newEncryptionKey', 'password', 'newPassword'];
+                    const isError = (e) => {
+
+                    }
                     return JSON.stringify(obj, (k, v) => {
                         if (v !== null && typeof v === 'object') {
                             if (seen.has(v)) return;
                             seen.add(v);
+
+                            if (util.types.isNativeError(v)) {
+                                return instance.serializeError(v);
+                            }
                         }
+
+                        if (filterList.includes(k)) {
+                            if (v === null || v === '') {
+                                return '<no value>';
+                            } else {
+                                return '<hidden value>';
+                            }
+                        }
+                                    
                         return v;
                     });
                 };
 
                 let obj = JSON.parse(stringifyCircularJSON(arg));
-                this._filter(obj);
                 newArgs.push(obj);
             }
         });
 
         return newArgs;
-    }
-
-    /**
-     * Currently only filter encryption keys and passwords
-     * 
-     * @param {*} obj 
-     */
-    static _filter(obj) {
-        if (obj !== null && typeof obj === 'object') {
-            ['encryptionKey', 'newEncryptionKey', 'password', 'newPassword'].forEach(propertyName => {
-                if (obj[propertyName] !== undefined) {
-                    if (obj[propertyName] === null || obj[propertyName] === '') {
-                        obj[propertyName] = '<no value>';
-                    } else {
-                        obj[propertyName] = '<hidden value>';
-                    }
-                }
-            });
-            Object.keys(obj).forEach(key => {
-                this._filter(obj[key]);
-            });
-        }
     }
 }
 

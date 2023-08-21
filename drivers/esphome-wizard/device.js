@@ -135,8 +135,13 @@ class VirtualDevice extends Device {
         if (filtererdCapabilityKeys.length === 1) {
             // Check if the value should be converted because of a special case
             let physicalDevice = PhysicalDeviceManager.getById(this.physicalDeviceId);
-            let nativeCapability = physicalDevice.nativeCapabilities[capabilityKeys[filtererdCapabilityKeys[0]]];
+            let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
 
+            if (nativeCapability === undefined) {
+                this.log("Something is wrong in stateChangedListener, couldn't find the native capability for id:", nativeCapabilityId);
+                return;
+            }
+    
             switch (nativeCapability.specialCase) {
                 case 'templateCover':
                     this.log('templateCover case, converting value')
@@ -148,7 +153,7 @@ class VirtualDevice extends Device {
 
             this.setCapabilityValue(filtererdCapabilityKeys[0], value).catch(this.error);
         } else if (filtererdCapabilityKeys.length > 1) {
-            this.log('Something is wrong in changedListener, found several matching capabilities:', filtererdCapabilityKeys);
+            this.log('Something is wrong in stateChangedListener, found several matching capabilities:', filtererdCapabilityKeys);
         }
     }
 
@@ -214,6 +219,10 @@ class VirtualDevice extends Device {
         // Check if the value should be converted because of a special case
         let physicalDevice = PhysicalDeviceManager.getById(this.physicalDeviceId);
         let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
+
+        if (nativeCapability === undefined) {
+            throw new Error('Capability', capability, "doesn't have a matching native capability. the configuration of your physical device probably changed in an incompatible way. Use the Wizard to 'repair' your physical device!");
+        }
 
         switch (nativeCapability.specialCase) {
             case 'templateCover':

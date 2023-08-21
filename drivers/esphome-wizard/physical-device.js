@@ -377,7 +377,7 @@ class PhysicalDevice extends EventEmitter {
         this.log('Get current value:', nativeCapabilityId);
 
         let nativeCapability = this.nativeCapabilities[nativeCapabilityId];
-        return nativeCapability ? nativeCapability.getValue() : null;
+        return nativeCapability !== undefined ? nativeCapability.getValue() : null;
     }
 
     sendCommand(nativeCapabilityId, newValue) {
