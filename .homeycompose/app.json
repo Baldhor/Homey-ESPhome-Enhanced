@@ -1,6 +1,6 @@
 {
   "id": "nl.inversion.esphome",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
