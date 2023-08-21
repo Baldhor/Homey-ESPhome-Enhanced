@@ -51,7 +51,7 @@ class VirtualDevice extends Device {
         let settings = this.getSettings();
         this.log('Settings', settings);
 
-        this.physicalDeviceId = PhysicalDeviceManager.create(true, settings.ipAddress, settings.port, settings.encryptionKey, settings.password);
+        this.physicalDeviceId = PhysicalDeviceManager.create(true, settings.ipAddress, settings.port, settings.encryptionKey === undefined ? '' : settings.encryptionKey, settings.password);
         if (PhysicalDeviceManager.getById(this.physicalDeviceId).client.connected) {
             this.setAvailable().catch(this.error);
         }
