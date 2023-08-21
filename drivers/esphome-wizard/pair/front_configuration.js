@@ -12,6 +12,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step', 'setable']
     },
     {
@@ -23,6 +24,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'media',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'decimals']
     },
     {
@@ -34,6 +36,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'toggle',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'decimals', 'min', 'max', 'step', 'getable']
     },
     {
@@ -45,6 +48,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
     },
     // Skip light_hue
@@ -62,6 +66,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'thermostat',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
     },
     {
@@ -73,6 +78,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -84,6 +90,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -95,6 +102,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -106,6 +114,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -117,6 +126,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -128,6 +138,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -139,6 +150,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -150,6 +162,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -161,6 +174,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -172,6 +186,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -183,6 +198,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -194,6 +210,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -205,6 +222,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'battery',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -216,6 +234,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'approximated']
     },
     {
@@ -227,6 +246,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -238,6 +258,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -249,6 +270,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -260,6 +282,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -271,6 +294,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -282,6 +306,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -293,6 +318,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'zoneActivity']
     },
     {
@@ -304,6 +330,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'zoneActivity']
     },
     {
@@ -315,6 +342,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -326,6 +354,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -337,6 +366,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -348,6 +378,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -359,6 +390,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -370,6 +402,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -381,6 +414,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -392,6 +426,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -403,6 +438,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'battery',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -414,6 +450,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -425,6 +462,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -436,6 +474,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -447,6 +486,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -458,6 +498,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'sensor',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     // Skip homealarm_state
@@ -470,6 +511,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
     },
     {
@@ -481,6 +523,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -492,6 +535,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -503,6 +547,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag', 'getable']
     },
     {
@@ -514,6 +559,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -525,6 +571,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -536,6 +583,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'toggle',
         nativeCapabilitySupported: null,
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     // Skip lock_mode
@@ -552,9 +600,22 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: ['Cover.tilt'],
         nativeCapabilityUnsupported: ['Cover.position'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     // Skip windowcoverings_closed
+    {
+        type: 'windowcoverings_closed',
+        valueType: 'number',
+        getable: true,
+        setable: true,
+        quickaction: false,
+        uielement: 'toggle',
+        nativeCapabilitySupported: ['Cover.position'],
+        nativeCapabilityUnsupported: null,
+        specialCaseSupported: ['templateCover'],
+        options: ['title', 'preventInsights', 'preventTag']
+    },
     {
         type: 'windowcoverings_set',
         valueType: 'number',
@@ -564,6 +625,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'slider',
         nativeCapabilitySupported: ['Cover.position'],
         nativeCapabilityUnsupported: ['Cover.tilt'],
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     },
     {
@@ -575,6 +637,7 @@ CAPABILITY_CONFIGURATION = [
         uielement: 'button',
         nativeCapabilitySupported: ['Button.state'],
         nativeCapabilityUnsupported: null,
+        specialCaseSupported: [],
         options: ['title', 'preventInsights', 'preventTag']
     }
     // Skip speaker_playing

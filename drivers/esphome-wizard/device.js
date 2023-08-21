@@ -130,13 +130,22 @@ class VirtualDevice extends Device {
 
         let capabilityKeys = this.getStoreValue('capabilityKeys');
 
-        // Just in case the device was 'deleted' from the wizard ...
-        if (!capabilityKeys)
-            return;
-
         let filtererdCapabilityKeys = Object.keys(capabilityKeys).filter(capabilityKey => capabilityKeys[capabilityKey] === nativeCapabilityId);
 
         if (filtererdCapabilityKeys.length === 1) {
+            // Check if the value should be converted because of a special case
+            let physicalDevice = PhysicalDeviceManager.getById(this.physicalDeviceId);
+            let nativeCapability = physicalDevice.nativeCapabilities[capabilityKeys[filtererdCapabilityKeys[0]]];
+
+            switch (nativeCapability.specialCase) {
+                case 'templateCover':
+                    this.log('templateCover case, converting value')
+                    // true => closed => 0.0
+                    // false => open => 1.0
+                    value = value === 0 ? true : false;
+                    break;
+            }
+
             this.setCapabilityValue(filtererdCapabilityKeys[0], value).catch(this.error);
         } else if (filtererdCapabilityKeys.length > 1) {
             this.log('Something is wrong in changedListener, found several matching capabilities:', filtererdCapabilityKeys);
@@ -201,6 +210,20 @@ class VirtualDevice extends Device {
 
     capabilityListener(capability, nativeCapabilityId, newValue) {
         this.log('Processing new capability value:', ...arguments);
+
+        // Check if the value should be converted because of a special case
+        let physicalDevice = PhysicalDeviceManager.getById(this.physicalDeviceId);
+        let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
+
+        switch (nativeCapability.specialCase) {
+            case 'templateCover':
+                this.log('templateCover case, converting value')
+                // true => closed => 0.0
+                // false => open => 1.0
+                newValue = newValue ? 0 : 1;
+                break;
+        }
+
         PhysicalDeviceManager.getById(this.physicalDeviceId).sendCommand(nativeCapabilityId, newValue);
     }
 

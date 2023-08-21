@@ -369,6 +369,12 @@ cover:
       - switch.turn_off: relay1
       - switch.turn_off: relay3
 
+  - id: cover2
+    platform: template
+    name: "Garage Door"
+    optimistic: true
+    assumed_state: true
+
 script:
   - id: led1_blink
     mode: single

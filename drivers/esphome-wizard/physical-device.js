@@ -245,7 +245,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigReadOnly(entity, configs);
-                    nativeCapability = new NativeCapability(entityId, entity.config.name, entity.type, 'state', configs, constraints);
+                    nativeCapability = new NativeCapability(entityId, entity.config.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
 
@@ -255,23 +255,31 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigWriteOnly(entity, configs);
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
 
                 case 'Cover':
                     // Has 2 states (position and tilt), and can be modified
+                    // Cover can be of subtype template:
+                    //     In such case, the cover doesn't support either position or tilt
+                    //     but in practice, the position attribut is used in both stateChanged and command ...
                     this.computeConfigShowUI(entity, configs);
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     // Add of a unit config is useless and confusing, it's float between 0 (closed) and 1 (open)
                     // In the UI, it is shown as a %
                     if (entity.config.supportsPosition) {
-                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'position', configs, constraints);
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'position', configs, constraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
                     if (entity.config.supportsTilt) {
-                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'tilt', configs, constraints);
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'tilt', configs, constraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
+                    if (!entity.config.supportsPosition && !entity.config.supportsTilt) {
+                        // Template cover case!
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'position', configs, constraints, 'templateCover');
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
                     break;
@@ -292,7 +300,7 @@ class PhysicalDevice extends EventEmitter {
                     }
                     this.log('Constraints after minMaxStep:', constraints);
                     this.computeConfigPrecisionFromStepConstraint(entity, configs, constraints);
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
             
@@ -305,7 +313,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigReadOnly(entity, configs);
                     this.computeConfigUnit(entity, configs);
                     this.computeConfigPrecision(entity, configs);
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
                 
@@ -314,7 +322,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigShowUI(entity, configs);
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
                 
@@ -324,7 +332,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigReadOnly(entity, configs);
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints);
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
                 

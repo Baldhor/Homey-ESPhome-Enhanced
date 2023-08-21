@@ -226,7 +226,8 @@ class Driver extends Homey.Driver {
                         'state': boundNativeCapabilities.includes(nativeCapabilityId) ? 'bound' : 'unbind',
                         'value': nativeCapability.value === null ? (nativeCapability.configs['writeOnly'] === true ? '' : 'undefined') : nativeCapability.value,
                         'configs': nativeCapability.configs,
-                        'constraints': nativeCapability.constraints
+                        'constraints': nativeCapability.constraints,
+                        'specialCase': nativeCapability.specialCase
                     };
 
                     result.nativeCapabilities.push(tmp);

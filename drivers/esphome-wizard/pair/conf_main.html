@@ -1153,6 +1153,7 @@
         let getableCriterea = null; // boolean
         let setableCriterea = null; // boolean
         let nativeCapabilityCriterea = null // format: nativeCapability.type + '.' nativeCapability.attribut
+        let specialCaseCriterea = null;
 
         // Compute type
         switch (nativeCapability.type) {
@@ -1185,6 +1186,9 @@
         // Compute native_capability
         nativeCapabilityCriterea = nativeCapability.type + '.' + nativeCapability.attribut;
 
+        // Compute special case criterea
+        specialCaseCriterea = nativeCapability.specialCase;
+
         // Apply critera
         // A null criterea means don't apply it
         capabilityList = CAPABILITY_CONFIGURATION;
@@ -1199,6 +1203,11 @@
         }
         capabilityList = capabilityList.filter(capabilityConf => capabilityConf.nativeCapabilitySupported === null || capabilityConf.nativeCapabilitySupported.includes(nativeCapabilityCriterea));
         capabilityList = capabilityList.filter(capabilityConf => capabilityConf.nativeCapabilityUnsupported === null || !capabilityConf.nativeCapabilityUnsupported.includes(nativeCapabilityCriterea));
+        if (specialCaseCriterea !== null) {
+            capabilityList = capabilityList.filter(capabilityConf => capabilityConf.specialCaseSupported === null || capabilityConf.specialCaseSupported.includes(specialCaseCriterea));
+        } else {
+            capabilityList = capabilityList.filter(capabilityConf => capabilityConf.specialCaseSupported === null || capabilityConf.specialCaseSupported.length === 0);
+        }
 
         // Extract capabilities
         compatibleCapabilityTypes = [];

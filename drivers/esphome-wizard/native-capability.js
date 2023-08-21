@@ -59,15 +59,26 @@ class NativeCapability {
      * - mode: box or slidder (box by default)
      */
     constraints = null;
+
+    /**
+     * Special case:
+     * - 'templateCover': It use position to communicate (number with values 0 for closed and 1 for open), but Homey expect a boolean
+     */
+    specialCase = null;
+
+    /**
+     * Last know value in ESPhome format!
+     */
     value = null;
 
-    constructor(entityId, entityName, type, attribut, configs, constraints) {
+    constructor(entityId, entityName, type, attribut, configs, constraints, specialCase) {
         this.entityId = entityId;
         this.entityName = entityName;
         this.type = type;
         this.attribut = attribut;
         this.configs = configs;
         this.constraints = constraints;
+        this.specialCase = specialCase;
     }
 
     static buildId(entityId, attribut) {
@@ -94,6 +105,9 @@ class NativeCapability {
         return this.constraints[key];
     }
 
+    getSpecialCase() {
+        return this.specialCase;
+    }
 }
 
 module.exports = NativeCapability;
