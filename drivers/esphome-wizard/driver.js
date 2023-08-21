@@ -42,12 +42,8 @@ class Driver extends Homey.Driver {
                     if (PhysicalDeviceManager.get(data.ipAddress, data.port)) {
                         session.emit('new-device-failed', 'A physical device already exist')
                             .catch(e => {
-                                if (e instanceof NotFoundException) {
-                                    // Session expired, just ignore it
-                                    this.log('Failed to connect with device before pair session expired:', data);
-                                } else {
-                                    throw e;
-                                }
+                                // Session expired, just ignore it
+                                this.log('Failed to connect with device before pair session expired:', data);
                             });
                         return;
                     }
@@ -63,13 +59,9 @@ class Driver extends Homey.Driver {
                     if (session.newPhysicalDeviceId === physicalDeviceId) {
                         session.emit('new-device-connected', physicalDeviceId)
                             .catch(e => {
-                                if (e instanceof NotFoundException) {
-                                    // Session expired, cleaning up
-                                    this.log('Connected to device, but the pair session expired:', data);
-                                    PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
-                                } else {
-                                    throw e;
-                                }
+                                // Session expired, cleaning up
+                                this.log('Connected to device, but the pair session expired:', data);
+                                PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
                             });
                     }
                 });
@@ -80,11 +72,7 @@ class Driver extends Homey.Driver {
                     if (session.newPhysicalDeviceId === physicalDeviceId) {
                         session.emit('new-device-failed', 'Could not connect to the device, or something went wrong')
                             .catch(e => {
-                                if (e instanceof NotFoundException) {
-                                    // Session expired, just ignore it
-                                } else {
-                                    throw e;
-                                }
+                                // Session expired, just ignore it
                             });
                         PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
                         this.newPhysicalDeviceId = null;
