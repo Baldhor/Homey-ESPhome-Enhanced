@@ -82,5 +82,8 @@
   },
   "0.6.5": {
     "en": "Fix: added compatible with virtual devices created before implementation of encryption key support"
+  },
+  "0.6.6": {
+    "en": "Improved console.re logs. console.re will deactivate after 2 consecutive days\""
   }
 }
