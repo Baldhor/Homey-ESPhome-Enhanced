@@ -65,7 +65,6 @@ class VirtualDevice extends Device {
     }
 
     registerCustomerTriggerCards() {
-        this.esphomeNumberCustom = this.homey.flow.getDeviceTriggerCard('esphome_number_custom2');
     }
 
     startAvailabilityListener() {

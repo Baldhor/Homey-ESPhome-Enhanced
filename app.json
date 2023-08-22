@@ -74,40 +74,6 @@
             "filter": "driver_id=esphome-device&capabilities=esphome_number"
           }
         ]
-      },
-      {
-        "id": "esphome_number_custom2",
-        "title": {
-          "en": "Number changed"
-        },
-        "hint": {
-          "en": "This card will be triggered when the number has changed."
-        },
-        "tokens": [
-          {
-            "name": "entityName",
-            "type": "string",
-            "title": {
-              "en": "ESPhome number name"
-            },
-            "example": "Humidity"
-          },
-          {
-            "name": "value",
-            "type": "number",
-            "title": {
-              "en": "ESPHome number value"
-            },
-            "example": 35
-          }
-        ],
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=esphome-wizard&capabilities=esphome_number"
-          }
-        ]
       }
     ]
   },
@@ -261,11 +227,8 @@
       ],
       "capabilities": [
         "onoff",
-        "windowcoverings_set",
-        "windowcoverings_tilt_set",
-        "button",
-        "esphome_number",
-        "esphome_text",
+        "dim",
+        "target_temperature",
         "measure_temperature",
         "measure_co",
         "measure_co2",
@@ -285,10 +248,34 @@
         "measure_luminance",
         "measure_ultraviolet",
         "measure_water",
+        "alarm_generic",
+        "alarm_motion",
+        "alarm_contact",
+        "alarm_co",
+        "alarm_co2",
+        "alarm_pm25",
+        "alarm_tamper",
+        "alarm_smoke",
+        "alarm_fire",
+        "alarm_heat",
+        "alarm_water",
+        "alarm_battery",
+        "alarm_night",
         "meter_power",
         "meter_water",
         "meter_gas",
-        "meter_rain"
+        "meter_rain",
+        "volume_set",
+        "volume_up",
+        "volume_down",
+        "volume_mute",
+        "channel_up",
+        "channel_down",
+        "locked",
+        "windowcoverings_tilt_set",
+        "windowcoverings_closed",
+        "windowcoverings_set",
+        "button"
       ],
       "energy": {
         "batteries": [

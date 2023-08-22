@@ -4,18 +4,6 @@
 // Added 2 customs : number and text
 CAPABILITY_CONFIGURATION = [
     {
-        type: 'number',
-        valueType: 'number',
-        getable: true,
-        setable: true,
-        quickaction: false,
-        uielement: 'sensor',
-        nativeCapabilitySupported: null,
-        nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
-        specialCaseSupported: [],
-        options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step', 'setable']
-    },
-    {
         type: 'text',
         valueType: 'string',
         getable: true,
