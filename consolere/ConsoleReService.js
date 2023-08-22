@@ -7,6 +7,7 @@ const QUEUE_INTERVAL_CAP = 20;
 const QUEUE_INTERVAL = 1000;
 const QUEUE_MAX_SIZE = 200;
 const TOO_MANY_LOGS_DELAY = 6000; // Must be superior to: QUEUE_MAX_SIZE * (QUEUE_INTERVAL / QUEUE_INTERVAL_CAP)
+const AUTO_DISABLE_DELAY = 2 * 24 * 60 * 60; // In seconds! => 2 days!
 
 class ConsoleReService {
 
@@ -36,6 +37,8 @@ class ConsoleReService {
 
     // Singleton
     instance = new ConsoleReService();
+
+    autoDisableTimeout = null;
 
     static getInstance() {
         // Execute outside or inside the instance
@@ -93,6 +96,40 @@ class ConsoleReService {
     static assert(condition, message) {
         if (!condition)
             throw new Error("Assertion failed:", message);
+    }
+
+    /**
+     * This function will disable consoleReService after 2 days of consecutive 'enable state'
+     * Using consecutive delay is more simple, but it's also more convenient.
+     * If the application is restarted (new update, or after a crash), having consoleReService enabled is welcome.
+     */
+    static startAutoDisable() {
+        // Get instance handle
+        let instance = this.getInstance();
+
+        // Get app handle
+        let app = this.getApp();
+
+        if (!instance.autoDisableTimeout) {
+            instance.autoDisableTimeout = app.homey.setTimeout(() => {
+                app.homey.settings.set('consolere.enabled', false);
+                instance.consolereEnabled = newConsolereEnabled;
+                instance.renewConsolereConnection();
+            }, AUTO_DISABLE_DELAY * 1000);
+        }
+    }
+
+    static stopAutoDisable() {
+        // Get instance handle
+        let instance = this.getInstance();
+
+        // Get app handle
+        let app = this.getApp();
+
+        if (instance.autoDisableTimeout) {
+            app.homey.setTimeout(instance.autoDisableTimeout);
+            instance.autoDisableTimeout = null;
+        }
     }
 
     static initSettings() {
@@ -178,6 +215,8 @@ class ConsoleReService {
         let instance = this.getInstance();
 
         if (instance.consolereEnabled) {
+            instance.startAutoDisable();
+
             if (!instance.socket) {
                 instance.internalLog('Connecting to ConsoleRe');
                 instance.connect();
@@ -185,6 +224,8 @@ class ConsoleReService {
                 instance.internalLog('Already connected to ConsoleRe');
             }
         } else {
+            instance.stopAutoDisable();
+
             instance.internalLog('Disconnecting from ConsoleRe');
             instance.disconnect();
         }
@@ -366,7 +407,7 @@ class ConsoleReService {
                                 return '<hidden value>';
                             }
                         }
-                                    
+
                         return v;
                     });
                 };
