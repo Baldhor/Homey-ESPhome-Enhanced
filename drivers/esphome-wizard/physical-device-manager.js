@@ -163,7 +163,6 @@ class PhysicalDeviceManager extends EventEmitter {
         let virtualDevices = this.driver.getDevices().filter(virtualDevice => virtualDevice.physicalDeviceId === physicalDeviceId);
         // Should be at least one ...
         if (virtualDevices.length === 0) {
-            this.log('Could not find even a single virtual device ... strange');
             throw Error('Could not find even a single virtual device ... strange');
         }
 
@@ -173,7 +172,6 @@ class PhysicalDeviceManager extends EventEmitter {
             // Make sure the newIpAddress/port is unused => otherwise, we throw an error (it will cancel the settings update)
             let newPhysicalDevice = this.get(newIpAddress, newPort);
             if (newPhysicalDevice !== undefined) {
-                this.log('Those IP address and Port are already used:', newPhysicalDevice);
                 throw Error('Those IP address and Port are already used');
             }
         }
@@ -198,6 +196,10 @@ class PhysicalDeviceManager extends EventEmitter {
 
     static log(...args) {
         this.getInstance().driver.log('[PhysicalDeviceManager]', ...args);
+    }
+
+    static error(...args) {
+        this.getInstance().driver.error('[PhysicalDeviceManager]', ...args);
     }
 }
 

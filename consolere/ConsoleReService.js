@@ -87,10 +87,10 @@ class ConsoleReService {
         instance.renewConsolereConnection();
 
         if (instance.buffer === null) {
-            this.internalLog('buffer is null ... but should not');
+            this.error('buffer is null ... but should not');
         }
 
-        this.internalLog('ConsoleRe is initialized');
+        this.log('ConsoleRe is initialized');
     }
 
     static assert(condition, message) {
@@ -170,14 +170,14 @@ class ConsoleReService {
             switch (key) {
                 case 'consolere.enabled':
                     let newConsolereEnabled = app.homey.settings.get('consolere.enabled')
-                    instance.internalLog('consolere.enabled changed:', newConsolereEnabled);
+                    this.log('consolere.enabled changed:', newConsolereEnabled);
                     instance.consolereEnabled = newConsolereEnabled;
                     instance.renewConsolereConnection();
                     break;
 
                 case 'consolere.channel':
                     let newConsolereChannel = app.homey.settings.get('consolere.channel')
-                    instance.internalLog('consolere.channel changed:', newConsolereChannel);
+                    this.log('consolere.channel changed:', newConsolereChannel);
                     instance.consolereChannel = newConsolereChannel;
                     break;
             }
@@ -195,18 +195,18 @@ class ConsoleReService {
         // Set listener on __log
         homey
             .on('__log', (...args) => {
-                instance.log(...args);
+                this.sendLog('log', ...args);
             })
             .on('__error', (...args) => {
-                instance.log(...args);
+                this.sendLog('warn', ...args);
             });
 
         process
             .on('unhandledRejection', (reason, p) => {
-                this.log('Unhandled Rejection "' + reason + '" at Promise:', p);
+                this.sendLog('warn', 'Unhandled Rejection "' + reason + '" at Promise:', p);
             })
             .on('uncaughtException', err => {
-                this.log('Uncaught Exception thrown:', err.stack);
+                this.sendLog('warn', 'Uncaught Exception thrown:', err.stack);
             });
     }
 
@@ -218,15 +218,15 @@ class ConsoleReService {
             instance.startAutoDisable();
 
             if (!instance.socket) {
-                instance.internalLog('Connecting to ConsoleRe');
+                this.log('Connecting to ConsoleRe');
                 instance.connect();
             } else {
-                instance.internalLog('Already connected to ConsoleRe');
+                this.log('Already connected to ConsoleRe');
             }
         } else {
             instance.stopAutoDisable();
 
-            instance.internalLog('Disconnecting from ConsoleRe');
+            this.log('Disconnecting from ConsoleRe');
             instance.disconnect();
         }
     }
@@ -244,27 +244,27 @@ class ConsoleReService {
         });
 
         instance.socket.on("connect", () => {
-            instance.internalLog('Connected to ConsoleRe, channel:', instance.consolereChannel);
+            this.log('Connected to ConsoleRe, channel:', instance.consolereChannel);
 
             // We can start the queue
             instance.queue && instance.queue.start();
         });
 
         instance.socket.on("connect_error", (error) => {
-            instance.internalLog('Connection failed to ConsoleRe:', error);
+            this.error('Connection failed to ConsoleRe:', error);
         });
 
         instance.socket.on("reconnect_error", (error) => {
-            instance.internalLog('Reconnection failed to ConsoleRe:', error);
+            this.error('Reconnection failed to ConsoleRe:', error);
         });
 
         instance.socket.on("error", (error) => {
-            instance.internalLog('Error with ConsoleRe:', error);
+            this.error('Error with ConsoleRe:', error);
         });
 
         instance.socket.on("disconnect", () => {
             if (!instance.disconnecting) {
-                instance.internalLog('Disconnected from ConsoleRe, reconnecting');
+                this.log('Disconnected from ConsoleRe, reconnecting');
                 instance.socket.connect();
             } else {
                 // We should stop the queue
@@ -289,26 +289,32 @@ class ConsoleReService {
         delete instance.socket;
     }
 
-    static log(...args) {
+     static log(...args) {
         // Get instance handle
         let instance = this.getInstance();
 
-        // Check size of the queue
-        if (!instance.queue) {
-            return;
-        } else if (instance.queue.size >= QUEUE_MAX_SIZE) {
-            instance.tooManyLogs();
-            return;
-        }
+        // Get app handle
+        let app = this.getApp();
 
-        instance.sendLog(...args);
+        app.log('[ConsoleReService]', ...args);
+    }
+
+    static error(...args) {
+        // Get instance handle
+        let instance = this.getInstance();
+
+        // Get app handle
+        let app = this.getApp();
+
+        app.error('[ConsoleReService]', ...args);
     }
 
     static internalLog(...args) {
-        // Get homey handle
-        let app = this.getApp();
+        this._sendLog('debug', ...args);
+    }
 
-        app.log(...args);
+    static internalError(...args) {
+        this._sendLog('warn', ...args);
     }
 
     static tooManyLogs() {
@@ -318,26 +324,42 @@ class ConsoleReService {
         // Get instance handle
         let instance = this.getInstance();
 
-        if (instance.hasTooManyLogs && instance.queue.size >= (QUEUE_MAX_SIZE + 1)) {
+        // Get app handle
+        let app = this.getApp();
+
+        if (instance.hasTooManyLogs) {
             // Already sent the message recently or last message (max size + 1) is already the "too many logs" message
             return;
         }
 
         instance.hasTooManyLogs = true;
-        instance.tooManyLogsTimer = setTimeout(() => {
+        instance.tooManyLogsTimer = app.homey.setTimeout(() => {
             instance.hasTooManyLogs = false;
             instance.tooManyLogsTimer = null;
         }, TOO_MANY_LOGS_DELAY);
 
-        instance.sendLog('Too many logs, some of them are not logged');
+        // Only send this log to console.re
+        instance.internalError('Too many logs, some of them are not logged');
     }
 
-    static sendLog(...args) {
+    static sendLog(level, ...args) {
+        // Get instance handle
+        let instance = this.getInstance();
+
+        // Check size of the queue
+        if (!instance.queue) {
+            return;
+        } else if (instance.queue.size >= QUEUE_MAX_SIZE) {
+            // Queue is full, just skip
+            instance.tooManyLogs();
+            return;
+        }
+
         // Need go through spread or it doesn't work, no idea why
-        this._sendLog(...this._filterArgs(args));
+        this._sendLog(level, ...this._filterArgs(args));
     }
 
-    static _sendLog(...args) {
+    static _sendLog(level, ...args) {
         // Get instance handle
         let instance = this.getInstance();
 
@@ -345,13 +367,20 @@ class ConsoleReService {
         let app = this.getApp();
         let homey = app.homey;
 
+        // Make it more nice
+        if (level === 'warn') {
+            args.unshift('[red]ERROR[/red]');
+        } else {
+            args.unshift('[green]INFO [/green]');
+        }
+
         (async () => {
             instance.queue.add(() => {
                 try {
                     this.socket.emit("toServerRe", {
                         // command: null,
                         channel: instance.consolereChannel,
-                        level: "info",
+                        'level': 'warn',
                         args,
                         caller: { /* that's true */
                             file: "ConsoleReService.js",
@@ -368,7 +397,7 @@ class ConsoleReService {
                         }
                     });
                 } catch (e) {
-                    instance.internalLog('ConsoleRe emit error:', e);
+                    this.error('ConsoleRe emit error:', e);
                 }
             });
         })();

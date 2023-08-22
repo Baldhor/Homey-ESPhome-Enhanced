@@ -110,7 +110,6 @@ class PhysicalDevice extends EventEmitter {
             deviceClass = entity.config.deviceClass;
         } catch (e) {
             // do nothing
-            this.log(e);
         }
         if (deviceClass && deviceClass !== '')
             configs['deviceClass'] = deviceClass;
@@ -150,7 +149,6 @@ class PhysicalDevice extends EventEmitter {
             }
         } catch (e) {
             // do nothing
-            this.log(e);
         }
         configs['precision'] = precision;
     }
@@ -166,21 +164,21 @@ class PhysicalDevice extends EventEmitter {
     computeConstraintMinMaxStep(entity, constraints) {
         // Get min
         if (entity.config.minValue === null || typeof entity.config.minValue !== 'number') {
-            this.log('minValue is not a number:', typeof entity.config.minValue);
+            this.error('minValue is not a number:', typeof entity.config.minValue);
             return false;
         }
         let min = parseFloat(entity.config.minValue);
 
         // Get max
         if (entity.config.maxValue === null || typeof entity.config.maxValue !== 'number') {
-            this.log('maxValue is not a number:', typeof entity.config.maxValue);
+            this.error('maxValue is not a number:', typeof entity.config.maxValue);
             return false;
         }
         let max = parseFloat(entity.config.maxValue);
 
         // Get step
         if (entity.config.step === null || typeof entity.config.step !== 'number') {
-            this.log('step is not a number:', typeof entity.config.step);
+            this.error('step is not a number:', typeof entity.config.step);
             return false;
         }
         let step = parseFloat(entity.config.step);
@@ -216,7 +214,7 @@ class PhysicalDevice extends EventEmitter {
             }
         }
 
-        // We didn't find it
+        // We didn't find it, but it's not an error
         this.log("Couldn't find precision for step:", step);
         configs['precision'] = 0;
     }
@@ -295,7 +293,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigUnit(entity, configs);
                     this.computeConstraintMode(entity, constraints);
                     if (!this.computeConstraintMinMaxStep(entity, constraints)) {
-                        this.log('MinMaxStep missing for Number entity!');
+                        this.error('MinMaxStep missing for Number entity!');
                         break;
                     }
                     this.log('Constraints after minMaxStep:', constraints);
@@ -338,7 +336,7 @@ class PhysicalDevice extends EventEmitter {
                 
                 default:
                     // Unhandled entity type
-                    this.log('Found unhandled entity type:', entity);
+                    this.error('Found unhandled entity type:', entity);
             }
         });
 
@@ -363,7 +361,7 @@ class PhysicalDevice extends EventEmitter {
 
         // Check if writeOnly (just to detect unexpected issues)
         if (nativeCapability.getConfig('writeOnly')) {
-            this.log('Received an unexpected stateChanged event for a writeOnly native capability:', ...arguments);
+            this.error('Received an unexpected stateChanged event for a writeOnly native capability:', ...arguments);
         }
 
         // Save new value
@@ -385,13 +383,13 @@ class PhysicalDevice extends EventEmitter {
 
         let nativeCapability = this.nativeCapabilities[nativeCapabilityId];
         if (!nativeCapability) {
-            this.log('Unknown native capability, ignoring:', ...arguments);
+            this.error('Unknown native capability, ignoring:', ...arguments);
             return;
         }
 
         // Check if readOnly (just to detect unexpected issues)
         if (nativeCapability.getConfig('readOnly')) {
-            this.log('Received an unexpected command for a readOnly native capability:', ...arguments);
+            this.error('Received an unexpected command for a readOnly native capability:', ...arguments);
             return;
         }
 
@@ -405,6 +403,10 @@ class PhysicalDevice extends EventEmitter {
 
     log(...args) {
         this.driver.log('[PhysicalDevice:' + this.id + ']', ...args);
+    }
+
+    error(...args) {
+        this.driver.error('[PhysicalDevice:' + this.id + ']', ...args);
     }
 }
 

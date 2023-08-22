@@ -138,7 +138,12 @@ class VirtualDevice extends Device {
             let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
 
             if (nativeCapability === undefined) {
-                this.log("Something is wrong in stateChangedListener, couldn't find the native capability for id:", nativeCapabilityId);
+                // It's normal if the physical device didn't published his entities yet.
+                if (Object.keys(physicalDevice.nativeCapabilities).length === 0) {
+                    this.log("Physical device not available yet, cannot retrive current value");
+                } else {
+                    this.error("Couldn't find the native capability for id:", nativeCapabilityId);
+                }
                 return;
             }
     

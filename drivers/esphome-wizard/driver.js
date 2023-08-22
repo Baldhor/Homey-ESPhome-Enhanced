@@ -43,7 +43,7 @@ class Driver extends Homey.Driver {
                         session.emit('new-device-failed', 'A physical device already exist')
                             .catch(e => {
                                 // Session expired, just ignore it
-                                this.log('Failed to connect with device before pair session expired:', data);
+                                this.error('Failed to connect with device before pair session expired:', data);
                             });
                         return;
                     }
@@ -60,14 +60,14 @@ class Driver extends Homey.Driver {
                         session.emit('new-device-connected', physicalDeviceId)
                             .catch(e => {
                                 // Session expired, cleaning up
-                                this.log('Connected to device, but the pair session expired:', data);
+                                this.error('Connected to device, but the pair session expired:', data);
                                 PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
                             });
                     }
                 });
 
                 PhysicalDeviceManager.getById(physicalDeviceId).on('unavailable', () => {
-                    this.log('Received unavailable event');
+                    this.error('Received unavailable event');
 
                     if (session.newPhysicalDeviceId === physicalDeviceId) {
                         session.emit('new-device-failed', 'Could not connect to the device, or something went wrong')
@@ -80,9 +80,9 @@ class Driver extends Homey.Driver {
                 });
 
                 this.log('connect-new-device finished');
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             }
         });
 
@@ -122,9 +122,9 @@ class Driver extends Homey.Driver {
                 });
 
                 this.log('get-existing-physical-devices result:', result);
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             }
 
             return result;
@@ -200,7 +200,7 @@ class Driver extends Homey.Driver {
                 }
 
                 // Get the native capabilities and add them to configuration
-                this.log('Processing native capabilities:', physicalDevice.nativeCapabilities);
+                this.log('Processing native capabilities');
                 Object.keys(physicalDevice.nativeCapabilities).forEach(nativeCapabilityId => {
                     let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
                     this.log('Processing a native capability:', nativeCapability);
@@ -222,9 +222,9 @@ class Driver extends Homey.Driver {
                 });
 
                 this.log('get-initial-configuration result:', result);
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             }
 
             return result;
@@ -271,9 +271,9 @@ class Driver extends Homey.Driver {
                         this.log('Device with id', device.deviceId, 'is processed');
                     }
                 });
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             } finally {
                 this.log('remove-capabilities finished');
             }
@@ -335,9 +335,9 @@ class Driver extends Homey.Driver {
                         this.log('Device with id', device.deviceId, 'is processed');
                     }
                 });
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             } finally {
                 this.log('add-capabilities finished');
             }
@@ -383,9 +383,9 @@ class Driver extends Homey.Driver {
                         this.log('Device with id', device.deviceId, 'is processed');
                     }
                 });
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             } finally {
                 this.log('modify-capabilities finished');
             }
@@ -394,9 +394,9 @@ class Driver extends Homey.Driver {
         session.setHandler('logme', (data) => {
             try {
                 this.log('browser log:', ...Object.values(data));
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             }
         });
 
@@ -416,9 +416,9 @@ class Driver extends Homey.Driver {
                     'encryptionKey': settings.encryptionKey,
                     'password': settings.password
                 };
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.error(e);
+                throw e;
             }
 
             return result;
@@ -434,9 +434,9 @@ class Driver extends Homey.Driver {
 
             try {
                 PhysicalDeviceManager.changeSettings(physicalDeviceId, newIpAddress, newPort, newEncryptionKey, newPassword);
-            } catch (error) {
-                this.log(error.stack);
-                throw error;
+            } catch (e) {
+                this.log(e);
+                throw e;
             }
         });
     }

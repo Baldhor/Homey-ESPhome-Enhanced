@@ -91,7 +91,7 @@ class Client extends EventEmitter {
     async processConnection() {
         // Make sure nothing is wrong
         if (!this.expectConnected) {
-            this.log("Processing connection, but expected state is not 'Connected'");
+            this.error("Processing connection, but expected state is not 'Connected'");
             return;
         }
 
@@ -168,7 +168,7 @@ class Client extends EventEmitter {
     }
 
     errorListener(error) {
-        this.log('Received an error:', error);
+        this.error('Received an error:', error);
 
         this.connected = false;
         this.emit('disconnected');
@@ -269,7 +269,7 @@ class Client extends EventEmitter {
                 break;
 
             default:
-                this.log('Unsopported entityType:', entityType);
+                this.error('Unsopported entityType:', entityType);
                 return;
         }
 
@@ -310,6 +310,10 @@ class Client extends EventEmitter {
 
     log(...args) {
         this.physicalDevice.log('[Client]', ...args);
+    }
+
+    error(...args) {
+        this.physicalDevice.error('[Client]', ...args);
     }
 
     disconnect() {
