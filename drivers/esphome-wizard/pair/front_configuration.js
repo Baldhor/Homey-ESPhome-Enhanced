@@ -639,3 +639,32 @@ CAPABILITY_CONFIGURATION = [
     // Skip speaker_duration
     // Skip speaker_position
 ];
+
+// List of device class
+CLASS_CONFIGURATION = [
+    "amplifier",
+    "blinds",
+    "button",
+    "camera",
+    "coffeemachine",
+    "curtain",
+    "doorbell",
+    "fan",
+    "garagedoor",
+    "heater",
+    "homealarm",
+    "kettle",
+    "light",
+    "lock",
+    "other",
+    "remote",
+    "sensor",
+    "socket",
+    "speaker",
+    "solarpanel",
+    "sunshade",
+    "thermostat",
+    "tv",
+    "vacuumcleaner",
+    "windowcoverings"
+];

@@ -439,6 +439,49 @@ class Driver extends Homey.Driver {
                 throw e;
             }
         });
+
+        session.setHandler('get-device-classes', (data) => {
+            this.log('get-device-classes started:', data);
+
+            let result = [];
+            try {
+                this.getDevices().forEach(virtualDevice => {
+                    let myDeviceClass = {
+                        virtualDeviceId: virtualDevice.getData().id,
+                        virtualDeviceName: virtualDevice.getName(),
+                        deviceClass: virtualDevice.getClass()
+                    };
+                    result.push(myDeviceClass);
+                });
+            } catch (e) {
+                this.error(e);
+                throw e;
+            }
+
+            return result;
+        });
+
+        session.setHandler('set-device-classes', (data) => {
+            this.log('set-device-class started:', data);
+
+            try {
+                data.list.forEach(device => {
+                    let virtualDeviceId = device.virtualDeviceId;
+                    let newDeviceClass = device.deviceClass;
+
+                    // Get virtual device
+                    let virtualDevice = this.getDevices().filter(virtualDevice => virtualDevice.getData().id === virtualDeviceId)[0];
+
+                    // Modify the class
+                    if (virtualDevice.getClass() !== newDeviceClass) {
+                        virtualDevice.setClass(newDeviceClass);
+                    }
+                });
+            } catch (e) {
+                this.log(e);
+                throw e;
+            }
+        });
     }
 }
 

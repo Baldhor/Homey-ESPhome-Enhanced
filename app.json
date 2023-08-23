@@ -303,6 +303,9 @@
           "id": "conf_settings"
         },
         {
+          "id": "conf_deviceclass"
+        },
+        {
           "id": "store"
         }
       ],

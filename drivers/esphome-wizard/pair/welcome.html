@@ -19,6 +19,9 @@
     <br>
     <button id="update_device" class="homey-button-primary-full" data-i18n="wizard.welcome.update"
         onclick="onClickUpdateDevice(event);"></button>
+    <br>
+    <button id="update_device_class" class="homey-button-primary-full" data-i18n="wizard.welcome.updateDeviceClass"
+        onclick="onClickUpdateDeviceClass(event);"></button>
 </div>
 <script>
     /***************
@@ -40,6 +43,12 @@
         Homey.setViewStoreValue('store', 'mode', 'existing_physical_device').then(() => {
             Homey.showView('update_device');
         });
+    }
+
+    function onClickUpdateDeviceClass(event) {
+        wizardlog('onClickUpdateDeviceClass:', ...arguments);
+
+        Homey.showView('conf_deviceclass');
     }
 
     // Let's make the small window larger!

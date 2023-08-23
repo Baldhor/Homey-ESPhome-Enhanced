@@ -29,7 +29,8 @@
             "title": "ESPhome Wizard",
             "description": "How my magic can assist you?",
             "new": "Configure a new physical device",
-            "update": "Update an existing physical device"
+            "update": "Update an existing physical device",
+            "updateDeviceClass": "Update your virtual devices class"
         },
         "new_device": {
             "title": "Connect to the new device",
@@ -155,6 +156,10 @@
             "encryptionKey" : "Encryption key",
             "password" : "Password",
             "apply" : "Apply"
+        },
+        "conf_deviceclass": {
+            "deviceclass" : "Device class",
+            "deviceClassDescription" : "Class description"
         }
     },
     "settings": {
@@ -172,5 +177,106 @@
             
         },
         "initializing": "Initializing device, please wait..."
+    },
+    "deviceClass" : {
+        "amplifier" : {
+            "label": "Amplifier",
+            "description": "Use this device class for audio amplifier devices."
+        },
+        "blinds" : {
+            "label": "Blinds",
+            "description": "Use this device class for blinds, both horizontal and vertical."
+        },
+        "button" : {
+            "label": "Button",
+            "description": "Use this device class for buttons, such as a remote."
+        },
+        "camera" : {
+            "label": "Camera",
+            "description": "Security camera"
+        },
+        "coffeemachine" : {
+            "label": "Coffee machine",
+            "description": "Use this device class for coffee machines."
+        },
+        "curtain" : {
+            "label": "Curtains",
+            "description": "Use this device class for curtains."
+        },
+        "doorbell" : {
+            "label": "Doorbell",
+            "description": "Use this device class for doorbells, usually together with the `button` capability."
+        },
+        "fan" : {
+            "label": "Fan",
+            "description": "Use this device class for fans that cool your home."
+        },
+        "garagedoor" : {
+            "label": "Garage door",
+            "description": "Use this device class for garage doors, usually together with the `garagedoor_closed` capability."
+        },
+        "heater" : {
+            "label": "Heater",
+            "description": "Use this device class for heaters, that warm your home."
+        },
+        "homealarm" : {
+            "label": "Home Security",
+            "description": "Use this device class for home alarm systems."
+        },
+        "kettle" : {
+            "label": "Kettle",
+            "description": "Use this device class for kettle devices, that can heat water."
+        },
+        "light" : {
+            "label": "Light",
+            "description": "Use this device class for lights, usually together with the `onoff`, `dim` and `light_*` capabilities."
+        },
+        "lock" : {
+            "label": "Lock",
+            "description": "Use this device class for lock devices, usually together with the `locked` and `lock_mode` capabilities."
+        },
+        "other" : {
+            "label": "Other",
+            "description": "Use this device class for devices that do not fit any other device class."
+        },
+        "remote" : {
+            "label": "Remote",
+            "description": "Use this device class for (TV/Sunblind/Keyfob etc.) remotes."
+        },
+        "sensor" : {
+            "label": "Sensor",
+            "description": "Use this device class for sensors, e.g. a contact or motion sensor."
+        },
+        "socket" : {
+            "label": "Wall Plug",
+            "description": "Use this device class for sockets (built-in or plug-in socket switches). When adding the `choose_slave` pair template, the user is presented a `What's plugged in?` question."},
+        "speaker" : {
+            "label": "Speaker",
+            "description": "Use this device class for devices that can play music, usually together with the `speaker_*` capabilities."
+        },
+        "solarpanel" : {
+            "label": "Solar Panel",
+            "description": "Use this device class for solar panels."
+        },
+        "sunshade" : {
+            "label": "Sunshade",
+            "description": "Use this device class for sunshades (window coverings against the sun)."
+        },
+        "thermostat" : {
+            "label": "Thermostat",
+            "description": "Use this device class for thermostats, either for the entire home or radiator-mounted, usually together with the `measure_temperature`, `target_temperature` and `thermostat_mode` capabilities."
+        },
+        "tv" : {
+            "label": "TV",
+            "description": "Use this device class for TVs."
+        },
+        "vacuumcleaner" : {
+            "label": "Vacuum Cleaner",
+            "description": "Use this device class for vacuum cleaners, usually together with the `vacuumcleaner_state` capability."
+        },
+        "windowcoverings" : {
+            "label": "Window Coverings",
+            "description": "Use this device class for window coverings, when the `curtains`, `blinds` or `sunshade` device class doesn't apply."
+        }
     }
 }
