@@ -1,0 +1,61 @@
+# ---------------------------------------------
+# ESPHome configuration for esp8285 board with basic configuration
+#
+# Used to update device wihen the new configuration is 'too large'
+
+#substitutions:
+#  name: to_be_completed
+#  friendly_name: To Be Completed
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+  friendly_name: ${friendly_name}
+  project:
+    name: "baldhor.athom_sw03_time_based_cover"
+    version: "1.0.0"
+
+esp8266:
+  board: esp_wroom_02
+  restore_from_flash: true
+
+preferences:
+  flash_write_interval: 1min
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap: {} # This spawns an AP with the device name and mac address with no password.
+
+api:
+  #encryption:
+  #  key: !secret api_encryption_key
+  #password: !secret api_password
+
+#mqtt:
+#  broker: !secret mqtt_broker
+#  port: !secret mqtt_port
+#  username: !secret mqtt_login
+#  password: !secret mqtt_password
+
+ota:
+  #password: !secret ota_password
+
+# Enable logging
+logger:
+  baud_rate: 0
+  level: DEBUG #(by default)
+#  level: VERBOSE
+#  level: VERY_VERBOSE
+
+# The mdns component makes the node announce itself on the local network using the multicast DNS (mDNS) protocol.
+# If mDNS is disabled, it will be impossible to automatically find your devices.
+mdns:
+  disabled: true
+
+web_server:
+  port: 80
+
+captive_portal:

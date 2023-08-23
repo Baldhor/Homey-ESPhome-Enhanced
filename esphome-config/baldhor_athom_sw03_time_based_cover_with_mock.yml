@@ -41,6 +41,22 @@
 #  name: to_be_completed
 #  friendly_name: To Be Completed
 
+# Pin definition
+# GPIO0 LedLinki
+# GPIO1 Led3
+# GPIO2 None
+# GPIO3 Button2
+# GPIO4 Relay2
+# GPIO5 Button3
+# GPIO9 None
+# GPIO10 None
+# GPIO12 Button1
+# GPIO13 Relay1
+# GPIO14 Led2
+# GPIO15 Relay3
+# GPIO16 Led1
+# FLAG None
+
 esphome:
   name: ${name}
   name_add_mac_suffix: false

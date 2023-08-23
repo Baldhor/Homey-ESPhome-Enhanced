@@ -1,5 +1,5 @@
 # ---------------------------------------------
-# ESPHome configuration for Athom sw03 device in purpose to handle cover without position sensor
+# ESPHome configuration for Teepao device with TYWE3S chip in purpose to handle cover without position sensor
 # 
 # DISCLAIMER: Software interlock is used to ensure both relay 1 (up) and 3 (down) are not enabled at the same time.
 #             However, software interlock is unsure, only hardware interlock would be sure and safe.
@@ -42,20 +42,19 @@
 #  friendly_name: To Be Completed
 
 # Pin definition
-# GPIO# Component
 # GPIO0 LedLinki
-# GPIO1 Led3
-# GPIO2 None
-# GPIO3 Button2
-# GPIO4 Relay2
-# GPIO5 Button3
+# GPIO1 Led3i => led2i
+# GPIO2 Relay3 => configuring relay 2
+# GPIO3 Button2 => Button3
+# GPIO4 Relay2 => configurating relay 3
+# GPIO5 Button3 => Button2
 # GPIO9 None
 # GPIO10 None
-# GPIO12 Button1
+# GPIO12 Led1i
 # GPIO13 Relay1
-# GPIO14 Led2
-# GPIO15 Relay3
-# GPIO16 Led1
+# GPIO14 Led2i => led3i
+# GPIO15 None
+# GPIO16 Button1
 # FLAG None
 
 esphome:
@@ -63,11 +62,11 @@ esphome:
   name_add_mac_suffix: false
   friendly_name: ${friendly_name}
   project:
-    name: "baldhor.athom_sw03_time_based_cover"
+    name: "baldhor.teepao_tywe3s_time_based_cover"
     version: "1.0.0"
 
 esp8266:
-  board: esp8285
+  board: esp_wroom_02
   restore_from_flash: true
 
 preferences:
@@ -202,10 +201,9 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO12
+      number: GPIO16
       mode:
         input: true
-        pullup: true
     filters:
       - delayed_on: 10ms
     on_press:
@@ -243,7 +241,7 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO3
+      number: GPIO5
       mode:
         input: true
         pullup: true
@@ -289,7 +287,7 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO5
+      number: GPIO3
       mode:
         input: true
         pullup: true
@@ -423,7 +421,7 @@ switch:
     platform: gpio
     disabled_by_default: true
     pin:
-      number: GPIO15
+      number: GPIO4
       mode: OUTPUT
     interlock: *interlock_relay
     restore_mode: ALWAYS_OFF
@@ -452,17 +450,17 @@ output:
   # Button LEDs (1.0 = Blue / 0.0 = Red)
   - id: button_led1
     platform: esp8266_pwm
-    pin: GPIO16
+    pin: GPIO12
     inverted: true
 
   - id: button_led2
     platform: esp8266_pwm
-    pin: GPIO14
+    pin: GPIO1
     inverted: true
     
   - id: button_led3
     platform: esp8266_pwm
-    pin: GPIO1
+    pin: GPIO14
     inverted: true
 
 light:
