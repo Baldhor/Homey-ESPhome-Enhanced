@@ -88,5 +88,8 @@
   },
   "0.6.7": {
     "en": "Fixed issue in console.re auto disable"
+  },
+  "0.6.8": {
+    "en": "Fixed 2 bugs when the entityId change (entityId are calculated by esphome on the name of the entity, so if you change them, the id change)"
   }
 }
