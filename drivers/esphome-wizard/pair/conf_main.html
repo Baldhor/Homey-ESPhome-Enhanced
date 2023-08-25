@@ -708,13 +708,13 @@
                                 });
 
                                 cellOptions.innerHTML = tmpOptions;
+
+                                // Show the native capability name
+                                cellNativeCapabilityName.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + nativeCapability.entityName + '</label>';
+
+                                // Show the native capability attribut
+                                cellNativeCapabilityAttribut.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + nativeCapability.attribut + '</label>';
                             }
-
-                            // Show the native capability name
-                            cellNativeCapabilityName.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + nativeCapability.entityName + '</label>';
-
-                            // Show the native capability attribut
-                            cellNativeCapabilityAttribut.innerHTML = '<label class="homey-form-label" style="margin-top:0px !important;">' + nativeCapability.attribut + '</label>';
 
                             // Add the actions
                             cellActions.innerHTML = '';

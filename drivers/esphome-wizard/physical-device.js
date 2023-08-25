@@ -346,6 +346,9 @@ class PhysicalDevice extends EventEmitter {
     disconnectedListener() {
         this.log('Disconnected: unavailable!');
 
+        // We reset the list of native capabilities
+        this.nativeCapabilities = {};
+
         this.emit('unavailable');
     }
 
