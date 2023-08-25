@@ -85,5 +85,8 @@
   },
   "0.6.6": {
     "en": "Improved console.re logs. console.re will deactivate after 2 consecutive days\""
+  },
+  "0.6.7": {
+    "en": "Fixed issue in console.re auto disable"
   }
 }
