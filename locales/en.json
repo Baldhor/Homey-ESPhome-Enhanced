@@ -158,7 +158,8 @@
             "apply" : "Apply"
         },
         "conf_deviceclass": {
-            "deviceclass" : "Device class",
+            "deviceName" : "Device name",
+            "deviceClass" : "Device class",
             "deviceClassDescription" : "Class description"
         }
     },

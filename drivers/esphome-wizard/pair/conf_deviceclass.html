@@ -61,7 +61,7 @@
         wizardlog('onChangeDeviceClass:', ...arguments);
 
         let classSelected = document.getElementById("deviceClass" + virtualDeviceId).value;
-        document.getElementById("deviceClassDescription" + virtualDeviceId).value = Homey.__("deviceCeviceClass." + document.getElementById("deviceClass" + virtualDeviceId).value + ".description");
+        document.getElementById("deviceClassDescription" + virtualDeviceId).innerHTML = Homey.__("deviceClass." + classSelected + ".description");
     }
 
     async function onClickApply(event) {
@@ -109,9 +109,9 @@
         let innerHTML = '';
 
         deviceClasses.forEach(deviceClass => {
-            innerHTML += '<label class="homey-form-label" for="deviceName" data-i18n="wizard.conf_deviceclass.deviceName"></label>';
+            innerHTML += '<label class="homey-form-label" for="deviceName">'+ Homey.__("wizard.conf_deviceclass.deviceName") + '</label>';
             innerHTML += '<input class="homey-form-input" id="deviceName" type="text" readonly value=' + '"' + deviceClass.virtualDeviceName + '"' + '/>';
-            innerHTML += '<label class="homey-form-label" for="deviceClass" data-i18n="wizard.conf_deviceclass.deviceClass"></label>';
+            innerHTML += '<label class="homey-form-label" for="deviceClass">'+ Homey.__("wizard.conf_deviceclass.deviceClass") + '</label>';
             innerHTML += '<select class="homey-form-select" id="deviceClass' + deviceClass.virtualDeviceId + '" onchange="onChangeDeviceClass(event, ' + "'" + deviceClass.virtualDeviceId + "'" + ');">';
             CLASS_CONFIGURATION.forEach(classType => {
                 if (deviceClass.deviceClass === classType) {
@@ -121,9 +121,9 @@
                 }
             });
             innerHTML += '</select>';
-            innerHTML += '<label class="homey-form-label" for="deviceClassDescription"';
-            innerHTML += 'data-i18n="wizard.conf_deviceclass.deviceClassDescription"></label>';
-            innerHTML += '<label class="homey-form-label" id="deviceClassDescription' + deviceClass.virtualDeviceId + '""></label>';
+            innerHTML += '<label class="homey-form-label" for="deviceClassDescription">' + Homey.__("wizard.conf_deviceclass.deviceClassDescription") + '</label>';
+            innerHTML += '<legend  class="homey-form-legend" id="deviceClassDescription' + deviceClass.virtualDeviceId + '">' + Homey.__("deviceClass." + deviceClass.deviceClass + ".description") + '</legend>';
+            innerHTML += '<br>';
         });
 
         deviceListElement.innerHTML = innerHTML;
