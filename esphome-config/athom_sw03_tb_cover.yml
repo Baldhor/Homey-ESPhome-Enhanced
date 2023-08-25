@@ -1,5 +1,5 @@
 # ---------------------------------------------
-# ESPHome configuration for Teepao device with TYWE3S chip in purpose to handle cover without position sensor
+# ESPHome configuration for Athom sw03 device in purpose to handle cover without position sensor
 # 
 # DISCLAIMER: Software interlock is used to ensure both relay 1 (up) and 3 (down) are not enabled at the same time.
 #             However, software interlock is unsure, only hardware interlock would be sure and safe.
@@ -27,46 +27,39 @@
 #   8- Invert function can be configured though the web server interface and is saved/restored from flash
 # 
 # Usage:
-#   - Define name and friendly_name using one of the following solutions:
-#     1- Uncomment substitutions section (just below) and fill in name and friendly_name
-#     2- Uncomment substitutions section (just below) and use command line substitutions
-#     2- Or, use a device dedicated yml file including the substitutions section and "<<: !include baldhor_athom_sw03_time_based_cover.yml" instruction
 #   - secrets.yaml file must include:
 #       wifi_ssid: to_be_complated
 #       wifi_password: to_be_complated
 #   - Compile and upload
 # ---------------------------------------------
 
-#substitutions:
-#  name: to_be_completed
-#  friendly_name: To Be Completed
-
 # Pin definition
+# GPIO# Component
 # GPIO0 LedLinki
-# GPIO1 Led3i => led2i
-# GPIO2 Relay3 => configuring relay 2
-# GPIO3 Button2 => Button3
-# GPIO4 Relay2 => configurating relay 3
-# GPIO5 Button3 => Button2
+# GPIO1 Led3
+# GPIO2 None
+# GPIO3 Button2
+# GPIO4 Relay2
+# GPIO5 Button3
 # GPIO9 None
 # GPIO10 None
-# GPIO12 Led1i
+# GPIO12 Button1
 # GPIO13 Relay1
-# GPIO14 Led2i => led3i
-# GPIO15 None
-# GPIO16 Button1
+# GPIO14 Led2
+# GPIO15 Relay3
+# GPIO16 Led1
 # FLAG None
 
 esphome:
-  name: ${name}
-  name_add_mac_suffix: false
-  friendly_name: ${friendly_name}
+  name: athom_sw03_tb_cover
+  name_add_mac_suffix: true
+  friendly_name: Athom SW03 Time Based Cover
   project:
-    name: "baldhor.teepao_tywe3s_time_based_cover"
+    name: "baldhor.athom_sw03_time_based_cover"
     version: "1.0.0"
 
 esp8266:
-  board: esp_wroom_02
+  board: esp8285
   restore_from_flash: true
 
 preferences:
@@ -119,13 +112,13 @@ captive_portal:
 text_sensor:
   - platform: wifi_info
     ip_address:
-      name: "${friendly_name} IP Address"
+      name: "IP Address"
       disabled_by_default: true
 
 # Announce uptime every minute
 sensor:
   - platform: uptime
-    name: "${friendly_name} Uptime"
+    name: "Uptime"
     disabled_by_default: true
 
 number:
@@ -192,7 +185,7 @@ button:
 binary_sensor:
   - id: Status
     platform: status
-    name: "${friendly_name} Status"
+    name: "Status"
     disabled_by_default: true
 
   # Touch Buttons
@@ -201,9 +194,10 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO16
+      number: GPIO12
       mode:
         input: true
+        pullup: true
     filters:
       - delayed_on: 10ms
     on_press:
@@ -241,7 +235,7 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO5
+      number: GPIO3
       mode:
         input: true
         pullup: true
@@ -287,7 +281,7 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO3
+      number: GPIO5
       mode:
         input: true
         pullup: true
@@ -320,7 +314,7 @@ binary_sensor:
 cover:
   - id: cover1
     platform: time_based
-    name: ${name}
+    name: Cover
 
     open_action:
       - lambda: !lambda |-
@@ -421,7 +415,7 @@ switch:
     platform: gpio
     disabled_by_default: true
     pin:
-      number: GPIO4
+      number: GPIO15
       mode: OUTPUT
     interlock: *interlock_relay
     restore_mode: ALWAYS_OFF
@@ -450,17 +444,17 @@ output:
   # Button LEDs (1.0 = Blue / 0.0 = Red)
   - id: button_led1
     platform: esp8266_pwm
-    pin: GPIO12
+    pin: GPIO16
     inverted: true
 
   - id: button_led2
     platform: esp8266_pwm
-    pin: GPIO1
+    pin: GPIO14
     inverted: true
     
   - id: button_led3
     platform: esp8266_pwm
-    pin: GPIO14
+    pin: GPIO1
     inverted: true
 
 light:

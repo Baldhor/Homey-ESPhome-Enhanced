@@ -113,7 +113,7 @@ class ConsoleReService {
         if (!instance.autoDisableTimeout) {
             instance.autoDisableTimeout = app.homey.setTimeout(() => {
                 app.homey.settings.set('consolere.enabled', false);
-                instance.consolereEnabled = newConsolereEnabled;
+                instance.consolereEnabled = false;
                 instance.renewConsolereConnection();
             }, AUTO_DISABLE_DELAY * 1000);
         }
@@ -127,7 +127,7 @@ class ConsoleReService {
         let app = this.getApp();
 
         if (instance.autoDisableTimeout) {
-            app.homey.setTimeout(instance.autoDisableTimeout);
+            app.homey.clearTimeout(instance.autoDisableTimeout);
             instance.autoDisableTimeout = null;
         }
     }

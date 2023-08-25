@@ -27,22 +27,13 @@
 #   8- Invert function can be configured though the web server interface and is saved/restored from flash
 # 
 # Usage:
-#   - Define name and friendly_name using one of the following solutions:
-#     1- Uncomment substitutions section (just below) and fill in name and friendly_name
-#     2- Uncomment substitutions section (just below) and use command line substitutions
-#     2- Or, use a device dedicated yml file including the substitutions section and "<<: !include baldhor_athom_sw03_time_based_cover.yml" instruction
 #   - secrets.yaml file must include:
 #       wifi_ssid: to_be_complated
 #       wifi_password: to_be_complated
 #   - Compile and upload
 # ---------------------------------------------
 
-#substitutions:
-#  name: to_be_completed
-#  friendly_name: To Be Completed
-
 # Pin definition
-# GPIO# Component
 # GPIO0 LedLinki
 # GPIO1 Led3
 # GPIO2 None
@@ -59,9 +50,9 @@
 # FLAG None
 
 esphome:
-  name: ${name}
-  name_add_mac_suffix: false
-  friendly_name: ${friendly_name}
+  name: athom_sw03_tb_cover_mock
+  name_add_mac_suffix: true
+  friendly_name: Athom SW03 Time Based Cover Mock
   project:
     name: "baldhor.athom_sw03_time_based_cover"
     version: "1.0.0"
@@ -120,14 +111,54 @@ captive_portal:
 text_sensor:
   - platform: wifi_info
     ip_address:
-      name: "${friendly_name} IP Address"
+      name: "IP Address"
       disabled_by_default: true
 
 # Announce uptime every minute
 sensor:
   - platform: uptime
-    name: "${friendly_name} Uptime"
+    name: "Uptime"
     disabled_by_default: true
+    
+  - platform: template
+    name: "Random percentage"
+    id: random_percentage
+    unit_of_measurement: "%"
+    lambda: |-
+      return (rand() % 10000) / 100;
+    update_interval: 60s
+  
+  - platform: template
+    name: "Random temperature"
+    id: random_temperature
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 60s
+    
+  - platform: template
+    name: "Random temperature2"
+    id: random_temperature2
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 60s
+    
+  - platform: template
+    name: "Random humidity"
+    id: random_humidity
+    unit_of_measurement: "%rH"
+    lambda: |-
+      return (rand() % 9000) / 100.00 + 5;
+    update_interval: 60s
+
+  - platform: template
+    name: "Random humidity2"
+    id: random_humidity2
+    unit_of_measurement: "%rH"
+    lambda: |-
+      return (rand() % 9000) / 100.00 + 5;
+    update_interval: 60s
 
 number:
   - id: prefered_position
@@ -160,8 +191,8 @@ number:
             id(cover1).set_open_duration(x * 1000);
     entity_category: config
 
-  - id: close_duration
-    platform: template
+  - platform: template
+    id: close_duration
     name: "Close duration in seconds"
     disabled_by_default: true
     optimistic: true
@@ -193,7 +224,7 @@ button:
 binary_sensor:
   - id: Status
     platform: status
-    name: "${friendly_name} Status"
+    name: "Status"
     disabled_by_default: true
 
   # Touch Buttons
@@ -322,7 +353,7 @@ binary_sensor:
 cover:
   - id: cover1
     platform: time_based
-    name: ${name}
+    name: Cover
 
     open_action:
       - lambda: !lambda |-
@@ -345,6 +376,12 @@ cover:
     stop_action:
       - switch.turn_off: relay1
       - switch.turn_off: relay3
+
+  - id: cover2
+    platform: template
+    name: "Garage Door"
+    optimistic: true
+    assumed_state: true
 
 script:
   - id: led1_blink

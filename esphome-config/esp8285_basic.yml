@@ -8,15 +8,15 @@
 #  friendly_name: To Be Completed
 
 esphome:
-  name: ${name}
-  name_add_mac_suffix: false
-  friendly_name: ${friendly_name}
+  name: esp8285_basic
+  name_add_mac_suffix: true
+  friendly_name: ESP8285 Basic
   project:
     name: "baldhor.athom_sw03_time_based_cover"
     version: "1.0.0"
 
 esp8266:
-  board: esp_wroom_02
+  board: esp8285
   restore_from_flash: true
 
 preferences:
