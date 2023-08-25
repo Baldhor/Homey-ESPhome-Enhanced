@@ -91,5 +91,8 @@
   },
   "0.6.8": {
     "en": "Fixed 2 bugs when the entityId change (entityId are calculated by esphome on the name of the entity, so if you change them, the id change)"
+  },
+  "0.7.0": {
+    "en": "The wizard can now modify a virtual device's class"
   }
 }
