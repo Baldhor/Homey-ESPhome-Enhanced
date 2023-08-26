@@ -94,5 +94,8 @@
   },
   "0.7.0": {
     "en": "The wizard can now modify a virtual device's class"
+  },
+  "0.7.1": {
+    "en": "Added tags to help find the app in Homey store"
   }
 }
