@@ -97,5 +97,8 @@
   },
   "0.7.1": {
     "en": "Added tags to help find the app in Homey store"
+  },
+  "0.7.2": {
+    "en": "Fixed #28: The driver should correctly reconnect to the physical device if"
   }
 }
