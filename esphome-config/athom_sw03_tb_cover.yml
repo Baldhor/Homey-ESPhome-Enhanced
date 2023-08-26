@@ -169,6 +169,19 @@ number:
             id(cover1).set_close_duration(x * 1000);
     entity_category: config
 
+  - id: invert
+    platform: template
+    name: "Invert relay 1 and 3"
+    disabled_by_default: true
+    optimistic: true
+    min_value: 0
+    max_value: 1
+    step: 1
+    restore_value: true
+    initial_value: 0
+    mode: slider
+    entity_category: config
+
 # Enable factory reset function
 # Button 1 is configured to triger it if pressed 10 seconds
 button:
@@ -318,7 +331,7 @@ cover:
 
     open_action:
       - lambda: !lambda |-
-          if (!id(invert).state) {
+          if (id(invert).state == 0) {
             id(relay1).turn_on();
           } else {
             id(relay3).turn_on();
@@ -327,7 +340,7 @@ cover:
 
     close_action:
       - lambda: !lambda |-
-          if (!id(invert).state) {
+          if (id(invert).state == 0) {
             id(relay3).turn_on();
           } else {
             id(relay1).turn_on();
@@ -373,14 +386,6 @@ script:
           }
 
 switch:
-  - id: invert
-    platform: template
-    name: "Invert relay 1 and 3"
-    disabled_by_default: true
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-    entity_category: config
-
   # Relays
   - id: relay1
     platform: gpio
@@ -392,7 +397,7 @@ switch:
     restore_mode: ALWAYS_OFF
     on_turn_on:
       lambda: !lambda |-
-        if (!id(invert).state) {
+        if (id(invert).state == 0) {
           auto call = id(led1).turn_on();
           call.perform();
         } else {
@@ -401,11 +406,13 @@ switch:
         }
     on_turn_off:
       lambda: !lambda |-
-        if (!id(button1).state && !id(led1_blink).is_running()) {
-          if (!id(invert).state) {
+        if (id(invert).state == 0) {
+          if (!id(button1).state && !id(led1_blink).is_running()) {
             auto call = id(led1).turn_off();
             call.perform();
-          } else {
+          }
+        } else {
+          if (!id(button3).state && !id(led3_blink).is_running()) {
             auto call = id(led3).turn_off();
             call.perform();
           }
@@ -421,7 +428,7 @@ switch:
     restore_mode: ALWAYS_OFF
     on_turn_on:
       lambda: !lambda |-
-        if (!id(invert).state) {
+        if (id(invert).state == 0) {
           auto call = id(led3).turn_on();
           call.perform();
         } else {
@@ -430,11 +437,13 @@ switch:
         }
     on_turn_off:
       lambda: !lambda |-
-        if (!id(button3).state && !id(led3_blink).is_running()) {
-          if (!id(invert).state) {
+        if (id(invert).state == 0) {
+          if (!id(button3).state && !id(led3_blink).is_running()) {
             auto call = id(led3).turn_off();
             call.perform();
-          } else {
+          }
+        } else {
+          if (!id(button1).state && !id(led1_blink).is_running()) {
             auto call = id(led1).turn_off();
             call.perform();
           }
