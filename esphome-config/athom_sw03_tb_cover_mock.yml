@@ -1,4 +1,10 @@
 # ---------------------------------------------
+# Code status: completed
+# Compile status: completed
+# Test status: completed
+# ---------------------------------------------
+
+# ---------------------------------------------
 # ESPHome configuration for Athom sw03 device in purpose to handle cover without position sensor
 # 
 # DISCLAIMER: Software interlock is used to ensure both relay 1 (up) and 3 (down) are not enabled at the same time.
