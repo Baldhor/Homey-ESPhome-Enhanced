@@ -51,6 +51,16 @@ class VirtualDevice extends Device {
         let settings = this.getSettings();
         this.log('Settings', settings);
 
+        // Check if physical device already exist
+        let existingPhysicalDevice = PhysicalDeviceManager.get(settings.ipAddress, settings.port);
+        if (existingPhysicalDevice) {
+            // Maybe it's a physical device without virtual device linked? In such case we can clean up
+            // Why? It was probably created during the pair session and so by default doesn't automatically reconnect
+            PhysicalDeviceManager.checkDelete(null, existingPhysicalDevice);
+            existingPhysicalDevice = null;
+        }
+
+        // Now we can create it ...
         this.physicalDeviceId = PhysicalDeviceManager.create(true, settings.ipAddress, settings.port, settings.encryptionKey === undefined ? '' : settings.encryptionKey, settings.password);
         if (PhysicalDeviceManager.getById(this.physicalDeviceId).client.connected) {
             this.setAvailable().catch(this.error);
@@ -145,7 +155,7 @@ class VirtualDevice extends Device {
                 }
                 return;
             }
-    
+
             switch (nativeCapability.specialCase) {
                 case 'templateCover':
                     this.log('templateCover case, converting value')
