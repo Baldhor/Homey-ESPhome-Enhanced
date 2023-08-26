@@ -1,36 +1,13 @@
 # ---------------------------------------------
+# Owner: Baldhor
 # Code status: completed
 # Compile status: completed
 # Test status: completed
 # ---------------------------------------------
 
 # ---------------------------------------------
-# ESPHome configuration for Athom sw03 device in purpose to handle cover without position sensor
-# 
-# DISCLAIMER: Software interlock is used to ensure both relay 1 (up) and 3 (down) are not enabled at the same time.
-#             However, software interlock is unsure, only hardware interlock would be sure and safe.
-#             As such, it could in some weird situation end up damaging your cover engine.
-# 
-# DISCALIMER: Position may shift over time as real position is assumpted.
-#             You can make open duration and close duration a little higher than needed to compensate.
-#             However, it means that your cover must have built in top and bottom end!
-#             Otherwise, your engine may end up running without moving => leading to engine or cover damage!
-# 
-# Key points:
-#   - Use native api
-#   - Using time based cover as main device
-#   - Relay 2 is unused
-#   - Prefered position and invert functions available
-# 
-# Features:
-#   1- Touch led are on at least 1 second to provide a good user experience
-#   2- If cover is running (not idle), a short press on any button will stop the cover
-#   3- Long press on button 1 (top) for 10 seconds will reset the device
-#   4- Long press on button 2 (middle) will save current prosition as prefered position
-#   5- Short press on button 2 will restore prefered position
-#   6- Prefered position, Open duration and Close duration can be configured through the web server interface and are saved/restored from flash
-#   7- Current position is saved/restored from flash
-#   8- Invert function can be configured though the web server interface and is saved/restored from flash
+# ESPHome configuration for Athom sw03 device in purpose to test the application.
+# It's mostly based on 'athom_sw03_tb_cover.yml' but with mock entities
 # 
 # Usage:
 #   - secrets.yaml file must include:

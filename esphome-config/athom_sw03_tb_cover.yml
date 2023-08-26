@@ -1,4 +1,5 @@
 # ---------------------------------------------
+# Owner: Baldhor
 # Code status: completed
 # Compile status: completed
 # Test status: completed
@@ -11,7 +12,7 @@
 #             However, software interlock is unsure, only hardware interlock would be sure and safe.
 #             As such, it could in some weird situation end up damaging your cover engine.
 # 
-# DISCALIMER: Position may shift over time as real position is assumpted.
+# DISCLAIMER: Position may shift over time as real position is assumpted.
 #             You can make open duration and close duration a little higher than needed to compensate.
 #             However, it means that your cover must have built in top and bottom end!
 #             Otherwise, your engine may end up running without moving => leading to engine or cover damage!
