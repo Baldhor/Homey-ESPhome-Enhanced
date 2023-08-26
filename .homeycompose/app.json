@@ -31,11 +31,24 @@
     ]
   },
   "homeyCommunityTopicId": 87271,
-  "paypal": {
-    "username": "baldhors"
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "baldhors"
+      }
+    }
   },
   "source": "https://github.com/athombv/com.athom.myapp",
   "bugs": {
     "url": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/issues"
+  },
+  "tags": {
+    "en": [
+      "ESPhome",
+      "esp32",
+      "esp8266",
+      "esp8285",
+      "Home Assistant"
+    ]
   }
 }
