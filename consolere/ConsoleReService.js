@@ -416,9 +416,7 @@ class ConsoleReService {
                 const stringifyCircularJSON = obj => {
                     const seen = new WeakSet();
                     const filterList = ['encryptionKey', 'newEncryptionKey', 'password', 'newPassword'];
-                    const isError = (e) => {
 
-                    }
                     return JSON.stringify(obj, (k, v) => {
                         if (v !== null && typeof v === 'object') {
                             if (seen.has(v)) return;

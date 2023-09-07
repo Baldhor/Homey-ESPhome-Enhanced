@@ -160,10 +160,14 @@ class Client extends EventEmitter {
      * }
      */
     initializedListener() {
-        this.log('Connected:', this.nativeApiClient.deviceInfo);
+        this.log('Connected and initialized:', this.nativeApiClient.deviceInfo);
 
         this.connected = true;
         this.emit('connected');
+    }
+
+    connectedListener() {
+        this.log('Connected');
     }
 
     disconnectedListener() {

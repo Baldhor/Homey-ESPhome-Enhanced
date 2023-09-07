@@ -36,35 +36,13 @@ const { Device } = require('homey');
 const PhysicalDeviceManager = require('./physical-device-manager');
 
 class VirtualDevice extends Device {
-    // Handle to the physical Device
-    physicalDeviceId = null;
-
-    // Customer trigger cards
-    esphomeNumberCustom = null;
+    listeners = [];
 
     async onInit() {
-        this.log(this.getName(), 'is inited');
+        this.log('onInit:', this.getName());
 
         this.setUnavailable(this.homey.__('app.initializing'))
             .catch(this.error);
-
-        let settings = this.getSettings();
-        this.log('Settings', settings);
-
-        // Check if physical device already exist
-        let existingPhysicalDevice = PhysicalDeviceManager.get(settings.ipAddress, settings.port);
-        if (existingPhysicalDevice) {
-            // Maybe it's a physical device without virtual device linked? In such case we can clean up
-            // Why? It was probably created during the pair session and so by default doesn't automatically reconnect
-            PhysicalDeviceManager.checkDelete(null, existingPhysicalDevice);
-            existingPhysicalDevice = null;
-        }
-
-        // Now we can create it ...
-        this.physicalDeviceId = PhysicalDeviceManager.create(true, settings.ipAddress, settings.port, settings.encryptionKey === undefined ? '' : settings.encryptionKey, settings.password);
-        if (PhysicalDeviceManager.getById(this.physicalDeviceId).client.connected) {
-            this.setAvailable().catch(this.error);
-        }
 
         this.registerCustomerTriggerCards();
 
@@ -72,60 +50,130 @@ class VirtualDevice extends Device {
         this.startUnavailabilityListener();
         this.startNativeCapabilityListener();
         this.startCapabilityListeners();
+
+        // We need to initialize the availablity state
+        await this._checkAvailability().catch(this.error);
     }
 
     registerCustomerTriggerCards() {
     }
 
     startAvailabilityListener() {
-        this.callbackAvailableListener = () => {
-            this.setAvailable().catch(this.error);
+        this.log('startAvailabilityListener');
+
+        let callback = async () => {
+            await this._checkAvailability().catch(this.error);
         };
-        PhysicalDeviceManager.getById(this.physicalDeviceId).on('available', this.callbackAvailableListener);
+        this.log('startAvailabilityListener 2');
+
+        let listPhysicalDeviceIds = [];
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+            this.log('startAvailabilityListener 3:', capabilityKeyV2);
+            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                this.log('startAvailabilityListener 4:', capabilityKeyV2);
+                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('available', callback);
+
+                // Register listener
+                this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'available', callback);
+            }
+        });
     }
 
     startUnavailabilityListener() {
-        this.callbackUnavailableListener = () => {
+        this.log('startUnavailabilityListener');
+
+        let callback = () => {
             this.setUnavailable().catch(this.error);
         };
-        PhysicalDeviceManager.getById(this.physicalDeviceId).on('unavailable', this.callbackUnavailableListener);
+
+        let listPhysicalDeviceIds = [];
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('unavailable', callback);
+
+                // Register listener
+                this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'unavailable', callback);
+            }
+        });
+    }
+
+    async _checkAvailability() {
+        this.log('_checkAvailability');
+
+        let available = true;
+
+        let listPhysicalDeviceIds = [];
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                if (!PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).available) {
+                    available = false;
+                    return;
+                }
+            }
+        });
+
+        if (available) {
+            await this.setAvailable().catch(this.error);
+        } else {
+            await this.setUnavailable().catch(this.error);
+        }
     }
 
     startNativeCapabilityListener() {
         this.log('startNativeCapabilityListener');
 
-        let capabilities = this.getCapabilities();
-        let capabilityKeys = this.getStoreValue('capabilityKeys');
+        let callback = (nativeCapabilityId, value) => this.stateChangedListener(nativeCapabilityId, value);
 
-        capabilities.forEach(capability => {
-            this.log('Processing capability: ', capability);
+        let listNativeCapabilityIds = [];
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+            if (!listNativeCapabilityIds.includes(capabilityValueV2.physicalDeviceId + ':' + capabilityValueV2.nativeCapabilityId)) {
+                listNativeCapabilityIds.push(capabilityValueV2.physicalDeviceId + ':' + capabilityValueV2.nativeCapabilityId);
 
-            let nativeCapabilityId = capabilityKeys[capability];
-            if (!nativeCapabilityId) {
-                this.log('Capability', capability, 'has no native_capability associated');
-                return;
+                PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('stateChanged.' + capabilityValueV2.nativeCapabilityId, callback);
+
+                // Register listener
+                this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'stateChanged.' + capabilityValueV2.nativeCapabilityId, callback);
+
+                // Get current value
+                this._forceUpdateCurrentValue(capabilityKeyV2);
             }
+        });
 
-            this.log('Init capability', capability, 'for', nativeCapabilityId);
-            this.callbackStateChangedListener = (nativeCapabilityId, value) => this.stateChangedListener(nativeCapabilityId, value);
-            PhysicalDeviceManager.getById(this.physicalDeviceId).on('stateChanged', this.callbackStateChangedListener);
+    }
 
-            // Get current value
-            this._forceUpdateCurrentValue(capability);
+    /**
+     * 
+     */
+    startCapabilityListeners() {
+        this.log('startCapabilityListeners');
+
+        this.getCapabilities().forEach(capability => {
+            this._addCapabilityListener(capability);
         });
     }
 
     _forceUpdateCurrentValue(capability) {
         this.log('_forceUpdateCurrentValue:', ...arguments);
 
-        let capabilityKeys = this.getStoreValue('capabilityKeys');
-        let nativeCapabilityId = capabilityKeys[capability];
-        if (!nativeCapabilityId) {
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        let capabilityValueV2 = capabilityKeysV2[capability];
+        if (!capabilityValueV2) {
             this.log('Capability', capability, 'has no native_capability associated');
             return;
         }
 
-        this.stateChangedListener(nativeCapabilityId, PhysicalDeviceManager.getById(this.physicalDeviceId).getCurrentValue(nativeCapabilityId));
+        this.stateChangedListener(capabilityValueV2.nativeCapabilityId, PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).getCurrentValue(capabilityValueV2.nativeCapabilityId));
     }
 
     /**
@@ -137,102 +185,40 @@ class VirtualDevice extends Device {
     stateChangedListener(nativeCapabilityId, value) {
         this.log('stateChangedListener:', ...arguments);
 
-        let capabilityKeys = this.getStoreValue('capabilityKeys');
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+            if (capabilityValueV2.nativeCapabilityId === nativeCapabilityId) {
+                let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
+                let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
 
-        let filtererdCapabilityKeys = Object.keys(capabilityKeys).filter(capabilityKey => capabilityKeys[capabilityKey] === nativeCapabilityId);
+                if (nativeCapability !== undefined) {
+                    switch (nativeCapability.specialCase) {
+                        case 'templateCover':
+                            this.log('templateCover case, converting value')
+                            // true => closed => 0.0
+                            // false => open => 1.0
+                            value = value === 0 ? true : false;
+                            break;
+                    }
 
-        if (filtererdCapabilityKeys.length === 1) {
-            // Check if the value should be converted because of a special case
-            let physicalDevice = PhysicalDeviceManager.getById(this.physicalDeviceId);
-            let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
-
-            if (nativeCapability === undefined) {
-                // It's normal if the physical device didn't published his entities yet.
-                if (Object.keys(physicalDevice.nativeCapabilities).length === 0) {
-                    this.log("Physical device not available yet, cannot retrive current value");
+                    this.setCapabilityValue(capabilityKeyV2, value).catch(this.error);
                 } else {
-                    this.error("Couldn't find the native capability for id:", nativeCapabilityId);
+                    this.log('Unknown native capability', nativeCapabilityId, 'for physical device', capabilityValueV2.physicalDeviceId);
                 }
-                return;
             }
-
-            switch (nativeCapability.specialCase) {
-                case 'templateCover':
-                    this.log('templateCover case, converting value')
-                    // true => closed => 0.0
-                    // false => open => 1.0
-                    value = value === 0 ? true : false;
-                    break;
-            }
-
-            this.setCapabilityValue(filtererdCapabilityKeys[0], value).catch(this.error);
-        } else if (filtererdCapabilityKeys.length > 1) {
-            this.log('Something is wrong in stateChangedListener, found several matching capabilities:', filtererdCapabilityKeys);
-        }
-    }
-
-    /**
-     * 
-     */
-    startCapabilityListeners() {
-        this.log('startCapabilityListeners');
-
-        let capabilities = this.getCapabilities();
-        let capabilityKeys = this.getStoreValue('capabilityKeys');
-
-        capabilities.forEach(capability => {
-            this.log('Processing capability: ', capability);
-
-            let nativeCapabilityId = capabilityKeys[capability];
-            if (!nativeCapabilityId) {
-                this.log('Capability', capability, 'has no native_capability associated');
-                return;
-            }
-
-            this._addCapabilityListener(capability, nativeCapabilityId);
         });
     }
 
-    _addCapabilityListener(capability, nativeCapabilityId) {
-        this.log('_addCapabilityListener:', ...arguments);
+    capabilityListener(capability, newValue) {
+        this.log('capabilityListener:', ...arguments);
 
-        // Remember the callback so we can delete it if needed
-        if (this.callbackCapabilityListeners === undefined) {
-            this.callbackCapabilityListeners = {};
-        }
-
-        // If listener already exist, no need to add it
-        if (this.callbackCapabilityListeners[capability] === undefined) {
-            this.callbackCapabilityListeners[capability] = (newValue) => this.capabilityListener(capability, nativeCapabilityId, newValue);
-            this.registerCapabilityListener(capability, this.callbackCapabilityListeners[capability]);
-        }
-    }
-
-    /**
-     * Used when a capability is removed through the wizard
-     * 
-     * @param {*} capability 
-     */
-    _removeCapabilityListener(capability) {
-        this.log('_removeCapabilityListener:', ...arguments);
-
-        // If no callback list, there are nothing to remove
-        if (this.callbackCapabilityListeners !== undefined) {
-            // If no callback registered, there are nothing to remove
-            if (this.callbackCapabilityListeners[capability] === undefined) {
-                // Actually we cannot remove a capability listener :)
-                delete this.callbackCapabilityListeners[capability];
-            }
-
-        }
-    }
-
-    capabilityListener(capability, nativeCapabilityId, newValue) {
-        this.log('Processing new capability value:', ...arguments);
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        let capabilityValueV2 = capabilityKeysV2[capability];
 
         // Check if the value should be converted because of a special case
-        let physicalDevice = PhysicalDeviceManager.getById(this.physicalDeviceId);
-        let nativeCapability = physicalDevice.nativeCapabilities[nativeCapabilityId];
+        let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
+        let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
 
         if (nativeCapability === undefined) {
             throw new Error('Capability', capability, "doesn't have a matching native capability. the configuration of your physical device probably changed in an incompatible way. Use the Wizard to 'repair' your physical device!");
@@ -247,68 +233,73 @@ class VirtualDevice extends Device {
                 break;
         }
 
-        PhysicalDeviceManager.getById(this.physicalDeviceId).sendCommand(nativeCapabilityId, newValue);
+        physicalDevice.sendCommand(capabilityValueV2.nativeCapabilityId, newValue);
+    }
+
+    _addCapabilityListener(capability) {
+        this.log('_addCapabilityListener:', ...arguments);
+
+        let callback = (newValue) => this.capabilityListener(capability, newValue);
+        this.registerCapabilityListener(capability, callback);
+
+        // No need to register the callback, the listeners will be removed automatically when the capability is removed
+    }
+
+    /**
+     * Used when a capability is removed through the wizard
+     * 
+     * @param {*} capability 
+     */
+    _removeCapabilityListener(capability) {
+        this.log('_removeCapabilityListener:', ...arguments);
+
+        // No need to remove anything (refer to _addCapabilityListener)
     }
 
     _forceDisconnect() {
         this.log('_forceDisconnect');
 
-        if (PhysicalDeviceManager.getById(this.physicalDeviceId)) {
-            this.log('Found a physicalDevice');
-            this._removeStateChangedListener();
+        this._unregisterListeners();
 
-            this._removeAvailableListener();
-            this._removeUnavailableListener();
-            PhysicalDeviceManager.checkDelete(this, PhysicalDeviceManager.getById(this.physicalDeviceId));
-            this.physicalDeviceId = null;
-        }
+        let listPhysicalDeviceIds = [];
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                PhysicalDeviceManager.checkDelete(this, PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId));
+            }
+        });
     }
 
-    _removeStateChangedListener() {
-        this.log('_removeStateChangedListener');
+    _registerListener(obj, event, callback) {
+        this.log('_registerListeners:', obj, event); // FIXMEIf callback is logged, I get a u error from JSON parser
 
-        if (this.callbackStateChangedListener) {
-            this.log('Found a callbackStateChangedListener');
-
-            PhysicalDeviceManager.getById(this.physicalDeviceId).off('stateChanged', this.callbackStateChangedListener);
-            this.callbackStateChangedListener = null;
-        }
+        this.listeners.push({
+            'obj': obj,
+            'event': event,
+            'callback': callback
+        });
     }
 
-    _removeAvailableListener() {
-        this.log('_removeAvailableListener');
+    _unregisterListeners() {
+        this.log('_unregisterListeners');
 
-        if (this.callbackAvailableListener) {
-            this.log('Found a callbackAvailableListener');
-
-            PhysicalDeviceManager.getById(this.physicalDeviceId).off('available', this.callbackAvailableListener);
-            this.callbackAvailableListener = null;
-        }
-    }
-
-    _removeUnavailableListener() {
-        this.log('_removeUnavailableListener');
-
-        if (this.callbackUnavailableListener) {
-            this.log('Found a callbackUnavailableListener');
-
-            PhysicalDeviceManager.getById(this.physicalDeviceId).off('unavailable', this.callbackUnavailableListener);
-            this.callbackUnavailableListener = null;
-        }
+        this.listeners.forEach(listener => {
+            listener.obj.off(listener.event, listener.callback);
+        });
     }
 
     async onUninit() {
         this.log('onUnit');
+
         this._forceDisconnect();
     }
 
     async onDeleted() {
         this.log('onDeleted');
-        this._forceDisconnect();
-    }
 
-    async onSettings({ oldSettings, newSettings, changedKeys }) {
-        throw new Error('Use the Wizard driver to modify those settings');
+        this._forceDisconnect();
     }
 }
 
