@@ -11,7 +11,7 @@
   "dependencies": {
     "@2colors/esphome-native-api": "^1.2.4",
     "p-queue": "^7.3.4",
-    "serialize-error": "^11.0.1",
+    "serialize-error": "^11.0.2",
     "socket.io-client": "^4.7.2"
   }
 }
