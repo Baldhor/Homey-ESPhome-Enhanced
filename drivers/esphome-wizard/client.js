@@ -130,6 +130,7 @@ class Client extends EventEmitter {
     startRemoteListener() {
         this.nativeApiClient
             .on('initialized', () => this.initializedListener())
+            .on('connected', () => this.connectedListener())
             .on('disconnected', () => this.disconnectedListener())
             .on('error', (error) => this.errorListener(error))
             .on('logs', (message) => this.logsListener(message))
@@ -154,10 +155,14 @@ class Client extends EventEmitter {
      * }
      */
     initializedListener() {
-        this.log('Connected:', this.nativeApiClient.deviceInfo);
+        this.log('Connected and initialized:', this.nativeApiClient.deviceInfo);
 
         this.connected = true;
         this.emit('connected');
+    }
+
+    connectedListener() {
+        this.log('Connected');
     }
 
     disconnectedListener() {

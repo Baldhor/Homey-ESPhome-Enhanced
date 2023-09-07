@@ -5,7 +5,20 @@ const PhysicalDeviceManager = require('./physical-device-manager');
 
 class Driver extends Homey.Driver {
     async onInit() {
+        //TODO: To be removed!
+        this.resetConf();
+
+        // Check for migration or init conf
+        this.checkMigration();
+        this.initConf();
+
         PhysicalDeviceManager.init(this);
+
+        // Init each physical device
+        let conf = this.getConf();
+        conf.forEach(physicalDevice => {
+            PhysicalDeviceManager.create(true, physicalDevice.physicalDeviceId, physicalDevice.name, physicalDevice.ipAddress, physicalDevice.port, physicalDevice.encryptionKey, physicalDevice.password);
+        });
 
         this.log('ESPhomeWizard initialized');
     }
@@ -424,22 +437,6 @@ class Driver extends Homey.Driver {
             return result;
         });
 
-        session.setHandler('apply-new-settings', (data) => {
-            this.log('apply-new-settings started:', data);
-            let physicalDeviceId = data.physicalDeviceId;
-            let newIpAddress = data.ipAddress;
-            let newPort = data.port;
-            let newEncryptionKey = data.encryptionKey;
-            let newPassword = data.password;
-
-            try {
-                PhysicalDeviceManager.changeSettings(physicalDeviceId, newIpAddress, newPort, newEncryptionKey, newPassword);
-            } catch (e) {
-                this.log(e);
-                throw e;
-            }
-        });
-
         session.setHandler('get-device-classes', (data) => {
             this.log('get-device-classes started:', data);
 
@@ -482,6 +479,251 @@ class Driver extends Homey.Driver {
                 throw e;
             }
         });
+
+        /**
+         * DRIVER v2
+         */
+
+        /**
+         * Delete device ?
+          for (const device of Object.values(devices)) {
+            if (device.zone != zombieZone.id)
+              continue;
+            if (device.class == "light") {
+              await fetch('http://127.0.0.1/api/manager/devices/device/' + device.id, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', 'Authorization' : "Bearer <token>"},
+                body: JSON.stringify({ 'class': 'other' })
+              });
+            }
+          }
+        */
+
+
+        /**
+         * Get the initial_configuration
+         * 
+         * return: refer to pair/readme.md
+         */
+        session.setHandler('get-configuration', () => {
+            this.log('get-configuration started');
+
+            let listVirtualDevices = [];
+            let listPhysicalDevices = [];
+
+            try {
+                // Loop on all virtual devices
+                this.getDevices().forEach(virtualDevice => {
+                    let tmpVirtualDevice = {
+                        'id': virtualDevice.getData().id,
+                        'initial': {
+                            name: virtualDevice.getName(),
+                            zoneName: virtualDevice.zoneName,
+                            class: virtualDevice.getClass(),
+                            status: 'unmodified',
+                            capabilities: []
+                        },
+                        'current': null
+                    };
+
+                    // Capabilities are: <capabilityType>[.<index>]
+                    virtualDevice.getCapabilities().forEach(capability => {
+                        let capabilityValueV2 = virtualDevice.getStoreValue('capabilityKeysV2')[capability];
+                        let tmpCapability = {
+                            type: capability.split(".")[0],
+                            index: capability.split(".").length > 1 ? parseInt(capability.split(".")[1]) : '1',
+                            status: 'unmodified',
+                            options: virtualDevice.getCapabilityOptions(capability),
+                            physicalDeviceId: capabilityValueV2.physicalDeviceId,
+                            nativeCapabilityId: capabilityValueV2.nativeCapabilityId
+                        };
+
+                        tmpVirtualDevice.initial.capabilities.push(tmpCapability);
+                    });
+
+                    tmpVirtualDevice.current = tmpVirtualDevice.initial;
+                    
+                    listVirtualDevices.push(tmpVirtualDevice);
+                });
+
+                // Retrieve driver settings
+                let conf = this.getConf();
+                conf.forEach(physicalDevice => {
+                    let realPhysicalDevice = PhysicalDeviceManager.getById(physicalDevice.physicalDeviceId);
+
+                    let tmpPhysicalDevice = {
+                        physicalDeviceId: physicalDevice.physicalDeviceId,
+                        status: realPhysicalDevice.available === true ? 'available' : 'unavailable',
+                        used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === physicalDevice.physicalDeviceId)).length > 0,
+                        name: physicalDevice.name,
+                        ipAddress: physicalDevice.ipAddress,
+                        port: physicalDevice.port,
+                        encryptionKey: physicalDevice.encryptionKey,
+                        password: physicalDevice.password,
+                        nativeCapabilities: []
+                    };
+
+                    Object.values(realPhysicalDevice.nativeCapabilities).forEach(nativeCapability => {
+                        // The same capability can be used several times on the same virtual device!
+                        // We cannot use a simple filter on the virtual device list
+                        let countUsed = 0;
+                        this.getDevices().forEach(virtualDevice => {
+                            countUsed += Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeysV2 => capabilityKeysV2.nativeCapabilityId === nativeCapability.getId()).length;
+                        });
+
+                        tmpPhysicalDevice.nativeCapabilities.push({
+                            id: nativeCapability.getId(),
+                            entityId: nativeCapability.entityId,
+                            attribut: nativeCapability.attribut,
+                            entityName: nativeCapability.entityName,
+                            type: nativeCapability.type,
+                            used: countUsed,
+                            value: nativeCapability.value,
+                            configs: nativeCapability.configs,
+                            constraints: nativeCapability.constraints,
+                            specialCase: nativeCapability.specialCase
+                        });
+                    });
+
+                    listPhysicalDevices.push(tmpPhysicalDevice);
+                });
+            } catch (e) {
+                this.error(e);
+                throw e;
+            }
+
+            return {
+                'listVirtualDevices': listVirtualDevices,
+                'listPhysicalDevices': listPhysicalDevices
+            };
+        });
+
+        session.setHandler('modify-physical-device', (data) => {
+            this.log('modify-physical-device:', data);
+
+            try {
+                let conf = this.getConf();
+                let physicalDeviceConf = conf.find((physicalDevice) => physicalDevice.physicalDeviceId === data.physicalDeviceId);
+
+                if (physicalDeviceConf === undefined) {
+                    throw new Error('Cannot find physical device');
+                }
+
+                physicalDeviceConf.name = data.name;
+                physicalDeviceConf.ipAddress = data.ipAddress;
+                physicalDeviceConf.port = data.port;
+                physicalDeviceConf.encryptionKey = data.encryptionKey;
+                physicalDeviceConf.password = data.password;
+
+                this.setConf(conf);
+
+                let physicalDevice = PhysicalDeviceManager.getById(physicalDeviceConf.physicalDeviceId);
+                PhysicalDeviceManager._delete(physicalDevice);
+                PhysicalDeviceManager.create(true, physicalDeviceConf.physicalDeviceId, physicalDeviceConf.name, physicalDeviceConf.ipAddress, physicalDeviceConf.port, physicalDeviceConf.encryptionKey, physicalDeviceConf.password);
+            } catch (e) {
+                this.log(e);
+                throw e;
+            }
+        });
+    }
+
+    /***********************
+     * Check migration from wizard v1 to v2
+     ***********************/
+    checkMigration() {
+        // If confStore is empty and it exists at least one virtual device, then we need to migrate
+        if (this.getConf() !== null || this.getDevices().length === 0) {
+            return;
+        }
+
+        // Need to migration
+        let conf = [];
+        let physicalDeviceIndex = 1;
+
+        this.getDevices().forEach(virtualDevice => {
+            // Get physical device settings
+            let settings = virtualDevice.getSettings();
+            let ipAddress = settings.ipAddress;
+            let port = settings.port;
+            let encryptionKey = settings.encryptionKey;
+            let password = settings.password;
+
+            // Make a new identifier for this physical device
+            let physicalDeviceId = 'migrated' + physicalDeviceIndex;
+            ++physicalDeviceIndex;
+
+            // Add the physical device to the conf
+            conf.push({
+                'physicalDeviceId': physicalDeviceId,
+                'name': physicalDeviceId,
+                'ipAddress': ipAddress,
+                'port': port,
+                'encryptionKey': encryptionKey,
+                'password': password
+            });
+
+            // Migrate the capabilityKeys
+            let capabilityKeysV1 = virtualDevice.getStoreValue('capabilityKeys');
+            let capabilityKeysV2 = {};
+            Object.keys(capabilityKeysV1).forEach(capabilityKey => {
+                capabilityKeysV2[capabilityKey] = {
+                    physicalDeviceId: physicalDeviceId,
+                    nativeCapabilityId: capabilityKeysV1[capabilityKey]
+                }
+            });
+            virtualDevice.setStoreValue('capabilityKeysV2', capabilityKeysV2);
+
+            // Finaly store the new conf
+            this.setConf(conf);
+        });
+
+
+    }
+
+    /***********************
+     * CONF functions
+     * Current version: V2
+     ***********************/
+
+    /**
+     * conf structure:
+     *  [
+     *      {
+     *          physicalDeviceId: string Unique physical device identifier
+     *          name: string Pretty name
+     *          ipAddress: string
+     *          port: string
+     *          encryptionKey: string (nullable)
+     *          password: string (nullable)
+     *      }
+     *  ]
+     */
+
+    /**
+     * This function is used during test of the new driver
+     * It resets the conf store to null, and next restart of the driver (of the app) will migrate it again
+     */
+    resetConf() {
+        this.homey.settings.unset('listPhysicalDevicesV2');
+    }
+
+    /**
+     * This function init the conf is it doesn't exist
+     */
+    initConf() {
+        let conf = this.getConf();
+
+        if (conf === null) {
+            this.setConf([]);
+        }
+    }
+
+    getConf() {
+        return this.homey.settings.get('listPhysicalDevicesV2');
+    }
+
+    setConf(conf) {
+        this.homey.settings.set('listPhysicalDevicesV2', conf);
     }
 }
 

@@ -66,25 +66,7 @@
   },
   "pair": [
     {
-      "id": "welcome"
-    },
-    {
-      "id": "new_device"
-    },
-    {
-      "id": "update_device"
-    },
-    {
-      "id": "conf_main"
-    },
-    {
-      "id": "conf_settings"
-    },
-    {
-      "id": "conf_deviceclass"
-    },
-    {
-      "id": "store"
+      "id": "main"
     }
   ]
 }

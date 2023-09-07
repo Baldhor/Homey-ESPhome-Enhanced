@@ -25,9 +25,12 @@ const Utils = require('./utils');
 
 class PhysicalDevice extends EventEmitter {
     id = null;
+    name = null;
 
     driver = null;
     client = null;
+
+    available = false;
 
     /**
      * Map of native capabilities
@@ -47,29 +50,27 @@ class PhysicalDevice extends EventEmitter {
      * 
      * @param {Driver} driver Handle to the Driver for log context and retrieve configuration from driver
      * @param {boolean} reconnect Connection mode: connect once or reconnect
+     * @param {string} name Name of the physical device
      * @param {string} ipAddress IP address
      * @param {string} port Port number
      * @param {string} encryptionKey Encryption key
      * @param {string} password (Optionnal) password
      */
-    constructor(driver, reconnect, ipAddress, port, encryptionKey, password) {
+    constructor(driver, reconnect, physicalDeviceId, name, ipAddress, port, encryptionKey, password) {
         Utils.assert(driver != null && typeof driver === 'object' && driver.constructor.name === 'Driver', 'Driver cannot be null or of wrong type');
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
         Utils.assert(Utils.checkIfValidPortnumber(port), 'Wrong format of port:', port)
 
         super();
         this.driver = driver;
-        this.id = PhysicalDevice.buildPhysicalDeviceId(ipAddress, port);
+        this.id = physicalDeviceId;
+        this.name = name;
         this.nativeCapabilities = {};
 
         this.client = new Client(this, reconnect, ipAddress, port, encryptionKey, password);
 
         // Add listener
         this.startClientListener();
-    }
-
-    static buildPhysicalDeviceId(ipAddress, port) {
-        return ipAddress + ':' + port;
     }
 
     /**
@@ -85,7 +86,7 @@ class PhysicalDevice extends EventEmitter {
         this.client
             .on('connected', () => this.connectedListener())
             .on('disconnected', () => this.disconnectedListener())
-            .on('stateChanged', (entityId, nativeCapability, value) => this.stateChangedListener(entityId, nativeCapability, value));
+            .on('stateChanged', (entityId, attribut, value) => this.stateChangedListener(entityId, attribut, value));
     }
 
     connectedListener() {
@@ -93,6 +94,7 @@ class PhysicalDevice extends EventEmitter {
 
         this.computeNativeCapabilities();
 
+        this.available = true;
         this.emit('available');
     }
 
@@ -349,6 +351,7 @@ class PhysicalDevice extends EventEmitter {
         // We reset the list of native capabilities
         this.nativeCapabilities = {};
 
+        this.available = false;
         this.emit('unavailable');
     }
 
@@ -370,8 +373,8 @@ class PhysicalDevice extends EventEmitter {
         // Save new value
         nativeCapability.setValue(value);
 
-        this.log('Emit event stateChanged', nativeCapability.getId(), value);
-        this.emit('stateChanged', nativeCapability.getId(), value);
+        this.log('Emit event stateChanged.' + nativeCapability.getId(), nativeCapability.getId(), value);
+        this.emit('stateChanged.' + nativeCapability.getId(), nativeCapability.getId(), value);
     }
 
     getCurrentValue(nativeCapabilityId) {
