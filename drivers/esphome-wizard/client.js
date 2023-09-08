@@ -14,13 +14,14 @@
  * - 'stateChanged': a state has been received
  * 
  */
+const Homey = require('homey');
 const EventEmitter = require('events');
 const PhysicalDevice = require('./physical-device');
-const { Client : NativeApiClient } = require('@2colors/esphome-native-api');
+const { Client: NativeApiClient } = require('@2colors/esphome-native-api');
 const Utils = require('./utils');
 
-// Delay used to reconnect if initilization is wrong
-const NATIVE_API_RECONNECTION_DELAY = 3000;
+// Delay used to reconnect if initilization is wrong (in seconds)
+const NATIVE_API_RECONNECTION_DELAY = 30;
 
 // Some attributs can/should be ignored
 const ATTRIBUTS_TO_IGNORE_PER_TYPE = Object.freeze({
@@ -41,7 +42,9 @@ class Client extends EventEmitter {
     reconnect = true;
     expectConnected = false;
     connected = false;
+    reconnectTimer = null;
 
+    abortController = null;
     nativeApiClient = null;
 
     /**
@@ -71,15 +74,16 @@ class Client extends EventEmitter {
         this.password = password && password !== '' ? password : '';
 
         this.log('Initializing:', {
-            'ipAddress' : ipAddress,
-            'port' : port,
-            'encryptionKey' : encryptionKey,
-            'password' : password
+            'ipAddress': ipAddress,
+            'port': port,
+            'encryptionKey': encryptionKey,
+            'password': password
         });
 
         // We obviosuly expect to connect, so let's start
         this.expectConnected = true;
         this.reconnect = reconnect;
+        this.abortController = new AbortController();
         this.processConnection();
 
         this.log('Created');
@@ -89,14 +93,16 @@ class Client extends EventEmitter {
      * This async function process the connection to the remote
      */
     async processConnection() {
+        this.log('processConnection');
+
         // Make sure nothing is wrong
         if (!this.expectConnected) {
             this.error("Processing connection, but expected state is not 'Connected'");
             return;
         }
 
-        // If first time, we need to create the native api client and attach the listeners
-        if (this.nativeApiClient == null) {
+        // We need to create the native api client and attach the listeners
+        if (this.nativeApiClient === null) {
             // Create native api client
             this.nativeApiClient = new NativeApiClient({
                 host: this.ipAddress,
@@ -105,7 +111,7 @@ class Client extends EventEmitter {
                 password: this.password === '' ? null : this.password,
                 initializeSubscribeLogs: true, // We want logs, we like logs
                 initializeListEntities: true, // We want the entities configuration²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
-                reconnect: this.reconnect,
+                reconnect: false, // We use our own reconnection implementation because of issue #35
                 clientInfo: 'homey'
             });
 
@@ -129,11 +135,11 @@ class Client extends EventEmitter {
      */
     startRemoteListener() {
         this.nativeApiClient
-            .on('initialized', () => this.initializedListener())
-            .on('disconnected', () => this.disconnectedListener())
-            .on('error', (error) => this.errorListener(error))
-            .on('logs', (message) => this.logsListener(message))
-            .on('newEntity', (entity) => this.newEntityListener(entity));
+            .on('initialized', () => this.initializedListener(), { signal: this.abortController.signal })
+            .on('disconnected', () => this.disconnectedListener(), { signal: this.abortController.signal })
+            .on('error', (error) => this.errorListener(error), { signal: this.abortController.signal })
+            .on('logs', (message) => this.logsListener(message), { signal: this.abortController.signal })
+            .on('newEntity', (entity) => this.newEntityListener(entity), { signal: this.abortController.signal });
     }
 
     /**
@@ -165,6 +171,8 @@ class Client extends EventEmitter {
 
         this.connected = false;
         this.emit('disconnected');
+        this._disconnect();
+        this._autoReconnect();
     }
 
     errorListener(error) {
@@ -172,6 +180,8 @@ class Client extends EventEmitter {
 
         this.connected = false;
         this.emit('disconnected');
+        this._disconnect();
+        this._autoReconnect();
     }
 
     logsListener(message) {
@@ -195,7 +205,8 @@ class Client extends EventEmitter {
      */
     startRemoteEntityListener(entityId) {
         this.nativeApiClient.entities[entityId]
-            .on('state', (state) => this.remoteEntityStateListener(entityId, state));
+            .on('state', (state) => this.remoteEntityStateListener(entityId, state)
+                , { signal: this.abortController.signal });
     }
 
     /**
@@ -320,7 +331,35 @@ class Client extends EventEmitter {
         this.log('Disconnecting');
 
         this.expectConnected = false;
+        if (this.reconnectTimer !== null) {
+            clearTimeout(this.reconnectTimer);
+            this.reconnectTimer = null;
+        }
+        this._disconnect();
+    }
+
+    _disconnect() {
+        this.log('_disconnect');
+
+        this.abortController.abort();
         this.nativeApiClient.disconnect();
+        this.nativeApiClient = null;
+    }
+
+    _autoReconnect() {
+        this.log('_autoReconnect');
+
+        if (this.expectConnected === false || this.reconnect === false) {
+            this.log('Reconnection is disabled');
+            return;
+        }
+
+        if (this.reconnectTimer === null) {
+            this.reconnectTimer = setTimeout(() => {
+                this.reconnectTimer = null;
+                this.processConnection();
+            }, NATIVE_API_RECONNECTION_DELAY * 1000);
+        }
     }
 }
 
