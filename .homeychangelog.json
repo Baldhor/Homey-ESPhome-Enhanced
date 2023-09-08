@@ -100,5 +100,8 @@
   },
   "0.7.2": {
     "en": "Fixed #28: The driver should correctly reconnect to the physical device if"
+  },
+  "0.7.3": {
+    "en": "Testing fix for #35: reconnection is now handled at high level client, not low level"
   }
 }
