@@ -55,7 +55,28 @@
     </header>
 
     <div class='list'>
-      <p data-i18n='wizard2.list-virtual-devices.list'></p>
+      <p>
+        <span>{{ Homey.__('wizard2.list-virtual-devices.new-physical-device-title') }}</span>
+      </p>
+
+      <ul>
+        <li @click='setPage("new-virtual-device")'>
+          <span data-i18n='wizard2.list-virtual-devices.new-physical-device'></span>
+          <i class='arrow right'></i>
+        </li>
+      </ul>
+    </div>
+
+    <!-- For each virtual device (sorted by zone and name) -->
+    <div
+      v-for='virtualDevice in configuration?.listVirtualDevices?.sort((a, b) => { let _sort = a.current.zoneName.localeCompare(b.current.zoneName); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'
+      class='list'>
+      <p>
+        <span>{{ virtualDevice.current.zoneName }} - {{ virtualDevice.current.name }}</span>
+        <span class='edit'
+          @click='setPage("edit-virtual-device", { virtualDeviceId: virtualDevice.virtualDeviceId })'>{{
+          Homey.__('wizard2.list-virtual-devices.edit') }}</span>
+      </p>
 
       <ul>
         <!--
@@ -69,9 +90,13 @@
             - actions: edit capability (edit-capability page) or delete capability
         -->
 
-        <li @click='setPage("new-virtual-device")'>
-          <span data-i18n='wizard2.main.new-physical-device'></span>
-          <i class='arrow right'></i>
+        <li>
+          <span>{{ Homey.__('wizard2.list-virtual-devices.class') }}</span>
+          <span>{{ virtualDevice.current.class }}</span>
+        </li>
+        <li>
+          <span>{{ Homey.__('wizard2.list-virtual-devices.status') }}</span>
+          <span>{{ virtualDevice.current.status }}</span>
         </li>
       </ul>
     </div>
@@ -168,7 +193,8 @@
       <ul>
         <li>
           <span>{{ Homey.__('wizard2.edit-physical-device.status') }}</span>
-          <span :class='{ danger: editPhysicalDevice?.status === "unavailable" }'>{{ editPhysicalDevice?.status }}</span>
+          <span :class='{ danger: editPhysicalDevice?.status === "unavailable" }'>{{ editPhysicalDevice?.status
+            }}</span>
         </li>
         <li>
           <span>{{ Homey.__('wizard2.edit-physical-device.used') }}</span>

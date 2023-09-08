@@ -518,7 +518,7 @@ class Driver extends Homey.Driver {
                         'id': virtualDevice.getData().id,
                         'initial': {
                             name: virtualDevice.getName(),
-                            zoneName: virtualDevice.zoneName,
+                            zoneName: 'to be implemented',
                             class: virtualDevice.getClass(),
                             status: 'unmodified',
                             capabilities: []
@@ -591,6 +591,11 @@ class Driver extends Homey.Driver {
                 this.error(e);
                 throw e;
             }
+
+            this.log('result:', {
+                'listVirtualDevices': listVirtualDevices,
+                'listPhysicalDevices': listPhysicalDevices
+            });
 
             return {
                 'listVirtualDevices': listVirtualDevices,
