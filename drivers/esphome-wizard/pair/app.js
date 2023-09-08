@@ -166,7 +166,13 @@ function onHomeyReady(Homey) {
             await this.loadConfiguration();
             break;
 
+          case 'list-virtual-devices':
+            break;
+
           case 'new-physical-device':
+            break;
+
+          case 'list-physical-devices':
             break;
 
           case 'edit-physical-device':
@@ -178,13 +184,6 @@ function onHomeyReady(Homey) {
             setTimeout(this.checkEditPhysicalDeviceValidity, 100);
             break;
 
-          case 'list-physical-devices':
-            break;
-
-          case 'list-virtual-devices':
-            await getVirtualDevices();
-            throw new Error('I failed');
-            break;
         }
       } catch (e) {
         this.alert('Action failed with message: ' + e.message);

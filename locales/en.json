@@ -290,7 +290,13 @@
         "list-virtual-devices": {
             "back": "back",
             "title": "List of virtual devices",
-            "new-physical-device": "New physical device"
+            "loseModification": "Your modification(s) will be lost. Are you sure?",
+            "done": "done",
+            "new-physical-device-title": "New physical device",
+            "new-physical-device": "New physical device",
+            "edit": "edit",
+            "class": "Class",
+            "status": "Status"
         },
         "list-physical-devices": {
             "back": "back",
