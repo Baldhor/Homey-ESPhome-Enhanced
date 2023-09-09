@@ -56,15 +56,31 @@
 
     <div class='list'>
       <p>
-        <span>{{ Homey.__('wizard2.list-virtual-devices.new-physical-device-title') }}</span>
+        <span>{{ Homey.__('wizard2.list-virtual-devices.list-physical-devices.title') }}</span>
       </p>
 
       <ul>
-        <li @click='setPage("new-virtual-device")'>
-          <span data-i18n='wizard2.list-virtual-devices.new-physical-device'></span>
+        <!-- For each virtual device (sorted by zone and name) -->
+        <!-- Short list known physical devices, including existing and new ones with their status and "usage count" (used) -->
+        <!-- TO BE COMPLETED: one line per device with name, status and used -->
+        <li
+          v-for='physicalDevice in configuration?.listPhysicalDevices?.sort((a, b) => { return a.name.localeCompare(b.name); })'>
+          <span>{{ physicalDevice.name }}</span>
+          <span :class='{ danger: physicalDevice.status === "unavailable" }'>{{ physicalDevice.status }}</span>
+          <span v-if='!physicalDevice.used' class='danger'>{{
+            Homey.__('wizard2.list-virtual-devices.list-physical-devices.unused') }}</span>
+          <span v-if='physicalDevice.used'>{{ Homey.__('wizard2.list-virtual-devices.list-physical-devices.used')
+            }}</span>
+        </li>
+
+        <!-- allow connection to new physical devices -->
+        <li @click='setPage("new-physical-device")'>
+          <span data-i18n='wizard2.list-virtual-devices.list-physical-devices.new-physical-device'></span>
           <i class='arrow right'></i>
         </li>
       </ul>
+
+      <p data-i18n='wizard2.list-virtual-devices.list-physical-devices.help'></p>
     </div>
 
     <!-- For each virtual device (sorted by zone and name) -->
@@ -170,7 +186,60 @@
     <header>
       <span class='back' @click='setPreviousPage()' data-i18n='wizard2.new-physical-device.back'></span>
       <span data-i18n='wizard2.new-physical-device.title'></span>
+      <span class='done' id='NPDdone' @click='createPhysicalDevice()' data-i18n='wizard2.new-physical-device.done'
+        :hidden='errorMessages?.length !== 0'></span>
     </header>
+
+    <div class='list'>
+      <p>
+        <input id='NPDname' @input='checkNewPhysicalDeviceValidity' type='text' required minlength=3 maxlength=30
+          pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'>
+      </p>
+
+      <ul>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.ipAddress') }}</span>
+          <span></span>
+          <input id='NPDipAddress' @input='checkNewPhysicalDeviceValidity' type='text' required maxlength='15'
+            pattern='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.port') }}</span>
+          <span></span>
+          <input id='NPDport' @input='checkNewPhysicalDeviceValidity' type='text' required maxlength='5'
+            pattern='^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$'>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.encryptionKey') }}</span>
+          <span></span>
+          <input id='NPDencryptionKey' @input='checkNewPhysicalDeviceValidity' type='text' minlength='44' maxlength='44'
+            pattern='^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/][AQgw]==|[A-Za-z0-9+\/]{2}[AEIMQUYcgkosw048]=)?$'>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.password') }}</span>
+          <span></span>
+          <input id='NPDpassword' @input='checkNewPhysicalDeviceValidity' type='text' maxlength='20'>
+        </li>
+      </ul>
+
+      <p data-i18n='wizard2.new-physical-device.help-encryption-key'></p>
+    </div>
+
+    <div class='error-list' v-if='errorMessages?.length > 0'>
+      <ul>
+        <li v-for='errorMessage in errorMessages'>
+          <span>{{ errorMessage }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class='warning-list' v-if='warningMessages?.length > 0'>
+      <ul>
+        <li v-for='warningMessage in warningMessages'>
+          <span>{{ warningMessage }}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <!------------------------
@@ -178,7 +247,7 @@
   ------------------------->
   <div :class='{ active : currentPage === "edit-physical-device", page : true }'>
     <header>
-      <span class='back' @click='backPhysicalDevice()' data-i18n='wizard2.edit-physical-device.back'></span>
+      <span class='back' @click='backEditPhysicalDevice()' data-i18n='wizard2.edit-physical-device.back'></span>
       <span data-i18n='wizard2.edit-physical-device.title'></span>
       <span class='done' id='EPDdone' @click='modifyPhysicalDevice()' data-i18n='wizard2.edit-physical-device.done'
         :hidden='errorMessages?.length !== 0 || !editPhysicalDeviceModified'></span>
@@ -192,34 +261,40 @@
 
       <ul>
         <li>
-          <span>{{ Homey.__('wizard2.edit-physical-device.status') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.status') }}</span>
+          <span></span>
           <span :class='{ danger: editPhysicalDevice?.status === "unavailable" }'>{{ editPhysicalDevice?.status
             }}</span>
         </li>
         <li>
-          <span>{{ Homey.__('wizard2.edit-physical-device.used') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.used') }}</span>
+          <span></span>
           <span>{{ editPhysicalDevice?.used }}</span>
         </li>
         <li>
-          <span>{{ Homey.__('wizard2.edit-physical-device.ipAddress') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.ipAddress') }}</span>
+          <span></span>
           <input id='EPDipAddress' @input='checkEditPhysicalDeviceValidity' type='text'
             :value='editPhysicalDevice?.ipAddress' required maxlength='15'
             pattern='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'>
         </li>
         <li>
-          <span>{{ Homey.__('wizard2.edit-physical-device.port') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.port') }}</span>
+          <span></span>
           <input id='EPDport' @input='checkEditPhysicalDeviceValidity' type='text' :value='editPhysicalDevice?.port'
             required maxlength='5'
             pattern='^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$'>
         </li>
         <li>
-          <span>{{ Homey.__('wizard2.edit-physical-device.encryptionKey') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.encryptionKey') }}</span>
+          <span></span>
           <input id='EPDencryptionKey' @input='checkEditPhysicalDeviceValidity' type='text'
             :value='editPhysicalDevice?.encryptionKey' minlength='44' maxlength='44'
             pattern='^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/][AQgw]==|[A-Za-z0-9+\/]{2}[AEIMQUYcgkosw048]=)?$'>
         </li>
         <li>
-          <span>{{ Homey.__('wizard2.edit-physical-device.password') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.password') }}</span>
+          <span></span>
           <input id='EPDpassword' @input='checkEditPhysicalDeviceValidity' type='text'
             :value='editPhysicalDevice?.password' maxlength='20'>
         </li>

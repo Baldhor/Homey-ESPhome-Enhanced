@@ -12,6 +12,8 @@ class Driver extends Homey.Driver {
         this.checkMigration();
         this.initConf();
 
+        await this.cleanUpConf();
+
         PhysicalDeviceManager.init(this);
 
         // Init each physical device
@@ -23,81 +25,36 @@ class Driver extends Homey.Driver {
         this.log('ESPhomeWizard initialized');
     }
 
-    async onPair(session) {
-        /**
-         * Used by new_device view
-         * Connect to a new physical device
-         * 
-         * data: {
-         *     ipAddress,
-         *     port,
-         *     encryptionKey,
-         *     password
-         * }
-         * 
-         * Emit:
-         * - new-device-connected: if success
-         * - new-device-failed: if failed
-         */
-        session.setHandler('connect-new-device', (data) => {
-            this.log('connect-new-device started');
+    async cleanUpConf() {
+        this.log('cleanUpConf');
 
-            try {
-                // Check if physical device already exist
-                let existingPhysicalDevice = PhysicalDeviceManager.get(data.ipAddress, data.port);
-                if (existingPhysicalDevice) {
-                    // Maybe it's a physical device without virtual device linked? In such case we can clean up
-                    // Why? PairSession can end without notice, and so the physicalDevice created previosuly may not be cleaned up
-                    PhysicalDeviceManager.checkDelete(null, existingPhysicalDevice);
-                    existingPhysicalDevice = null;
+        // Go through all the virtual devices, to build up the list of usefull physical device ids
+        // Then remove useless physical device ids from the conf
 
-                    // Let's check again
-                    if (PhysicalDeviceManager.get(data.ipAddress, data.port)) {
-                        session.emit('new-device-failed', 'A physical device already exist')
-                            .catch(e => {
-                                // Session expired, just ignore it
-                                this.error('Failed to connect with device before pair session expired:', data);
-                            });
-                        return;
-                    }
+        // Find the list of physical device ids
+        let listPhysicalDeviceIds = [];
+        this.getDevices().forEach(virtualDevice => {
+            let capabilityKeysV2 = virtualDevice.getStoreValue('capabilityKeysV2');
+            Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+                let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+                if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                    listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
                 }
+            });
+        });
 
-                // Create a new physical device and add listeners
-                let physicalDeviceId = PhysicalDeviceManager.create(false, data.ipAddress, data.port, data.encryptionKey, data.password);
-                session.newPhysicalDeviceId = physicalDeviceId;
-
-                PhysicalDeviceManager.getById(physicalDeviceId).on('available', () => {
-                    this.log('Received available event');
-
-                    if (session.newPhysicalDeviceId === physicalDeviceId) {
-                        session.emit('new-device-connected', physicalDeviceId)
-                            .catch(e => {
-                                // Session expired, cleaning up
-                                this.error('Connected to device, but the pair session expired:', data);
-                                PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
-                            });
-                    }
-                });
-
-                PhysicalDeviceManager.getById(physicalDeviceId).on('unavailable', () => {
-                    this.error('Received unavailable event');
-
-                    if (session.newPhysicalDeviceId === physicalDeviceId) {
-                        session.emit('new-device-failed', 'Could not connect to the device, or something went wrong')
-                            .catch(e => {
-                                // Session expired, just ignore it
-                            });
-                        PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(physicalDeviceId));
-                        this.newPhysicalDeviceId = null;
-                    }
-                });
-
-                this.log('connect-new-device finished');
-            } catch (e) {
-                this.error(e);
-                throw e;
+        let conf = this.getConf();
+        conf.forEach(physicalDevice => {
+            if (!listPhysicalDeviceIds.includes(physicalDevice.physicalDeviceId)) {
+                // We can remove it
+                this.log("Removing a physical device from conf (useless): ", physicalDevice.physicalDeviceId);
+                conf.delete(physicalDevice);
             }
         });
+        this.setConf(conf);
+    }
+
+    async onPair(session) {
 
         /**
          * Used by update_device view
@@ -542,7 +499,7 @@ class Driver extends Homey.Driver {
                     });
 
                     tmpVirtualDevice.current = tmpVirtualDevice.initial;
-                    
+
                     listVirtualDevices.push(tmpVirtualDevice);
                 });
 
@@ -554,7 +511,7 @@ class Driver extends Homey.Driver {
                     let tmpPhysicalDevice = {
                         physicalDeviceId: physicalDevice.physicalDeviceId,
                         status: realPhysicalDevice.available === true ? 'available' : 'unavailable',
-                        used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === physicalDevice.physicalDeviceId)).length > 0,
+                        used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === physicalDevice.physicalDeviceId).length > 0).length > 0,
                         name: physicalDevice.name,
                         ipAddress: physicalDevice.ipAddress,
                         port: physicalDevice.port,
@@ -628,6 +585,99 @@ class Driver extends Homey.Driver {
             } catch (e) {
                 this.log(e);
                 throw e;
+            }
+        });
+
+        session.setHandler('connect-new-device', (data) => {
+            this.log('connect-new-device:', data);
+
+            try {
+                // Check if physical device already exist
+                let existingPhysicalDevice = PhysicalDeviceManager.get(data.ipAddress, data.port);
+                if (existingPhysicalDevice) {
+                    // Maybe it's a physical device without virtual device linked? In such case we can clean up
+                    // Why? PairSession can end without notice, and so the physicalDevice created previosuly may not be cleaned up
+                    PhysicalDeviceManager.checkDelete(null, existingPhysicalDevice);
+                    existingPhysicalDevice = null;
+
+                    // Let's check again
+                    if (PhysicalDeviceManager.get(data.ipAddress, data.port)) {
+                        session.emit('new-device-failed', 'A physical device already exist')
+                            .catch(e => {
+                                // Session expired, just ignore it
+                                this.error('Failed to connect with device before pair session expired:', data);
+                            });
+                        return;
+                    }
+                }
+
+                // Create a new physical device and add listeners
+                PhysicalDeviceManager.create(false, data.physicalDeviceId, data.name, data.ipAddress, data.port, data.encryptionKey, data.password);
+
+                PhysicalDeviceManager.getById(data.physicalDeviceId).on('available', () => {
+                    this.log('Received available event');
+
+                    let realPhysicalDevice = PhysicalDeviceManager.getById(data.physicalDeviceId);
+
+                    let tmpPhysicalDevice = {
+                        'physicalDeviceId': data.physicalDeviceId,
+                        status: 'new',
+                        used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === data.physicalDeviceId).length > 0).length > 0,
+                        name: realPhysicalDevice.name,
+                        ipAddress: realPhysicalDevice.ipAddress,
+                        port: realPhysicalDevice.port,
+                        encryptionKey: realPhysicalDevice.encryptionKey,
+                        password: realPhysicalDevice.password,
+                        nativeCapabilities: []
+                    };
+
+                    Object.values(realPhysicalDevice.nativeCapabilities).forEach(nativeCapability => {
+                        // The same capability can be used several times on the same virtual device!
+                        // We cannot use a simple filter on the virtual device list
+                        let countUsed = 0;
+                        this.getDevices().forEach(virtualDevice => {
+                            countUsed += Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeysV2 => capabilityKeysV2.nativeCapabilityId === nativeCapability.getId()).length;
+                        });
+
+                        tmpPhysicalDevice.nativeCapabilities.push({
+                            id: nativeCapability.getId(),
+                            entityId: nativeCapability.entityId,
+                            attribut: nativeCapability.attribut,
+                            entityName: nativeCapability.entityName,
+                            type: nativeCapability.type,
+                            used: countUsed,
+                            value: nativeCapability.value,
+                            configs: nativeCapability.configs,
+                            constraints: nativeCapability.constraints,
+                            specialCase: nativeCapability.specialCase
+                        });
+                    });
+
+
+                    session.emit('new-device-connected', tmpPhysicalDevice)
+                        .catch(e => {
+                            // Session expired, cleaning up
+                            this.error('Connected to device, but the pair session expired:', data);
+                        });
+                    PhysicalDeviceManager.checkDelete(null, realPhysicalDevice);
+                });
+
+                PhysicalDeviceManager.getById(data.physicalDeviceId).on('unavailable', () => {
+                    this.error('Received unavailable event');
+
+                    session.emit('new-device-failed', {
+                        'physicalDeviceId': data.physicalDeviceId,
+                        message: 'Could not connect to the device, or something went wrong'
+                    }).catch(e => {
+                        // Session expired, just ignore it
+                    });
+                    PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(data.physicalDeviceId));
+                });
+            } catch (e) {
+                this.error(e);
+                throw e;
+            } finally {
+                this.log('connect-new-device finished');
             }
         });
     }

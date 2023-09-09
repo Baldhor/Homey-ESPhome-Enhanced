@@ -292,8 +292,13 @@
             "title": "List of virtual devices",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
             "done": "done",
-            "new-physical-device-title": "New physical device",
-            "new-physical-device": "New physical device",
+            "list-physical-devices": {
+                "title": "Short list of physical devices",
+                "unused": "Unused",
+                "used": "Used",
+                "new-physical-device": "New physical device",
+                "help": "Unused physical devices will be deleted"
+            },
             "edit": "edit",
             "class": "Class",
             "status": "Status"
@@ -309,7 +314,23 @@
         },
         "new-physical-device": {
             "back": "back",
-            "title": "New physical device"
+            "done": "done",
+            "title": "New physical device",
+            "ipAddress": "IP Address",
+            "port": "Port",
+            "encryptionKey": "Encryption key",
+            "password": "Password",
+            "error-name": "Name is required and must be pretty",
+            "error-name-already-used": "This name is already used by another physical device",
+            "error-ip-address": "IP address is required and must have a correct format: 192.168.0.12",
+            "error-port": "Port is required and must have a correct format: 1 to 65535",
+            "error-ipAddress-and-port-already-used": "Those IP address and port are already used by another physical device",
+            "error-encryption-key": "Encryption Key must be a 32-byte base64 encoded string",
+            "error-encryption-key-and-password-are-exclusive": "Encryption Key and Password are exclusive",
+            "warning-encryption-key-recommended": "Using an encryption key is highly recommended!",
+            "fatal-error": "Something went wrong!",
+            "failed": "Failed to connect to new physical device. Try again?",
+            "timeout": "Seems 15 seconds is not enough time to connect. What's wrong?"
         },
         "edit-physical-device": {
             "back": "back",

@@ -299,7 +299,8 @@ class VirtualDevice extends Device {
     async onDeleted() {
         this.log('onDeleted');
 
-        this._forceDisconnect();
+        // Async processing!
+        this.driver.cleanUpConf();
     }
 }
 
