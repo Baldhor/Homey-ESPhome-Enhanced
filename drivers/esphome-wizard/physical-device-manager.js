@@ -86,8 +86,8 @@ class PhysicalDeviceManager extends EventEmitter {
         Utils.assert(Utils.checkIfValidIpAddress(ipAddress), 'Wrong format of ip address:', ipAddress);
         Utils.assert(Utils.checkIfValidPortnumber(port), 'Wrong format of port:', port)
 
-        this.physicalDevices.forEach(physicalDeviceId => {
-            let physicalDevice = physicalDevices[physicalDeviceId];
+        let instance = this.getInstance();
+        instance.physicalDevices.forEach(physicalDevice => {
             if (physicalDevice.ipAddress === ipAddress && physicalDevice.port === port) {
                 return physicalDevice;
             }

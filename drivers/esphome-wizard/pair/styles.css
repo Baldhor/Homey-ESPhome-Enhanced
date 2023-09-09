@@ -271,6 +271,12 @@ body {
   content: "";
   text-align: left;
 }
+.homekitty span {
+  min-width: 10px;
+}
+.homekitty span.pre {
+  white-space: pre;
+}
 .homekitty span.back {
   font-weight: normal;
   text-decoration: underline;
@@ -308,6 +314,7 @@ body {
 .homekitty .list > p:last-child {
   margin-top: 0.3em;
   font-size: var(--hk-list-description-size);
+  font-style: italic;
   line-height: 1.5em;
 }
 .homekitty .list ul {
@@ -339,6 +346,7 @@ body {
   outline: none;
   border: none;
   text-align: right;
+  width: 31ch;
 }
 .homekitty .list input[type=text]:invalid {
   box-shadow: 0 0 5px 1px red;

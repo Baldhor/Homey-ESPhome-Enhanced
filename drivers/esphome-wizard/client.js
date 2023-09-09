@@ -345,9 +345,11 @@ class Client extends EventEmitter {
     _disconnect() {
         this.log('_disconnect');
 
-        this.abortController.abort();
-        this.nativeApiClient.disconnect();
-        this.nativeApiClient = null;
+        if (this.nativeApiClient !== null) {
+            this.abortController.abort();
+            this.nativeApiClient.disconnect();
+            this.nativeApiClient = null;
+        }
     }
 
     _autoReconnect() {
