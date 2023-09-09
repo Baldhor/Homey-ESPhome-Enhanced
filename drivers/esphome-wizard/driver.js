@@ -614,52 +614,55 @@ class Driver extends Homey.Driver {
                 // Create a new physical device and add listeners
                 PhysicalDeviceManager.create(false, data.physicalDeviceId, data.name, data.ipAddress, data.port, data.encryptionKey, data.password);
 
-                PhysicalDeviceManager.getById(data.physicalDeviceId).on('available', () => {
+                PhysicalDeviceManager.getById(data.physicalDeviceId).on('available', async () => {
                     this.log('Received available event');
 
-                    let realPhysicalDevice = PhysicalDeviceManager.getById(data.physicalDeviceId);
+                    // Just wait 5 seconds to ensure we can retrieve some current values
+                    setTimeout(() => {
+                        let realPhysicalDevice = PhysicalDeviceManager.getById(data.physicalDeviceId);
 
-                    let tmpPhysicalDevice = {
-                        'physicalDeviceId': data.physicalDeviceId,
-                        status: 'new',
-                        used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === data.physicalDeviceId).length > 0).length > 0,
-                        name: realPhysicalDevice.name,
-                        ipAddress: realPhysicalDevice.ipAddress,
-                        port: realPhysicalDevice.port,
-                        encryptionKey: realPhysicalDevice.encryptionKey,
-                        password: realPhysicalDevice.password,
-                        nativeCapabilities: []
-                    };
+                        let tmpPhysicalDevice = {
+                            'physicalDeviceId': data.physicalDeviceId,
+                            status: 'new',
+                            used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === data.physicalDeviceId).length > 0).length > 0,
+                            name: realPhysicalDevice.name,
+                            ipAddress: realPhysicalDevice.ipAddress,
+                            port: realPhysicalDevice.port,
+                            encryptionKey: realPhysicalDevice.encryptionKey,
+                            password: realPhysicalDevice.password,
+                            nativeCapabilities: []
+                        };
 
-                    Object.values(realPhysicalDevice.nativeCapabilities).forEach(nativeCapability => {
-                        // The same capability can be used several times on the same virtual device!
-                        // We cannot use a simple filter on the virtual device list
-                        let countUsed = 0;
-                        this.getDevices().forEach(virtualDevice => {
-                            countUsed += Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeysV2 => capabilityKeysV2.nativeCapabilityId === nativeCapability.getId()).length;
+                        Object.values(realPhysicalDevice.nativeCapabilities).forEach(nativeCapability => {
+                            // The same capability can be used several times on the same virtual device!
+                            // We cannot use a simple filter on the virtual device list
+                            let countUsed = 0;
+                            this.getDevices().forEach(virtualDevice => {
+                                countUsed += Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeysV2 => capabilityKeysV2.nativeCapabilityId === nativeCapability.getId()).length;
+                            });
+
+                            tmpPhysicalDevice.nativeCapabilities.push({
+                                id: nativeCapability.getId(),
+                                entityId: nativeCapability.entityId,
+                                attribut: nativeCapability.attribut,
+                                entityName: nativeCapability.entityName,
+                                type: nativeCapability.type,
+                                used: countUsed,
+                                value: nativeCapability.value,
+                                configs: nativeCapability.configs,
+                                constraints: nativeCapability.constraints,
+                                specialCase: nativeCapability.specialCase
+                            });
                         });
 
-                        tmpPhysicalDevice.nativeCapabilities.push({
-                            id: nativeCapability.getId(),
-                            entityId: nativeCapability.entityId,
-                            attribut: nativeCapability.attribut,
-                            entityName: nativeCapability.entityName,
-                            type: nativeCapability.type,
-                            used: countUsed,
-                            value: nativeCapability.value,
-                            configs: nativeCapability.configs,
-                            constraints: nativeCapability.constraints,
-                            specialCase: nativeCapability.specialCase
-                        });
-                    });
 
-
-                    session.emit('new-device-connected', tmpPhysicalDevice)
-                        .catch(e => {
-                            // Session expired, cleaning up
-                            this.error('Connected to device, but the pair session expired:', data);
-                        });
-                    PhysicalDeviceManager.checkDelete(null, realPhysicalDevice);
+                        session.emit('new-device-connected', tmpPhysicalDevice)
+                            .catch(e => {
+                                // Session expired, cleaning up
+                                this.error('Connected to device, but the pair session expired:', data);
+                            });
+                        PhysicalDeviceManager.checkDelete(null, realPhysicalDevice);
+                    }, 5000);
                 });
 
                 PhysicalDeviceManager.getById(data.physicalDeviceId).on('unavailable', () => {
