@@ -103,5 +103,8 @@
   },
   "0.7.3": {
     "en": "Testing fix for #35: reconnection is now handled at high level client, not low level"
+  },
+  "0.7.4": {
+    "en": "Fixed a null crash case"
   }
 }
