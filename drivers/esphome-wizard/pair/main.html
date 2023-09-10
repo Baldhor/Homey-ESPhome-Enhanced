@@ -38,9 +38,11 @@
           <span data-i18n='wizard2.main.list-physical-devices'></span>
           <i class='arrow right'></i>
         </li>
+        <li @click='setPage("new-physical-device")'>
+          <span data-i18n='wizard2.main.new-physical-device'></span>
+          <i class='arrow right'></i>
+        </li>
       </ul>
-
-      <p data-i18n='wizard2.main.help-new-physical-device'></p>
     </div>
 
   </div>
@@ -83,6 +85,15 @@
       <p data-i18n='wizard2.list-virtual-devices.list-physical-devices.help'></p>
     </div>
 
+    <div class='list'>
+      <ul>
+        <li @click='setPage("new-virtual-device")'>
+          <span>{{ Homey.__('wizard2.list-virtual-devices.new-virtual-device') }}</span>
+          <i class='arrow right'></i>
+        </li>
+      </ul>
+    </div>
+
     <!-- For each virtual device (sorted by zone and name) -->
     <div
       v-for='virtualDevice in configuration?.listVirtualDevices?.sort((a, b) => { let _sort = a.current.zoneName.localeCompare(b.current.zoneName); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'
@@ -91,7 +102,7 @@
         <span>{{ virtualDevice.current.zoneName }} - {{ virtualDevice.current.name }}</span>
         <span class='edit'
           @click='setPage("edit-virtual-device", { virtualDeviceId: virtualDevice.virtualDeviceId })'>{{
-          Homey.__('wizard2.list-virtual-devices.edit') }}</span>
+          Homey.__('wizard2.list-virtual-devices.virtual-device.edit') }}</span>
       </p>
 
       <ul>
@@ -107,12 +118,21 @@
         -->
 
         <li>
-          <span>{{ Homey.__('wizard2.list-virtual-devices.class') }}</span>
+          <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.class') }}</span>
           <span>{{ virtualDevice.current.class }}</span>
         </li>
         <li>
-          <span>{{ Homey.__('wizard2.list-virtual-devices.status') }}</span>
+          <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.status') }}</span>
           <span>{{ virtualDevice.current.status }}</span>
+        </li>
+        <li>
+          <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.native-capability-count') }}</span>
+          <span
+            v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length > 0'>{{
+            virtualDevice.current.capabilities.filter(capability => capability.status !== 'deleted').length }}</span>
+          <span
+            v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0'
+            class='danger'>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.no-native-capability') }}</span>
         </li>
       </ul>
     </div>
@@ -166,7 +186,51 @@
     <header>
       <span class='back' @click='setPreviousPage()' data-i18n='wizard2.new-virtual-device.back'></span>
       <span data-i18n='wizard2.new-virtual-device.title'></span>
+      <span class='done' id='NVDdone' @click='createVirtualDevice()' data-i18n='wizard2.new-virtual-device.done'
+        :hidden='errorMessages?.length !== 0'></span>
     </header>
+
+    <div class='list'>
+      <p>
+        <input id='NVDname' @input='checkNewVirtualDeviceValidity' type='text' required minlength=3 maxlength=30
+          pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'>
+      </p>
+
+      <ul>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.zone') }}</span>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.class') }}</span>
+          <span></span>
+          <select id='NVDclass' @change='checkNewVirtualDeviceValidity'>
+            <option value='unselected' selected>{{ Homey.__('wizard2.new-virtual-device.unselected') }}</option>
+            <template v-for='device_class in CLASS_SUPPORTED'>
+              <option :value='device_class'>{{ Homey.__('deviceClass.' + device_class + '.label')
+                }}</option>
+            </template>
+          </select>
+        </li>
+      </ul>
+
+      <p id='NVDclassDescription' hidden='true'></p>
+    </div>
+
+    <div class='error-list' v-if='errorMessages?.length > 0'>
+      <ul>
+        <li v-for='errorMessage in errorMessages'>
+          <span>{{ errorMessage }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class='warning-list' v-if='warningMessages?.length > 0'>
+      <ul>
+        <li v-for='warningMessage in warningMessages'>
+          <span>{{ warningMessage }}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <!------------------------
@@ -221,8 +285,6 @@
           <input id='NPDpassword' @input='checkNewPhysicalDeviceValidity' type='text' maxlength='20'>
         </li>
       </ul>
-
-      <p data-i18n='wizard2.new-physical-device.help-encryption-key'></p>
     </div>
 
     <div class='error-list' v-if='errorMessages?.length > 0'>
@@ -299,8 +361,6 @@
             :value='editPhysicalDevice?.password' maxlength='20'>
         </li>
       </ul>
-
-      <p data-i18n='wizard2.edit-physical-device.help-encryption-key'></p>
     </div>
 
     <div class='error-list' v-if='errorMessages?.length > 0'>

@@ -48,7 +48,7 @@ class Driver extends Homey.Driver {
             if (!listPhysicalDeviceIds.includes(physicalDevice.physicalDeviceId)) {
                 // We can remove it
                 this.log("Removing a physical device from conf (useless): ", physicalDevice.physicalDeviceId);
-                conf.delete(physicalDevice);
+                conf.splice(conf.indexOf(physicalDevice), 1);
             }
         });
         this.setConf(conf);
@@ -471,6 +471,8 @@ class Driver extends Homey.Driver {
             try {
                 // Loop on all virtual devices
                 this.getDevices().forEach(virtualDevice => {
+                    this.log('Processing device:', virtualDevice);
+
                     let tmpVirtualDevice = {
                         'id': virtualDevice.getData().id,
                         'initial': {

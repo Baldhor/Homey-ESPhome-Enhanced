@@ -24,7 +24,7 @@
             "button_save": "Save"
         }
     },
-    "wizard" : {
+    "wizard": {
         "welcome": {
             "title": "ESPhome Wizard",
             "description": "How my magic can assist you?",
@@ -55,7 +55,7 @@
             "physical_device_port": "Port",
             "physical_device_bound": "Number of virtual device bound",
             "select": "Select",
-            "update_settings" : "Update settings"
+            "update_settings": "Update settings"
         },
         "conf_main": {
             "title": "There goes the magic",
@@ -82,9 +82,9 @@
                 "delete_through_settings": "You can delete virtual device through their setting screen",
                 "change_name_format": "The name you input is not nice, try again!",
                 "native_capability_deleted": "Deleted!",
-                "name_must_be_changed_alert" : "Don't forget to change the name!",
-                "native_capability_deleted_warning" : "This virtual device has an (at least one) existing capability deleted",
-                "delete_existing_native_capability_warning" : "Removing this capability can/will break your flows! Are you sure?",
+                "name_must_be_changed_alert": "Don't forget to change the name!",
+                "native_capability_deleted_warning": "This virtual device has an (at least one) existing capability deleted",
+                "delete_existing_native_capability_warning": "Removing this capability can/will break your flows! Are you sure?",
                 "capability_updated_warning": "A capability has been updated with new configuration"
             },
             "settings": {
@@ -108,8 +108,8 @@
             "virtual_device": {
                 "name": "Name",
                 "stateLabel": "State",
-                "state" : {
-                    "existing" : "Existing",
+                "state": {
+                    "existing": "Existing",
                     "added": "New"
                 }
             },
@@ -121,7 +121,7 @@
                 "value": "Current value",
                 "configs": "Config(s)",
                 "constraints": "Constraint(s)",
-                "state" : {
+                "state": {
                     "added": "Added",
                     "modified": "Modified",
                     "deleted": "Deleted",
@@ -136,7 +136,7 @@
             },
             "config_label": {
                 "precision": "Precision",
-                "unit" : "Unit"
+                "unit": "Unit"
             },
             "constraint_label": {
                 "min_value": "Min",
@@ -153,14 +153,14 @@
             "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
             "ipAddress": "IP address",
             "port": "Port",
-            "encryptionKey" : "Encryption key",
-            "password" : "Password",
-            "apply" : "Apply"
+            "encryptionKey": "Encryption key",
+            "password": "Password",
+            "apply": "Apply"
         },
         "conf_deviceclass": {
-            "deviceName" : "Device name",
-            "deviceClass" : "Device class",
-            "deviceClassDescription" : "Class description"
+            "deviceName": "Device name",
+            "deviceClass": "Device class",
+            "deviceClassDescription": "Class description"
         }
     },
     "settings": {
@@ -178,118 +178,119 @@
         },
         "initializing": "Initializing device, please wait..."
     },
-    "deviceClass" : {
-        "amplifier" : {
+    "deviceClass": {
+        "amplifier": {
             "label": "Amplifier",
             "description": "Use this device class for audio amplifier devices."
         },
-        "blinds" : {
+        "blinds": {
             "label": "Blinds",
             "description": "Use this device class for blinds, both horizontal and vertical."
         },
-        "button" : {
+        "button": {
             "label": "Button",
             "description": "Use this device class for buttons, such as a remote."
         },
-        "camera" : {
+        "camera": {
             "label": "Camera",
             "description": "Security camera"
         },
-        "coffeemachine" : {
+        "coffeemachine": {
             "label": "Coffee machine",
             "description": "Use this device class for coffee machines."
         },
-        "curtain" : {
+        "curtain": {
             "label": "Curtains",
             "description": "Use this device class for curtains."
         },
-        "doorbell" : {
+        "doorbell": {
             "label": "Doorbell",
             "description": "Use this device class for doorbells, usually together with the `button` capability."
         },
-        "fan" : {
+        "fan": {
             "label": "Fan",
             "description": "Use this device class for fans that cool your home."
         },
-        "garagedoor" : {
+        "garagedoor": {
             "label": "Garage door",
             "description": "Use this device class for garage doors, usually together with the `garagedoor_closed` capability."
         },
-        "heater" : {
+        "heater": {
             "label": "Heater",
             "description": "Use this device class for heaters, that warm your home."
         },
-        "homealarm" : {
+        "homealarm": {
             "label": "Home Security",
             "description": "Use this device class for home alarm systems."
         },
-        "kettle" : {
+        "kettle": {
             "label": "Kettle",
             "description": "Use this device class for kettle devices, that can heat water."
         },
-        "light" : {
+        "light": {
             "label": "Light",
             "description": "Use this device class for lights, usually together with the `onoff`, `dim` and `light_*` capabilities."
         },
-        "lock" : {
+        "lock": {
             "label": "Lock",
             "description": "Use this device class for lock devices, usually together with the `locked` and `lock_mode` capabilities."
         },
-        "other" : {
+        "other": {
             "label": "Other",
             "description": "Use this device class for devices that do not fit any other device class."
         },
-        "remote" : {
+        "remote": {
             "label": "Remote",
             "description": "Use this device class for (TV/Sunblind/Keyfob etc.) remotes."
         },
-        "sensor" : {
+        "sensor": {
             "label": "Sensor",
             "description": "Use this device class for sensors, e.g. a contact or motion sensor."
         },
-        "socket" : {
+        "socket": {
             "label": "Wall Plug",
-            "description": "Use this device class for sockets (built-in or plug-in socket switches). When adding the `choose_slave` pair template, the user is presented a `What's plugged in?` question."},
-        "speaker" : {
+            "description": "Use this device class for sockets (built-in or plug-in socket switches). When adding the `choose_slave` pair template, the user is presented a `What's plugged in?` question."
+        },
+        "speaker": {
             "label": "Speaker",
             "description": "Use this device class for devices that can play music, usually together with the `speaker_*` capabilities."
         },
-        "solarpanel" : {
+        "solarpanel": {
             "label": "Solar Panel",
             "description": "Use this device class for solar panels."
         },
-        "sunshade" : {
+        "sunshade": {
             "label": "Sunshade",
             "description": "Use this device class for sunshades (window coverings against the sun)."
         },
-        "thermostat" : {
+        "thermostat": {
             "label": "Thermostat",
             "description": "Use this device class for thermostats, either for the entire home or radiator-mounted, usually together with the `measure_temperature`, `target_temperature` and `thermostat_mode` capabilities."
         },
-        "tv" : {
+        "tv": {
             "label": "TV",
             "description": "Use this device class for TVs."
         },
-        "vacuumcleaner" : {
+        "vacuumcleaner": {
             "label": "Vacuum Cleaner",
             "description": "Use this device class for vacuum cleaners, usually together with the `vacuumcleaner_state` capability."
         },
-        "windowcoverings" : {
+        "windowcoverings": {
             "label": "Window Coverings",
             "description": "Use this device class for window coverings, when the `curtains`, `blinds` or `sunshade` device class doesn't apply."
         }
     },
-    "wizard2" : {
-        "main" : {
+    "wizard2": {
+        "main": {
             "title": "Main menu",
             "menu": "Choose a functionnality",
-            "list-physical-devices": "List of physical devices",
-            "list-virtual-devices": "List of virtual devices",
-            "help-new-physical-device": "Use List of virtual device to add a new physical device"
+            "list-physical-devices": "Manage your physical devices",
+            "list-virtual-devices": "Manage your virtual devices",
+            "new-physical-device": "Add a new physical device"
         },
         "list-virtual-devices": {
             "back": "back",
-            "title": "List of virtual devices",
+            "title": "Manage your virtual devices",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
             "done": "done",
             "list-physical-devices": {
@@ -299,13 +300,18 @@
                 "new-physical-device": "New physical device",
                 "help": "Unused physical devices will be deleted"
             },
-            "edit": "edit",
-            "class": "Class",
-            "status": "Status"
+            "new-virtual-device": "New virtual device",
+            "virtual-device": {
+                "edit": "edit",
+                "class": "Class",
+                "status": "Status",
+                "native-capability-count": "Native capability linked",
+                "no-native-capability": "none"
+            }
         },
         "list-physical-devices": {
             "back": "back",
-            "title": "List of physical devices",
+            "title": "Manage your physical devices",
             "edit": "edit",
             "status": "Status",
             "used": "Used",
@@ -351,6 +357,20 @@
             "error-encryption-key": "Encryption Key must be a 32-byte base64 encoded string",
             "error-encryption-key-and-password-are-exclusive": "Encryption Key and Password are exclusive",
             "warning-encryption-key-recommended": "Using an encryption key is highly recommended!"
+        },
+        "new-virtual-device": {
+            "back": "back",
+            "loseModification": "Your modification(s) will be lost. Are you sure?",
+            "done": "done",
+            "title": "Edit physical device",
+            "zone": "to be implemented",
+            "name": "Name",
+            "class": "Class",
+            "unselected": "--Select a class--",
+            "error-name": "Name is required and must be pretty",
+            "error-class": "A class must be selected",
+            "warning-name-already-used": "This name is already used by another physical device",
+            "fatal-error": "Something went wrong!"
         }
     }
 }

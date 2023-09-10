@@ -102,6 +102,73 @@ function onHomeyReady(Homey) {
       this.errorMessages = errorMessages;
       this.warningMessages = warningMessages;
     },
+    checkNewVirtualDeviceValidity() {
+      wizardlog('checkNewVirtualDeviceValidity');
+
+      // Disable the done button if any of the fields is invalid
+      const name = document.getElementById("NVDname");
+      const device_class = document.getElementById("NVDclass");
+      const device_class_description = document.getElementById("NVDclassDescription");
+
+      // Reset error and warning messsages
+      let errorMessages = [];
+      let warningMessages = [];
+      name.setCustomValidity('');
+      device_class.setCustomValidity('');
+
+      // Name format
+      if (!name.validity.valid) {
+        errorMessages.push(Homey.__("wizard2.new-virtual-device.error-name"));
+      }
+
+      // Name should be unique
+      if (name.validity.valid) {
+        let tmp = this.configuration.listVirtualDevices.find(e => e.current.name === name.value);
+        if (tmp !== undefined) {
+          warningMessages.push(Homey.__("wizard2.new-virtual-device.warning-name-already-used"));
+        }
+      }
+
+      // Class unselected
+      if (device_class.value === 'unselected') {
+        device_class.setCustomValidity(false);
+        device_class_description.hidden = true;
+        errorMessages.push(Homey.__("wizard2.new-virtual-device.error-class"));
+      } else {
+        device_class_description.innerHTML = Homey.__('deviceClass.' + document.getElementById("NVDclass").value + '.description');
+        device_class_description.hidden = false;
+      }
+
+      this.errorMessages = errorMessages;
+      this.warningMessages = warningMessages;
+    },
+    async createVirtualDevice() {
+      wizardlog('createPhysicalDevice');
+
+      Homey.showLoadingOverlay();
+
+      try {
+        let tmp = {
+          'id': 'Wizard' + Date.now(),
+          'initial': null,
+          'current': {
+            name: document.getElementById("NVDname").value,
+            zoneName: 'to be implemented',
+            class: document.getElementById("NVDclass").value,
+            status: 'new',
+            capabilities: []
+          }
+        }
+
+        this.configuration.listVirtualDevices.push(tmp);
+        this.setPreviousPage();
+      } catch (e) {
+        wizardlog(e);
+
+        Homey.hideLoadingOverlay();
+        this.alert(Homey.__("wizard2.new-virtual-device.fatal-error", "error"));
+      }
+    },
     async createPhysicalDevice() {
       wizardlog('createPhysicalDevice');
 
@@ -158,7 +225,7 @@ function onHomeyReady(Homey) {
       this.configuration.listPhysicalDevices.push(newPhysicalDevice);
       this.newPhysicalDeviceId = null;
 
-      this.setPreviousPage();
+      this.setPage("list-virtual-devices");
     },
     newPhysicalDeviceFailed(data) {
       wizardlog('newPhysicalDeviceFailed:', data);
@@ -329,8 +396,15 @@ function onHomeyReady(Homey) {
             document.getElementById("NPDport").value = '6053';
             document.getElementById("NPDencryptionKey").value = '';
             document.getElementById("NPDpassword").value = '';
-      
+
             setTimeout(this.checkNewPhysicalDeviceValidity, 100);
+            break;
+
+          case 'new-virtual-device':
+            document.getElementById("NVDname").value = '';
+            document.getElementById("NVDclass").value = 'unselected';
+
+            setTimeout(this.checkNewVirtualDeviceValidity, 100);
             break;
 
           case 'list-physical-devices':
