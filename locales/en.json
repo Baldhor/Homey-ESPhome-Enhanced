@@ -300,7 +300,10 @@
                 "new-physical-device": "New physical device",
                 "help": "Unused physical devices will be deleted"
             },
-            "new-virtual-device": "New virtual device",
+            "list-virtual-devices": {
+                "title": "List of virtual devices",
+                "new-virtual-device": "New virtual device"
+            },
             "virtual-device": {
                 "edit": "edit",
                 "class": "Class",
@@ -362,8 +365,9 @@
             "back": "back",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
             "done": "done",
-            "title": "Edit physical device",
-            "zone": "to be implemented",
+            "title": "Edit virtual device",
+            "zone": "Zone",
+            "to_be_implemented": "to be implemented",
             "name": "Name",
             "class": "Class",
             "unselected": "--Select a class--",

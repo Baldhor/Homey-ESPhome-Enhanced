@@ -62,23 +62,23 @@
       </p>
 
       <ul>
+        <!-- allow connection to new physical devices -->
+        <li @click='setPage("new-physical-device")'>
+          <span data-i18n='wizard2.list-virtual-devices.list-physical-devices.new-physical-device'></span>
+          <i class='arrow right'></i>
+        </li>
+
         <!-- For each virtual device (sorted by zone and name) -->
         <!-- Short list known physical devices, including existing and new ones with their status and "usage count" (used) -->
         <!-- TO BE COMPLETED: one line per device with name, status and used -->
         <li
           v-for='physicalDevice in configuration?.listPhysicalDevices?.sort((a, b) => { return a.name.localeCompare(b.name); })'>
-          <span>{{ physicalDevice.name }}</span>
+          <span :class='{ danger: physicalDevice.status === "unavailable" || !physicalDevice.used }'>{{ physicalDevice.name }}</span>
           <span :class='{ danger: physicalDevice.status === "unavailable" }'>{{ physicalDevice.status }}</span>
           <span v-if='!physicalDevice.used' class='danger'>{{
             Homey.__('wizard2.list-virtual-devices.list-physical-devices.unused') }}</span>
           <span v-if='physicalDevice.used'>{{ Homey.__('wizard2.list-virtual-devices.list-physical-devices.used')
             }}</span>
-        </li>
-
-        <!-- allow connection to new physical devices -->
-        <li @click='setPage("new-physical-device")'>
-          <span data-i18n='wizard2.list-virtual-devices.list-physical-devices.new-physical-device'></span>
-          <i class='arrow right'></i>
         </li>
       </ul>
 
@@ -86,54 +86,54 @@
     </div>
 
     <div class='list'>
-      <ul>
-        <li @click='setPage("new-virtual-device")'>
-          <span>{{ Homey.__('wizard2.list-virtual-devices.new-virtual-device') }}</span>
-          <i class='arrow right'></i>
-        </li>
-      </ul>
-    </div>
-
-    <!-- For each virtual device (sorted by zone and name) -->
-    <div
-      v-for='virtualDevice in configuration?.listVirtualDevices?.sort((a, b) => { let _sort = a.current.zoneName.localeCompare(b.current.zoneName); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'
-      class='list'>
       <p>
-        <span>{{ virtualDevice.current.zoneName }} - {{ virtualDevice.current.name }}</span>
-        <span class='edit'
-          @click='setPage("edit-virtual-device", { virtualDeviceId: virtualDevice.virtualDeviceId })'>{{
-          Homey.__('wizard2.list-virtual-devices.virtual-device.edit') }}</span>
+        <span>{{ Homey.__('wizard2.list-virtual-devices.list-virtual-devices.title') }}</span>
       </p>
 
       <ul>
-        <!--
-          For each virtual device:
-          - Name: allow modification of a virtual device name
-          - status: 'new', 'modified', 'updated', 'deleted'
-          - List all its capabilities:
-            - capbility type
-            - its options
-            - the related physical device and native capability
-            - actions: edit capability (edit-capability page) or delete capability
-        -->
+        <li @click='setPage("new-virtual-device")'>
+          <span>{{ Homey.__('wizard2.list-virtual-devices.list-virtual-devices.new-virtual-device') }}</span>
+          <i class='arrow right'></i>
+        </li>
 
-        <li>
-          <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.class') }}</span>
-          <span>{{ virtualDevice.current.class }}</span>
-        </li>
-        <li>
-          <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.status') }}</span>
-          <span>{{ virtualDevice.current.status }}</span>
-        </li>
-        <li>
-          <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.native-capability-count') }}</span>
-          <span
-            v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length > 0'>{{
-            virtualDevice.current.capabilities.filter(capability => capability.status !== 'deleted').length }}</span>
-          <span
-            v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0'
-            class='danger'>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.no-native-capability') }}</span>
-        </li>
+        <!-- For each virtual device (sorted by zone and name) -->
+        <template
+          v-for='virtualDevice in configuration?.listVirtualDevices?.sort((a, b) => { let _sort = a.current.zoneName.localeCompare(b.current.zoneName); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'>
+          <!--
+                For each virtual device:
+                - Name: allow modification of a virtual device name
+                - status: 'new', 'modified', 'updated', 'deleted'
+                - List all its capabilities:
+                  - capbility type
+                  - its options
+                  - the related physical device and native capability
+                  - actions: edit capability (edit-capability page) or delete capability
+              -->
+          <li @click='setPage("edit-virtual-device", { virtualDeviceId: virtualDevice.virtualDeviceId })'>
+            <span :class='{ danger: virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0 }'>{{ virtualDevice.current.zoneName }} - {{ virtualDevice.current.name }}</span>
+            <i class='arrow right'></i>
+          </li>
+
+          <li class="sub">
+            <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.class') }}</span>
+            <span>{{ virtualDevice.current.class }}</span>
+          </li>
+          <li class="sub">
+            <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.status') }}</span>
+            <span>{{ virtualDevice.current.status }}</span>
+          </li>
+          <li class="sub">
+            <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.native-capability-count') }}</span>
+            <span
+              v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length > 0'>{{
+              virtualDevice.current.capabilities.filter(capability => capability.status !== 'deleted').length
+              }}</span>
+            <span
+              v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0'
+              class='danger'>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.no-native-capability')
+              }}</span>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
@@ -199,6 +199,7 @@
       <ul>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.zone') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.to_be_implemented') }}</span>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.class') }}</span>

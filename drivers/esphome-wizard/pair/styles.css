@@ -331,6 +331,15 @@ body {
   line-height: 36px;
   padding: 0.25em 0.5em;
 }
+.homekitty .list ul li.sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style-type: none;
+  line-height: 36px;
+  padding: 0.25em 0.5em;
+  margin-left: 40px;
+}
 .homekitty .list ul li:not(last-child) {
   border-bottom: 1px solid var(--hk-background-color);
 }
