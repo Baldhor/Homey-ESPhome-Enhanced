@@ -73,7 +73,8 @@
         <!-- TO BE COMPLETED: one line per device with name, status and used -->
         <li
           v-for='physicalDevice in configuration?.listPhysicalDevices?.sort((a, b) => { return a.name.localeCompare(b.name); })'>
-          <span :class='{ danger: physicalDevice.status === "unavailable" || !physicalDevice.used }'>{{ physicalDevice.name }}</span>
+          <span :class='{ danger: physicalDevice.status === "unavailable" || !physicalDevice.used }'>{{
+            physicalDevice.name }}</span>
           <span :class='{ danger: physicalDevice.status === "unavailable" }'>{{ physicalDevice.status }}</span>
           <span v-if='!physicalDevice.used' class='danger'>{{
             Homey.__('wizard2.list-virtual-devices.list-physical-devices.unused') }}</span>
@@ -110,7 +111,9 @@
                   - actions: edit capability (edit-capability page) or delete capability
               -->
           <li @click='setPage("edit-virtual-device", { virtualDeviceId: virtualDevice.virtualDeviceId })'>
-            <span :class='{ danger: virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0 }'>{{ virtualDevice.current.zoneName }} - {{ virtualDevice.current.name }}</span>
+            <span
+              :class='{ danger: virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0 }'>{{
+              virtualDevice.current.zoneName }} - {{ virtualDevice.current.name }}</span>
             <i class='arrow right'></i>
           </li>
 
@@ -205,7 +208,7 @@
           <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.class') }}</span>
           <span></span>
           <select id='NVDclass' @change='checkNewVirtualDeviceValidity'>
-            <option value='unselected' selected>{{ Homey.__('wizard2.new-virtual-device.unselected') }}</option>
+            <option value='unselected' selected>{{ Homey.__('wizard2.new-virtual-device.class-unselected') }}</option>
             <template v-for='device_class in CLASS_SUPPORTED'>
               <option :value='device_class'>{{ Homey.__('deviceClass.' + device_class + '.label')
                 }}</option>
@@ -215,6 +218,95 @@
       </ul>
 
       <p id='NVDclassDescription' hidden='true'></p>
+    </div>
+
+    <div class='error-list' v-if='errorMessages?.length > 0'>
+      <ul>
+        <li v-for='errorMessage in errorMessages'>
+          <span>{{ errorMessage }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class='warning-list' v-if='warningMessages?.length > 0'>
+      <ul>
+        <li v-for='warningMessage in warningMessages'>
+          <span>{{ warningMessage }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!------------------------
+    edit-virtual-device
+  ------------------------->
+  <div :class='{ active : currentPage === "edit-virtual-device", page : true }'>
+    <header>
+      <span class='back' @click='setPreviousPage()' data-i18n='wizard2.edit-virtual-device.back'></span>
+      <span data-i18n='wizard2.edit-virtual-device.title'></span>
+      <span class='done' id='EVDdone' @click='editVirtualDevice()' data-i18n='wizard2.edit-virtual-device.done'
+        :hidden='errorMessages?.length !== 0'></span>
+    </header>
+
+    <div class='list'>
+      <p>
+        <input id='EVDname' @input='checkEditVirtualDeviceValidity' type='text' :value='editVirtualDevice?.current.name'
+          required minlength=3 maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'>
+      </p>
+
+      <ul>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
+          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.to_be_implemented') }}</span>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.class') }}</span>
+          <span></span>
+          <select id='EVDclass' @change='checkEditVirtualDeviceValidity'>
+            <template v-for='device_class in CLASS_SUPPORTED'>
+              <option :value='device_class' :selected='editVirtualDevice?.current.class === device_class'>{{
+                Homey.__('deviceClass.' + device_class + '.label')
+                }}</option>
+            </template>
+          </select>
+        </li>
+      </ul>
+
+      <p id='EVDclassDescription' hidden='true'></p>
+    </div>
+
+    <div class='list'>
+      <p>
+        <span>{{ Homey.__('wizard2.edit-virtual-device.capability.title') }}</span>
+      </p>
+
+      <ul>
+        <li @click='setPage("select-native-capability")'>
+          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.new-native-capability') }}</span>
+          <i class='arrow right'></i>
+        </li>
+
+        <template v-for='capability in editVirtualDevice?.current.capabilities'>
+          <li style='align-items: left;'>
+            <input :data-capability-id='capability.capabilityId' id='EVDcapability-title'
+              @input='checkEditVirtualDeviceValidity' type='text' :value='capability.options.title' required minlength=3
+              maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'
+              style='text-align: left; margin-left: 0;'>
+          </li>
+          <li class="sub">
+            <span>{{ Homey.__('wizard2.edit-virtual-device.capability.name') }}</span>
+            <span></span>
+            <select :data-capability-id='capability.capabilityId' id='EVDcapability-name'
+              @change='checkEditVirtualDeviceValidity'>
+              <template v-for='device_class in CLASS_SUPPORTED'>
+                <option :value='capability.type' :selected='capability.type === device_class'>{{
+                  Homey.__('deviceClass.' + device_class + '.label')
+                  }}</option>
+              </template>
+            </select>
+          </li>
+        </template>
+      </ul>
     </div>
 
     <div class='error-list' v-if='errorMessages?.length > 0'>

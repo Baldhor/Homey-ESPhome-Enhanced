@@ -11,6 +11,8 @@ function onHomeyReady(Homey) {
     configuration: null,
     editPhysicalDevice: null,
     editPhysicalDeviceModified: false,
+    editVirtualDevice: null,
+    editVirtualDeviceModified: false,
     errorMessages: null,
     warningMessages: null,
     newPhysicalDeviceTimeout: null,
@@ -142,6 +144,46 @@ function onHomeyReady(Homey) {
       this.errorMessages = errorMessages;
       this.warningMessages = warningMessages;
     },
+    checkEditVirtualDeviceValidity() {
+      wizardlog('checkEditVirtualDeviceValidity');
+
+      // Disable the done button if any of the fields is invalid
+      const name = document.getElementById("EVDname");
+      const device_class = document.getElementById("EVDclass");
+      const device_class_description = document.getElementById("EVDclassDescription");
+
+      // Reset error and warning messsages
+      let errorMessages = [];
+      let warningMessages = [];
+      name.setCustomValidity('');
+      device_class.setCustomValidity('');
+
+      // Name format
+      if (!name.validity.valid) {
+        errorMessages.push(Homey.__("wizard2.edit-virtual-device.error-name"));
+      }
+
+      // Name should be unique
+      if (name.validity.valid) {
+        let tmp = this.configuration.listVirtualDevices.find(e => e.virtualDeviceId !== this.editVirtualDevice.virtualDeviceId && e.current.name === name.value);
+        if (tmp !== undefined) {
+          warningMessages.push(Homey.__("wizard2.edit-virtual-device.warning-name-already-used"));
+        }
+      }
+
+      // Class unselected
+      if (device_class.value === 'unselected') {
+        device_class.setCustomValidity(false);
+        device_class_description.hidden = true;
+        errorMessages.push(Homey.__("wizard2.edit-virtual-device.error-class"));
+      } else {
+        device_class_description.innerHTML = Homey.__('deviceClass.' + document.getElementById("EVDclass").value + '.description');
+        device_class_description.hidden = false;
+      }
+
+      this.errorMessages = errorMessages;
+      this.warningMessages = warningMessages;
+    },
     async createVirtualDevice() {
       wizardlog('createPhysicalDevice');
 
@@ -161,7 +203,7 @@ function onHomeyReady(Homey) {
         }
 
         this.configuration.listVirtualDevices.push(tmp);
-        this.setPreviousPage();
+        this.setPage('edit-virtual-device', { virtualDeviceId: tmp.virtualDeviceId });
       } catch (e) {
         wizardlog(e);
 
@@ -405,6 +447,15 @@ function onHomeyReady(Homey) {
             document.getElementById("NVDclass").value = 'unselected';
 
             setTimeout(this.checkNewVirtualDeviceValidity, 100);
+            break;
+
+          case 'edit-virtual-device':
+            this.editVirtualDevice = null;
+            this.editVirtualDevice = this.configuration.listVirtualDevices.find(e => e.virtualDeviceId === data.virtualDeviceId);
+            if (this.editVirtualDevice === undefined) {
+              throw new Error('Cannot find virtual device:', data.virtualDeviceId, 'for page', page);
+            }
+            setTimeout(this.checkEditVirtualDeviceValidity, 100);
             break;
 
           case 'list-physical-devices':

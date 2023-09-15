@@ -474,7 +474,7 @@ class Driver extends Homey.Driver {
                     this.log('Processing device:', virtualDevice);
 
                     let tmpVirtualDevice = {
-                        'id': virtualDevice.getData().id,
+                        'virtualDeviceId': virtualDevice.getData().id,
                         'initial': {
                             name: virtualDevice.getName(),
                             zoneName: 'to be implemented',
@@ -489,6 +489,7 @@ class Driver extends Homey.Driver {
                     virtualDevice.getCapabilities().forEach(capability => {
                         let capabilityValueV2 = virtualDevice.getStoreValue('capabilityKeysV2')[capability];
                         let tmpCapability = {
+                            capabilityId: capability,
                             type: capability.split(".")[0],
                             index: capability.split(".").length > 1 ? parseInt(capability.split(".")[1]) : '1',
                             status: 'unmodified',
