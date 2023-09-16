@@ -99,7 +99,7 @@
 
         <!-- For each virtual device (sorted by zone and name) -->
         <template
-          v-for='virtualDevice in configuration?.listVirtualDevices?.sort((a, b) => { let _sort = a.current.zoneName.localeCompare(b.current.zoneName); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'>
+          v-for='virtualDevice in configuration?.listVirtualDevices?.sort((a, b) => { let _sort = compareZoneId(a.current.zoneId, b.current.zoneId); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'>
           <!--
                 For each virtual device:
                 - Name: allow modification of a virtual device name
@@ -113,7 +113,8 @@
           <li @click='setPage("edit-virtual-device", { virtualDeviceId: virtualDevice.virtualDeviceId })'>
             <span
               :class='{ danger: virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0 }'>{{
-              virtualDevice.current.zoneName }} - {{ virtualDevice.current.name }}</span>
+              configuration.listZones.find(zone => zone.zoneId === virtualDevice.current.zoneId).name }} - {{
+              virtualDevice.current.name }}</span>
             <i class='arrow right'></i>
           </li>
 
@@ -202,14 +203,24 @@
       <ul>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.zone') }}</span>
-          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.to_be_implemented') }}</span>
+          <span></span>
+          <select id='NVDzone' @change='checkNewVirtualDeviceValidity'>
+            <!--TODO: should use the zone used to start the wizard as default? -->
+            <option value='unselected' selected>{{ Homey.__('wizard2.new-virtual-device.zone-unselected') }}</option>
+            <template v-for='zone in configuration?.listZones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
+              <option :value='zone.zoneId'>
+                {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
+              </option>
+            </template>
+          </select>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.class') }}</span>
           <span></span>
           <select id='NVDclass' @change='checkNewVirtualDeviceValidity'>
             <option value='unselected' selected>{{ Homey.__('wizard2.new-virtual-device.class-unselected') }}</option>
-            <template v-for='device_class in CLASS_SUPPORTED'>
+            <template
+              v-for='device_class in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))' :key='device_class'>
               <option :value='device_class'>{{ Homey.__('deviceClass.' + device_class + '.label')
                 }}</option>
             </template>
@@ -242,7 +253,7 @@
   ------------------------->
   <div :class='{ active : currentPage === "edit-virtual-device", page : true }'>
     <header>
-      <span class='back' @click='setPreviousPage()' data-i18n='wizard2.edit-virtual-device.back'></span>
+      <span class='back' @click='setPage("list-virtual-devices")' data-i18n='wizard2.edit-virtual-device.back'></span>
       <span data-i18n='wizard2.edit-virtual-device.title'></span>
       <span class='done' id='EVDdone' @click='editVirtualDevice()' data-i18n='wizard2.edit-virtual-device.done'
         :hidden='errorMessages?.length !== 0'></span>
@@ -257,13 +268,21 @@
       <ul>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
-          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.to_be_implemented') }}</span>
+          <span></span>
+          <select id='EVDzone' @change='checkEditVirtualDeviceValidity'>
+            <!--TODO: should use the zone used to start the wizard as default? -->
+            <template v-for='zone in configuration?.listZones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
+              <option :value='zone.zoneId' :selected='editVirtualDevice?.current.zoneId === zone.zoneId'>
+                {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
+              </option>
+            </template>
+          </select>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.class') }}</span>
           <span></span>
           <select id='EVDclass' @change='checkEditVirtualDeviceValidity'>
-            <template v-for='device_class in CLASS_SUPPORTED'>
+            <template v-for='device_class in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))' :key='device_class'>
               <option :value='device_class' :selected='editVirtualDevice?.current.class === device_class'>{{
                 Homey.__('deviceClass.' + device_class + '.label')
                 }}</option>

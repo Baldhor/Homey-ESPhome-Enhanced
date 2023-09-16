@@ -1,9 +1,13 @@
 'use strict';
 
 const Homey = require('homey');
+const { HomeyAPI } = require('../../bundles/homey-api');
 const PhysicalDeviceManager = require('./physical-device-manager');
 
 class Driver extends Homey.Driver {
+    // Used during pairSession
+    homeyApi = null;
+
     async onInit() {
         //TODO: To be removed!
         this.resetConf();
@@ -55,6 +59,7 @@ class Driver extends Homey.Driver {
     }
 
     async onPair(session) {
+        await this.initHomeyApi();
 
         /**
          * Used by update_device view
@@ -462,7 +467,7 @@ class Driver extends Homey.Driver {
          * 
          * return: refer to pair/readme.md
          */
-        session.setHandler('get-configuration', () => {
+        session.setHandler('get-configuration', async () => {
             this.log('get-configuration started');
 
             let listVirtualDevices = [];
@@ -470,14 +475,14 @@ class Driver extends Homey.Driver {
 
             try {
                 // Loop on all virtual devices
-                this.getDevices().forEach(virtualDevice => {
+                for (const virtualDevice of this.getDevices()) {
                     this.log('Processing device:', virtualDevice);
 
                     let tmpVirtualDevice = {
                         'virtualDeviceId': virtualDevice.getData().id,
                         'initial': {
                             name: virtualDevice.getName(),
-                            zoneName: 'to be implemented',
+                            zoneId: await this.getDeviceZone(virtualDevice),
                             class: virtualDevice.getClass(),
                             status: 'unmodified',
                             capabilities: []
@@ -504,7 +509,7 @@ class Driver extends Homey.Driver {
                     tmpVirtualDevice.current = tmpVirtualDevice.initial;
 
                     listVirtualDevices.push(tmpVirtualDevice);
-                });
+                }
 
                 // Retrieve driver settings
                 let conf = this.getConf();
@@ -532,7 +537,7 @@ class Driver extends Homey.Driver {
                         });
 
                         tmpPhysicalDevice.nativeCapabilities.push({
-                            id: nativeCapability.getId(),
+                            nativeCapabilityId: nativeCapability.getId(),
                             entityId: nativeCapability.entityId,
                             attribut: nativeCapability.attribut,
                             entityName: nativeCapability.entityName,
@@ -552,15 +557,15 @@ class Driver extends Homey.Driver {
                 throw e;
             }
 
-            this.log('result:', {
+            let result = {
                 'listVirtualDevices': listVirtualDevices,
-                'listPhysicalDevices': listPhysicalDevices
-            });
-
-            return {
-                'listVirtualDevices': listVirtualDevices,
-                'listPhysicalDevices': listPhysicalDevices
+                'listPhysicalDevices': listPhysicalDevices,
+                'listZones': await this.getAllZones()
             };
+
+            this.log('result:', result);
+
+            return result;
         });
 
         session.setHandler('modify-physical-device', (data) => {
@@ -645,7 +650,7 @@ class Driver extends Homey.Driver {
                             });
 
                             tmpPhysicalDevice.nativeCapabilities.push({
-                                id: nativeCapability.getId(),
+                                nativeCapabilityId: nativeCapability.getId(),
                                 entityId: nativeCapability.entityId,
                                 attribut: nativeCapability.attribut,
                                 entityName: nativeCapability.entityName,
@@ -786,6 +791,76 @@ class Driver extends Homey.Driver {
     setConf(conf) {
         this.homey.settings.set('listPhysicalDevicesV2', conf);
     }
+
+
+    /***********************
+     * HomeyAPI functions
+     ***********************/
+
+    async initHomeyApi() {
+        if (this.homeyApi === null) {
+            this.homeyApi = await HomeyAPI.createAppAPI({
+                homey: this.homey,
+            });
+        }
+    }
+
+    async deleteDevice(device) {
+        this.log('deleteDevice:', ...arguments);
+
+        // Get all the devices, and log their names.
+        try {
+            await this.homeyApi.devices.deleteDevice(device.id);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async getDeviceZone(device) {
+        this.log('getDeviceZone:', ...arguments);
+
+        try {
+            let apiDevice = await this.homeyApi.devices.getDevice({id:device.getId()});
+            let apiZone = await apiDevice.getZone();
+            let zoneId = apiZone.id;
+            this.log('zoneName:', zoneId);
+            return zoneId;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async setDeviceZone(device, zoneId) {
+        this.log('setDeviceZoneName:', ...arguments);
+
+        try {
+            await this.homeyApi.devices.updateDevice(device.id, { zone: zone.id });
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async getAllZones() {
+        this.log('getAllZones');
+
+        try {
+            let zones = [];
+            for (const zone of Object.values(await this.homeyApi.zones.getZones())) {
+                this.log('processing zone:', zone);
+                zones.push({
+                    zoneId: zone.id,
+                    name: zone.name,
+                    parent: zone.parent,
+                    order: zone.order
+                });
+            }
+            this.log('zones:', zones);
+            return zones;
+        } catch (e) {
+            throw e;
+        }
+    }
+
 }
 
 module.exports = Driver;

@@ -362,7 +362,7 @@ body {
   padding: 0;
   outline: none;
   border: none;
-  text-align: right;
+  text-align: left;
   width: 31ch;
 }
 .homekitty .list input[type=text]:invalid {

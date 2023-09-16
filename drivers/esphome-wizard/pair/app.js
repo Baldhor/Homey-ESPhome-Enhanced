@@ -109,6 +109,7 @@ function onHomeyReady(Homey) {
 
       // Disable the done button if any of the fields is invalid
       const name = document.getElementById("NVDname");
+      const zone = document.getElementById("NVDzone");
       const device_class = document.getElementById("NVDclass");
       const device_class_description = document.getElementById("NVDclassDescription");
 
@@ -116,6 +117,7 @@ function onHomeyReady(Homey) {
       let errorMessages = [];
       let warningMessages = [];
       name.setCustomValidity('');
+      zone.setCustomValidity('');
       device_class.setCustomValidity('');
 
       // Name format
@@ -131,13 +133,19 @@ function onHomeyReady(Homey) {
         }
       }
 
+      // Zone unselected
+      if (zone.value === 'unselected') {
+        zone.setCustomValidity(false);
+        errorMessages.push(Homey.__("wizard2.new-virtual-device.error-zone"));
+      }
+
       // Class unselected
       if (device_class.value === 'unselected') {
         device_class.setCustomValidity(false);
         device_class_description.hidden = true;
         errorMessages.push(Homey.__("wizard2.new-virtual-device.error-class"));
       } else {
-        device_class_description.innerHTML = Homey.__('deviceClass.' + document.getElementById("NVDclass").value + '.description');
+        device_class_description.innerHTML = Homey.__('deviceClass.' + device_class.value + '.description');
         device_class_description.hidden = false;
       }
 
@@ -149,6 +157,7 @@ function onHomeyReady(Homey) {
 
       // Disable the done button if any of the fields is invalid
       const name = document.getElementById("EVDname");
+      //const zone = document.getElementById("EVDzone");
       const device_class = document.getElementById("EVDclass");
       const device_class_description = document.getElementById("EVDclassDescription");
 
@@ -156,7 +165,6 @@ function onHomeyReady(Homey) {
       let errorMessages = [];
       let warningMessages = [];
       name.setCustomValidity('');
-      device_class.setCustomValidity('');
 
       // Name format
       if (!name.validity.valid) {
@@ -171,15 +179,9 @@ function onHomeyReady(Homey) {
         }
       }
 
-      // Class unselected
-      if (device_class.value === 'unselected') {
-        device_class.setCustomValidity(false);
-        device_class_description.hidden = true;
-        errorMessages.push(Homey.__("wizard2.edit-virtual-device.error-class"));
-      } else {
-        device_class_description.innerHTML = Homey.__('deviceClass.' + document.getElementById("EVDclass").value + '.description');
-        device_class_description.hidden = false;
-      }
+      // Class description
+      device_class_description.innerHTML = Homey.__('deviceClass.' + device_class.value + '.description');
+      device_class_description.hidden = false;
 
       this.errorMessages = errorMessages;
       this.warningMessages = warningMessages;
@@ -191,11 +193,11 @@ function onHomeyReady(Homey) {
 
       try {
         let tmp = {
-          'id': 'Wizard' + Date.now(),
+          'virtualDeviceId': 'Wizard' + Date.now(),
           'initial': null,
           'current': {
             name: document.getElementById("NVDname").value,
-            zoneName: 'to be implemented',
+            zoneId: document.getElementById("NVDzone").value,
             class: document.getElementById("NVDclass").value,
             status: 'new',
             capabilities: []
@@ -427,6 +429,7 @@ function onHomeyReady(Homey) {
         switch (page) {
           case 'main':
             await this.loadConfiguration();
+            this.computeZonePathDepthAndOrder();
             break;
 
           case 'list-virtual-devices':
@@ -443,7 +446,10 @@ function onHomeyReady(Homey) {
             break;
 
           case 'new-virtual-device':
+            wizardlog('zones:', this.configuration.listZones);
+
             document.getElementById("NVDname").value = '';
+            document.getElementById("NVDzone").value = 'unselected';
             document.getElementById("NVDclass").value = 'unselected';
 
             setTimeout(this.checkNewVirtualDeviceValidity, 100);
@@ -478,18 +484,62 @@ function onHomeyReady(Homey) {
         Homey.hideLoadingOverlay();
       }
     },
-    async getPhysicalDevices() {
-      await delay(2000);
+    computeZonePathDepthAndOrder() {
+      wizardlog('computeZonePathDepthAndOrder');
+
+      // This function add two attributs to each zones:
+      // - zonePath : [order*] => The list of order (1 to n) sequentialy
+      // - zoneDepth : <positive> => The depth of the zone (starting from 0)
+      // - zoneOrder : <positive> => the global order of the zone in the whole zone list
+      /**
+       * A zone has an order position in his parent 'zone'
+       * parent zone can be empty => 'house'
+       */
+      this.configuration.listZones.forEach(zone => {
+        zone.zonePath = [zone.order];
+        let parentId = zone.parent;
+        while (parentId !== null) {
+          let parent = this.configuration.listZones.find(element => element.zoneId === parentId);
+          zone.zonePath.unshift(parent.order);
+          parentId = parent.parent;
+        }
+        zone.zoneDepth = zone.zonePath.length - 1;
+      });
+
+      // Sort the zones by zonePath then name
+      this.configuration.listZones.sort((a, b) => {
+        let result = 0;
+
+        for (let i = 0; i < a.zonePath.length; i++) {
+          // If b path is shorter, it means it is before
+          if (b.zonePath.length < (i + 1) ) {
+            return 1;
+          }
+
+          let result = a.zonePath[i] - b.zonePath[i];
+          if (result !== 0) {
+              return result;
+          }
+        }
+
+        // If equal, maybe b length is higher, ortherwise, we use the name
+        if (a.zonePath.length === b.zonePath.length) {
+          return a.name.localeCompare(b.name);
+        } else {
+          return -1;
+        }
+      });
+
+      // Add zoneOrder to make future comparaison faster
+      let zoneOrder = 0;
+      this.configuration.listZones.forEach(zone => {
+        zone.zoneOrder = zoneOrder++;
+      });
+
+      wizardlog('computeZonePathDepthAndOrder result:', JSON.parse(JSON.stringify(this.configuration.listZones)));
     },
-    async getVirtualDevices() {
-      await delay(2000);
-    },
-    isActive(page) {
-      if (this.currentPage == page) {
-        return 'is-active';
-      } else {
-        return;
-      }
+    compareZoneId(a, b) {
+      return this.configuration.listZones.find(zone => zone.zoneId === a).zoneOrder - this.configuration.listZones.find(zone => zone.zoneId === a).zoneOrder;
     },
     async loadConfiguration() {
       wizardlog('loadConfiguration');
