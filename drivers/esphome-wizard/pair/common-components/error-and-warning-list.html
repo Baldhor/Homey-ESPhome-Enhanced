@@ -1,0 +1,16 @@
+<template id="template-error-and-warning-list">
+  <div class='error-list' v-if='errorAndWarningList.errors.length > 0'>
+    <ul>
+      <li v-for='(errorMessage, index) in errorAndWarningList.errors' :key='index'>
+        <span>{{ Homey.__(errorMessage) }}</span>
+      </li>
+    </ul>
+  </div>
+  <div class='warning-list' v-if='errorAndWarningList.warnings.length > 0'>
+    <ul>
+      <li v-for='(warningMessage, index) in errorAndWarningList.warnings' :key='index'>
+        <span>{{ Homey.__(warningMessage) }}</span>
+      </li>
+    </ul>
+  </div>
+</template>

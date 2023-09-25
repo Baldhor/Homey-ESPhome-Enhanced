@@ -1,0 +1,44 @@
+<template id="template-list-physical-devices-page">
+  <div :class='{ active : pageHandler.currentPage === "list-physical-devices-page", page : true }'
+    @vue:mounted='mounted'>
+    <header>
+      <span class='back' @click='pageHandler.setMainPage()' data-i18n='wizard2.list-physical-devices.back'></span>
+      <span data-i18n='wizard2.list-physical-devices.title'></span>
+    </header>
+
+    <!-- For each physical device (sorted by name, and excluding new physical devices) -->
+    <div
+      v-for='physicalDevice in configuration.physicalDevices?.sort((a, b) => { return a.name.localeCompare(b.name); })'
+      :key='physicalDevice.physicalDeviceId' class='list'>
+      <p>
+        <span>{{ physicalDevice.name }}</span>
+        <span class='edit' v-if='physicalDevice.status !== "new"'
+          @click='pageHandler.setPage("edit-physical-device-page", { physicalDeviceId: physicalDevice.physicalDeviceId })'>{{
+          Homey.__('wizard2.list-physical-devices.edit') }}</span>
+      </p>
+
+      <ul>
+        <li>
+          <span>{{ Homey.__('wizard2.list-physical-devices.status') }}</span>
+          <span :class='{ danger: physicalDevice.status === "unavailable" || physicalDevice.status === "new" }'>{{
+            physicalDevice.status
+            }}</span>
+        </li>
+        <li>
+          <span>{{ Homey.__('wizard2.list-physical-devices.used') }}</span>
+          <span>{{ physicalDevice.used }}</span>
+        </li>
+        <li>
+          <span>{{ Homey.__('wizard2.list-physical-devices.ipAddress') }}</span>
+          <span>{{ physicalDevice.ipAddress }}</span>
+        </li>
+        <li>
+          <span>{{ Homey.__('wizard2.list-physical-devices.port') }}</span>
+          <span>{{ physicalDevice.port }}</span>
+        </li>
+      </ul>
+
+      <p v-if='physicalDevice.status === "new"'>{{ Homey.__('wizard2.list-physical-devices.cannot-modify') }}</p>
+    </div>
+  </div>
+</template>

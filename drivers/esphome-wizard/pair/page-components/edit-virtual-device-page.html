@@ -1,0 +1,117 @@
+<template id="template-edit-virtual-device-page">
+  <div :class='{ active : pageHandler.currentPage === "edit-virtual-device-page", page : true }' @vue:mounted='mounted'>
+    <header>
+      <span class='back' @click='back()' data-i18n='wizard2.edit-virtual-device.back'></span>
+      <span data-i18n='wizard2.edit-virtual-device.title'></span>
+      <span class='done' id='EVDdone' @click='apply()' data-i18n='wizard2.edit-virtual-device.done'
+        :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
+    </header>
+
+    <div class='list'>
+      <ul>
+        <li>
+          <input ref='name' v-model='name' @input='checkValidity' type='text' required minlength=3 maxlength=30
+            pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$' style='text-align: left; margin-left: 0;'>
+          <span></span>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
+          <span></span>
+          <select ref='zoneId' v-model='zoneId' @change='checkValidity'>
+            <!--TODO: should use the zone used to start the wizard as default? -->
+            <template v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
+              <option :value='zone.zoneId'>
+                {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
+              </option>
+            </template>
+          </select>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.class') }}</span>
+          <span></span>
+          <select ref='classId' v-model='classId' @change='checkValidity'>
+            <template
+              v-for='classSupportedId in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))'
+              :key='classSupportedId'>
+              <option :value='classSupportedId'>{{
+                Homey.__('deviceClass.' + classSupportedId + '.label')
+                }}</option>
+            </template>
+          </select>
+        </li>
+      </ul>
+
+      <p ref='classDescription' v-model='classDescription' v-show='classDescription !== ""'></p>
+    </div>
+
+    <div class='list'>
+      <p>
+        <span>{{ Homey.__('wizard2.edit-virtual-device.capability.title') }}</span>
+      </p>
+
+      <ul v-for='(capability, index) in _editVirtualDevice?.current.capabilities'
+        :key='capability.capabilityId'>
+        <li v-if='index === 0' @click='switchPage("select-native-capability-page")'>
+          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.new-native-capability') }}</span>
+          <i class='arrow right'></i>
+        </li>
+
+        <!-- TODO: Based on the physical device status linked to this capability, we should be in write or read only mode
+                In read only mode, the capability can only be 'deleted'
+              -->
+        <li style='align-items: left;'>
+          <span>{{ capability.options.title !== null ? capability.options.title : '-default-' }}</span>
+          <span></span>
+          <span class='edit'
+            @click='switchPage("edit-capability-page", { capabilityId: capability.capabilityId })'>{{
+            Homey.__('wizard2.edit-virtual-device.capability.edit') }}</span>
+        </li>
+        <li class="sub">
+          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.name') }}</span>
+          <span></span>
+          <span>{{ capability.type }}</span>
+        </li>
+        <li class="sub">
+          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.status-title') }}</span>
+          <span></span>
+          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.status.' + capability.status) }}</span>
+        </li>
+        <li class="sub">
+          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.options-title') }}</span>
+          <span></span>
+        </li>
+        <li class="subsub" v-for='optionKey in Object.keys(capability.options).filter(e => e !== "title").sort((a, b) => Homey.__("wizard2.edit-virtual-device.capability.options." +
+          a).localeCompare(Homey.__("wizard2.edit-virtual-device.capability.options." + b)))'
+          :key='capability.capabilityId + ":" + optionKey'>
+          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.options.' + optionKey) }}</span>
+          <span></span>
+          <span class='pre'>{{ capability.options[optionKey] }}</span>
+        </li>
+        <!--
+          </li>
+          -->
+        <!--
+                          <li class="sub">
+                <span>{{ Homey.__('wizard2.edit-virtual-device.capability.physical-device') }}</span>
+                <span></span>
+              </li>
+              <li class='subsub'>
+                <span>{{ this.configuration.listPhysicalDevices.find(e => e.physicalDeviceId ===
+                  capability.physicalDeviceId).name }}</span>
+              </li>
+              <li class='subsub'>
+                <span>{{ this.configuration.listPhysicalDevices.find(e => e.physicalDeviceId ===
+                  capability.physicalDeviceId).nativeCapabilities.find(e => e.nativeCapabilityId ===
+                  capability.nativeCapabilityId).entityName }}</span>
+              </li>
+              <li class='subsub'>
+                <span>{{ this.configuration.listPhysicalDevices.find(e => e.physicalDeviceId ===
+                  capability.physicalDeviceId).nativeCapabilities.find(e => e.nativeCapabilityId ===
+                  capability.nativeCapabilityId).attribut }}</span>
+              </li>
+            -->
+      </ul>
+    </div>
+
+    <section v-scope="ErrorAndWarningList()"></section>
+</template>

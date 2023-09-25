@@ -1,0 +1,52 @@
+<template id="template-new-virtual-device-page">
+  <div :class='{ active : pageHandler.currentPage === "new-virtual-device-page", page : true }' @vue:mounted='mounted'>
+    <header>
+      <span class='back' @click='pageHandler.setPage("list-virtual-devices-page")'
+        data-i18n='wizard2.new-virtual-device.back'></span>
+      <span data-i18n='wizard2.new-virtual-device.title'></span>
+      <span class='done' id='NVDdone' @click='apply()' data-i18n='wizard2.new-virtual-device.done'
+        :hidden='errorAndWarningList.errors.length !== 0'></span>
+    </header>
+
+    <div class='list'>
+      <ul>
+        <li>
+          <input ref='name' v-model='name' @input='checkValidity' type='text' required minlength=3 maxlength=30
+            pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$' style='text-align: left; margin-left: 0;'>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.zone') }}</span>
+          <span></span>
+          <select ref='zoneId' v-model='zoneId' @change='checkValidity'>
+            <!--TODO: should use the zone used to start the wizard as default? -->
+            <option value='unselected' selected disabled>{{ Homey.__('wizard2.new-virtual-device.zone-unselected') }}
+            </option>
+            <template v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
+              <option :value='zone.zoneId'>
+                {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
+              </option>
+            </template>
+          </select>
+        </li>
+        <li>
+          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.class') }}</span>
+          <span></span>
+          <select ref='classId' v-model='classId' @change='checkValidity'>
+            <option value='unselected' selected disabled>{{ Homey.__('wizard2.new-virtual-device.class-unselected')
+              }}</option>
+            <template
+              v-for='classSupportedId in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))'
+              :key='classSupportedId'>
+              <option :value='classSupportedId'>{{ Homey.__('deviceClass.' + classSupportedId + '.label')
+                }}</option>
+            </template>
+          </select>
+        </li>
+      </ul>
+
+      <p ref='classDescription' v-model='classDescription' v-show='classDescription !== ""'></p>
+    </div>
+
+    <section v-scope="ErrorAndWarningList()"></section>
+  </div>
+</template>

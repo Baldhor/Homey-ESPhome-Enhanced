@@ -1,495 +1,106 @@
-<script src="constants.js"></script>
-<script src="logme.js"></script>
-<script src="front_utils.js"></script>
-<script src="petite-vue.js"></script>
-<script src='app.js'></script>
-<link rel="stylesheet" href="styles.css">
-<style>
-  /* prevent FOUC */
-  [v-cloak] {
-    display: none
-  }
-</style>
+<script src="includes/constants.js"></script>
+<script src="includes/logme.js"></script>
+<script src="includes/front_utils.js"></script>
+<script src="includes/petite-vue.js"></script>
+<link rel="stylesheet" href="includes/styles.css">
 
-<script type="application/javascript">
-  Homey.setNavigationClose();
-  onHomeyReady(Homey);
+
+<!-- ************************
+     * Load common components
+     ************************ -->
+
+<!-- Configuration -->
+<script src="common-components/configuration.js"></script>
+<!-- Page handler -->
+<script src="common-components/page-handler.js"></script>
+<!-- Error and Warning list -->
+<script src="common-components/error-and-warning-list.js"></script>
+<div hidden w3-include-html="common-components/error-and-warning-list.html"></div>
+
+
+<!-- ************************
+     * Init pages
+     ************************ -->
+
+<!-- Main page -->
+<script src="page-components/main-page.js"></script>
+<div hidden w3-include-html="page-components/main-page.html"></div>
+
+<!-- List virtual devices page -->
+<script src="page-components/list-virtual-devices-page.js"></script>
+<div hidden w3-include-html="page-components/list-virtual-devices-page.html"></div>
+
+<!-- New physical device page -->
+<script src="page-components/new-physical-device-page.js"></script>
+<div hidden w3-include-html="page-components/new-physical-device-page.html"></div>
+
+<!-- New virtual device page -->
+<script src="page-components/new-virtual-device-page.js"></script>
+<div hidden w3-include-html="page-components/new-virtual-device-page.html"></div>
+
+<!-- Edit virtual device page -->
+<script src="page-components/edit-virtual-device-page.js"></script>
+<div hidden w3-include-html="page-components/edit-virtual-device-page.html"></div>
+
+<!-- Select native capability page -->
+<!--
+<script src="page-components/select-native-capability-page.js"></script>
+<div hidden w3-include-html="page-components/select-native-capability-page.html"></div>
+<section id="select-native-capability-page" v-scope="SelectNativeCapabilityPage()"></section>
+-->
+
+<!-- Edit capability page -->
+<!--
+<script src="page-components/edit-capability-page.js"></script>
+<div hidden w3-include-html="page-components/edit-capability-page.html"></div>
+<section id="edit-capability-page" v-scope="EditCapabilityPage()"></section>
+-->
+
+<!-- List physical devices page -->
+<script src="page-components/list-physical-devices-page.js"></script>
+<div hidden w3-include-html="page-components/list-physical-devices-page.html"></div>
+
+<!-- Edit physical device page -->
+<script src="page-components/edit-physical-device-page.js"></script>
+<div hidden w3-include-html="page-components/edit-physical-device-page.html"></div>
+
+
+<!-- ************************
+     * Force load HTML files
+     ************************ -->
+<script src="includes//include-html.js"></script>
+<script>
+  includeHTML();
 </script>
 
-<div :class='{ homekitty : true }' id='homekitty' v-cloak @vue:mounted='mounted'>
 
-  <!------------------------
-    main
-  ------------------------->
-  <div :class='{ active: currentPage === "main", page : true, fixed : true }'>
-    <header>
-      <span data-i18n='wizard2.main.title'></span>
-    </header>
-
-    <div class='list'>
-      <p data-i18n='wizard2.main.menu'></p>
-
-      <ul>
-        <li @click='setPage("list-virtual-devices")'>
-          <span data-i18n='wizard2.main.list-virtual-devices'></span>
-          <i class='arrow right'></i>
-        </li>
-        <li @click='setPage("list-physical-devices")'>
-          <span data-i18n='wizard2.main.list-physical-devices'></span>
-          <i class='arrow right'></i>
-        </li>
-        <li @click='setPage("new-physical-device")'>
-          <span data-i18n='wizard2.main.new-physical-device'></span>
-          <i class='arrow right'></i>
-        </li>
-      </ul>
-    </div>
-
-  </div>
-
-  <!------------------------
-    list-virtual-devices
-  ------------------------->
-  <div :class='{ active : currentPage === "list-virtual-devices", page : true }'>
-    <header>
-      <span class='back' @click='setMainPage()' data-i18n='wizard2.list-virtual-devices.back'></span>
-      <span data-i18n='wizard2.list-virtual-devices.title'></span>
-    </header>
-
-    <div class='list'>
-      <p>
-        <span>{{ Homey.__('wizard2.list-virtual-devices.list-physical-devices.title') }}</span>
-      </p>
-
-      <ul>
-        <!-- allow connection to new physical devices -->
-        <li @click='setPage("new-physical-device")'>
-          <span data-i18n='wizard2.list-virtual-devices.list-physical-devices.new-physical-device'></span>
-          <i class='arrow right'></i>
-        </li>
-
-        <!-- For each virtual device (sorted by zone and name) -->
-        <!-- Short list known physical devices, including existing and new ones with their status and "usage count" (used) -->
-        <!-- TO BE COMPLETED: one line per device with name, status and used -->
-        <li
-          v-for='physicalDevice in configuration?.listPhysicalDevices?.sort((a, b) => { return a.name.localeCompare(b.name); })'>
-          <span :class='{ danger: physicalDevice.status === "unavailable" || !physicalDevice.used }'>{{
-            physicalDevice.name }}</span>
-          <span :class='{ danger: physicalDevice.status === "unavailable" }'>{{ physicalDevice.status }}</span>
-          <span v-if='!physicalDevice.used' class='danger'>{{
-            Homey.__('wizard2.list-virtual-devices.list-physical-devices.unused') }}</span>
-          <span v-if='physicalDevice.used'>{{ Homey.__('wizard2.list-virtual-devices.list-physical-devices.used')
-            }}</span>
-        </li>
-      </ul>
-
-      <p data-i18n='wizard2.list-virtual-devices.list-physical-devices.help'></p>
-    </div>
-
-    <div class='list'>
-      <p>
-        <span>{{ Homey.__('wizard2.list-virtual-devices.list-virtual-devices.title') }}</span>
-      </p>
-
-      <ul>
-        <li @click='setPage("new-virtual-device")'>
-          <span>{{ Homey.__('wizard2.list-virtual-devices.list-virtual-devices.new-virtual-device') }}</span>
-          <i class='arrow right'></i>
-        </li>
-
-        <!-- For each virtual device (sorted by zone and name) -->
-        <template
-          v-for='virtualDevice in configuration?.listVirtualDevices?.sort((a, b) => { let _sort = compareZoneId(a.current.zoneId, b.current.zoneId); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'>
-          <!--
-                For each virtual device:
-                - Name: allow modification of a virtual device name
-                - status: 'new', 'modified', 'updated', 'deleted'
-                - List all its capabilities:
-                  - capbility type
-                  - its options
-                  - the related physical device and native capability
-                  - actions: edit capability (edit-capability page) or delete capability
-              -->
-          <li @click='setPage("edit-virtual-device", { virtualDeviceId: virtualDevice.virtualDeviceId })'>
-            <span
-              :class='{ danger: virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0 }'>{{
-              configuration.listZones.find(zone => zone.zoneId === virtualDevice.current.zoneId).name }} - {{
-              virtualDevice.current.name }}</span>
-            <i class='arrow right'></i>
-          </li>
-
-          <li class="sub">
-            <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.class') }}</span>
-            <span>{{ virtualDevice.current.class }}</span>
-          </li>
-          <li class="sub">
-            <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.status') }}</span>
-            <span>{{ virtualDevice.current.status }}</span>
-          </li>
-          <li class="sub">
-            <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.native-capability-count') }}</span>
-            <span
-              v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length > 0'>{{
-              virtualDevice.current.capabilities.filter(capability => capability.status !== 'deleted').length
-              }}</span>
-            <span
-              v-if='virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0'
-              class='danger'>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.no-native-capability')
-              }}</span>
-          </li>
-        </template>
-      </ul>
-    </div>
-  </div>
-
-  <!------------------------
-    list-physical-devices
-  ------------------------->
-  <div :class='{ active : currentPage === "list-physical-devices", page : true }'>
-    <header>
-      <span class='back' @click='setMainPage()' data-i18n='wizard2.list-physical-devices.back'></span>
-      <span data-i18n='wizard2.list-physical-devices.title'></span>
-    </header>
-
-    <!-- For each physical device (sorted by name) -->
-    <div
-      v-for='physicalDevice in configuration?.listPhysicalDevices?.sort((a, b) => { return a.name.localeCompare(b.name); })'
-      class='list'>
-      <p>
-        <span>{{ physicalDevice.name }}</span>
-        <span class='edit'
-          @click='setPage("edit-physical-device", { physicalDeviceId: physicalDevice.physicalDeviceId })'>{{
-          Homey.__('wizard2.list-physical-devices.edit') }}</span>
-      </p>
-
-      <ul>
-        <li>
-          <span>{{ Homey.__('wizard2.list-physical-devices.status') }}</span>
-          <span :class='{ danger: physicalDevice.status === "unavailable" }'>{{ physicalDevice.status }}</span>
-        </li>
-        <li>
-          <span>{{ Homey.__('wizard2.list-physical-devices.used') }}</span>
-          <span>{{ physicalDevice.used }}</span>
-        </li>
-        <li>
-          <span>{{ Homey.__('wizard2.list-physical-devices.ipAddress') }}</span>
-          <span>{{ physicalDevice.ipAddress }}</span>
-        </li>
-        <li>
-          <span>{{ Homey.__('wizard2.list-physical-devices.port') }}</span>
-          <span>{{ physicalDevice.port }}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!------------------------
-    new-virtual-device
-  ------------------------->
-  <div :class='{ active : currentPage === "new-virtual-device", page : true }'>
-    <header>
-      <span class='back' @click='setPreviousPage()' data-i18n='wizard2.new-virtual-device.back'></span>
-      <span data-i18n='wizard2.new-virtual-device.title'></span>
-      <span class='done' id='NVDdone' @click='createVirtualDevice()' data-i18n='wizard2.new-virtual-device.done'
-        :hidden='errorMessages?.length !== 0'></span>
-    </header>
-
-    <div class='list'>
-      <p>
-        <input id='NVDname' @input='checkNewVirtualDeviceValidity' type='text' required minlength=3 maxlength=30
-          pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'>
-      </p>
-
-      <ul>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.zone') }}</span>
-          <span></span>
-          <select id='NVDzone' @change='checkNewVirtualDeviceValidity'>
-            <!--TODO: should use the zone used to start the wizard as default? -->
-            <option value='unselected' selected>{{ Homey.__('wizard2.new-virtual-device.zone-unselected') }}</option>
-            <template v-for='zone in configuration?.listZones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
-              <option :value='zone.zoneId'>
-                {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
-              </option>
-            </template>
-          </select>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.class') }}</span>
-          <span></span>
-          <select id='NVDclass' @change='checkNewVirtualDeviceValidity'>
-            <option value='unselected' selected>{{ Homey.__('wizard2.new-virtual-device.class-unselected') }}</option>
-            <template
-              v-for='device_class in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))' :key='device_class'>
-              <option :value='device_class'>{{ Homey.__('deviceClass.' + device_class + '.label')
-                }}</option>
-            </template>
-          </select>
-        </li>
-      </ul>
-
-      <p id='NVDclassDescription' hidden='true'></p>
-    </div>
-
-    <div class='error-list' v-if='errorMessages?.length > 0'>
-      <ul>
-        <li v-for='errorMessage in errorMessages'>
-          <span>{{ errorMessage }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class='warning-list' v-if='warningMessages?.length > 0'>
-      <ul>
-        <li v-for='warningMessage in warningMessages'>
-          <span>{{ warningMessage }}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!------------------------
-    edit-virtual-device
-  ------------------------->
-  <div :class='{ active : currentPage === "edit-virtual-device", page : true }'>
-    <header>
-      <span class='back' @click='setPage("list-virtual-devices")' data-i18n='wizard2.edit-virtual-device.back'></span>
-      <span data-i18n='wizard2.edit-virtual-device.title'></span>
-      <span class='done' id='EVDdone' @click='editVirtualDevice()' data-i18n='wizard2.edit-virtual-device.done'
-        :hidden='errorMessages?.length !== 0'></span>
-    </header>
-
-    <div class='list'>
-      <p>
-        <input id='EVDname' @input='checkEditVirtualDeviceValidity' type='text' :value='editVirtualDevice?.current.name'
-          required minlength=3 maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'>
-      </p>
-
-      <ul>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
-          <span></span>
-          <select id='EVDzone' @change='checkEditVirtualDeviceValidity'>
-            <!--TODO: should use the zone used to start the wizard as default? -->
-            <template v-for='zone in configuration?.listZones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
-              <option :value='zone.zoneId' :selected='editVirtualDevice?.current.zoneId === zone.zoneId'>
-                {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
-              </option>
-            </template>
-          </select>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.class') }}</span>
-          <span></span>
-          <select id='EVDclass' @change='checkEditVirtualDeviceValidity'>
-            <template v-for='device_class in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))' :key='device_class'>
-              <option :value='device_class' :selected='editVirtualDevice?.current.class === device_class'>{{
-                Homey.__('deviceClass.' + device_class + '.label')
-                }}</option>
-            </template>
-          </select>
-        </li>
-      </ul>
-
-      <p id='EVDclassDescription' hidden='true'></p>
-    </div>
-
-    <div class='list'>
-      <p>
-        <span>{{ Homey.__('wizard2.edit-virtual-device.capability.title') }}</span>
-      </p>
-
-      <ul>
-        <li @click='setPage("select-native-capability")'>
-          <span>{{ Homey.__('wizard2.edit-virtual-device.capability.new-native-capability') }}</span>
-          <i class='arrow right'></i>
-        </li>
-
-        <template v-for='capability in editVirtualDevice?.current.capabilities'>
-          <li style='align-items: left;'>
-            <input :data-capability-id='capability.capabilityId' id='EVDcapability-title'
-              @input='checkEditVirtualDeviceValidity' type='text' :value='capability.options.title' required minlength=3
-              maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'
-              style='text-align: left; margin-left: 0;'>
-          </li>
-          <li class="sub">
-            <span>{{ Homey.__('wizard2.edit-virtual-device.capability.name') }}</span>
-            <span></span>
-            <select :data-capability-id='capability.capabilityId' id='EVDcapability-name'
-              @change='checkEditVirtualDeviceValidity'>
-              <template v-for='device_class in CLASS_SUPPORTED'>
-                <option :value='capability.type' :selected='capability.type === device_class'>{{
-                  Homey.__('deviceClass.' + device_class + '.label')
-                  }}</option>
-              </template>
-            </select>
-          </li>
-        </template>
-      </ul>
-    </div>
-
-    <div class='error-list' v-if='errorMessages?.length > 0'>
-      <ul>
-        <li v-for='errorMessage in errorMessages'>
-          <span>{{ errorMessage }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class='warning-list' v-if='warningMessages?.length > 0'>
-      <ul>
-        <li v-for='warningMessage in warningMessages'>
-          <span>{{ warningMessage }}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!------------------------
-    edit-capability
-  ------------------------->
-  <div :class='{ active : currentPage === "edit-capability", page : true }'>
-    <header>
-      <span class='back' @click='setPreviousPage()' data-i18n='wizard2.edit-capability.back'></span>
-      <span data-i18n='wizard2.edit-capability.title'></span>
-    </header>
-  </div>
-
-  <!------------------------
-    new-physical-device
-  ------------------------->
-  <div :class='{ active : currentPage === "new-physical-device", page : true }'>
-    <header>
-      <span class='back' @click='setPreviousPage()' data-i18n='wizard2.new-physical-device.back'></span>
-      <span data-i18n='wizard2.new-physical-device.title'></span>
-      <span class='done' id='NPDdone' @click='createPhysicalDevice()' data-i18n='wizard2.new-physical-device.done'
-        :hidden='errorMessages?.length !== 0'></span>
-    </header>
-
-    <div class='list'>
-      <p>
-        <input id='NPDname' @input='checkNewPhysicalDeviceValidity' type='text' required minlength=3 maxlength=30
-          pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'>
-      </p>
-
-      <ul>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.ipAddress') }}</span>
-          <span></span>
-          <input id='NPDipAddress' @input='checkNewPhysicalDeviceValidity' type='text' required maxlength='15'
-            pattern='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.port') }}</span>
-          <span></span>
-          <input id='NPDport' @input='checkNewPhysicalDeviceValidity' type='text' required maxlength='5'
-            pattern='^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$'>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.encryptionKey') }}</span>
-          <span></span>
-          <input id='NPDencryptionKey' @input='checkNewPhysicalDeviceValidity' type='text' minlength='44' maxlength='44'
-            pattern='^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/][AQgw]==|[A-Za-z0-9+\/]{2}[AEIMQUYcgkosw048]=)?$'>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.password') }}</span>
-          <span></span>
-          <input id='NPDpassword' @input='checkNewPhysicalDeviceValidity' type='text' maxlength='20'>
-        </li>
-      </ul>
-    </div>
-
-    <div class='error-list' v-if='errorMessages?.length > 0'>
-      <ul>
-        <li v-for='errorMessage in errorMessages'>
-          <span>{{ errorMessage }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class='warning-list' v-if='warningMessages?.length > 0'>
-      <ul>
-        <li v-for='warningMessage in warningMessages'>
-          <span>{{ warningMessage }}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!------------------------
-    edit-physical-device
-  ------------------------->
-  <div :class='{ active : currentPage === "edit-physical-device", page : true }'>
-    <header>
-      <span class='back' @click='backEditPhysicalDevice()' data-i18n='wizard2.edit-physical-device.back'></span>
-      <span data-i18n='wizard2.edit-physical-device.title'></span>
-      <span class='done' id='EPDdone' @click='modifyPhysicalDevice()' data-i18n='wizard2.edit-physical-device.done'
-        :hidden='errorMessages?.length !== 0 || !editPhysicalDeviceModified'></span>
-    </header>
-
-    <div class='list'>
-      <p>
-        <input id='EPDname' @input='checkEditPhysicalDeviceValidity' type='text' :value='editPhysicalDevice?.name'
-          required minlength=3 maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'>
-      </p>
-
-      <ul>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.status') }}</span>
-          <span></span>
-          <span :class='{ danger: editPhysicalDevice?.status === "unavailable" }'>{{ editPhysicalDevice?.status
-            }}</span>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.used') }}</span>
-          <span></span>
-          <span>{{ editPhysicalDevice?.used }}</span>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.ipAddress') }}</span>
-          <span></span>
-          <input id='EPDipAddress' @input='checkEditPhysicalDeviceValidity' type='text'
-            :value='editPhysicalDevice?.ipAddress' required maxlength='15'
-            pattern='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.port') }}</span>
-          <span></span>
-          <input id='EPDport' @input='checkEditPhysicalDeviceValidity' type='text' :value='editPhysicalDevice?.port'
-            required maxlength='5'
-            pattern='^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$'>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.encryptionKey') }}</span>
-          <span></span>
-          <input id='EPDencryptionKey' @input='checkEditPhysicalDeviceValidity' type='text'
-            :value='editPhysicalDevice?.encryptionKey' minlength='44' maxlength='44'
-            pattern='^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/][AQgw]==|[A-Za-z0-9+\/]{2}[AEIMQUYcgkosw048]=)?$'>
-        </li>
-        <li>
-          <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.password') }}</span>
-          <span></span>
-          <input id='EPDpassword' @input='checkEditPhysicalDeviceValidity' type='text'
-            :value='editPhysicalDevice?.password' maxlength='20'>
-        </li>
-      </ul>
-    </div>
-
-    <div class='error-list' v-if='errorMessages?.length > 0'>
-      <ul>
-        <li v-for='errorMessage in errorMessages'>
-          <span>{{ errorMessage }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class='warning-list' v-if='warningMessages?.length > 0'>
-      <ul>
-        <li v-for='warningMessage in warningMessages'>
-          <span>{{ warningMessage }}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-
+<!-- ************************
+     * Init app
+     ************************ -->
+<div v-scope :class='{ esphomewizard : true }' id='esphomewizard' hidden @vue:mounted="mounted($el)">
+  <section id="main-page" v-scope="MainPage()"></section>
+  <section id="list-virtual-devices-page" v-scope="ListVirtualDevicesPage()"></section>
+  <section id="new-physical-device-page" v-scope="NewPhysicalDevicePage()"></section>
+  <section id="new-virtual-device-page" v-scope="NewVirtualDevicePage()"></section>
+  <section id="edit-virtual-device-page" v-scope="EditVirtualDevicePage()"></section>
+  <section id="list-physical-devices-page" v-scope="ListPhysicalDevicesPage()"></section>
+  <section id="edit-physical-device-page" v-scope="EditPhysicalDevicePage()"></section>
 </div>
+
+<script>
+  wizardlog('Create app');
+  Homey.setNavigationClose();
+
+  PetiteVue.createApp({
+    pageHandler,
+    configuration,
+    errorAndWarningList,
+    mounted(el) {
+      wizardlog('app mounted');
+      pageHandler.setMainPage();
+      el.hidden = false;
+    }
+  }).mount();
+
+  wizardlog('Create app done');
+</script>

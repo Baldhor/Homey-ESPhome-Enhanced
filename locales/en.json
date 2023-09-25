@@ -190,7 +190,7 @@
             "back": "back",
             "title": "Manage your virtual devices",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "done": "done",
+            "apply": "apply",
             "list-physical-devices": {
                 "title": "Short list of physical devices",
                 "unused": "Unused",
@@ -217,7 +217,8 @@
             "status": "Status",
             "used": "Used",
             "ipAddress": "IP Address",
-            "port": "Port"
+            "port": "Port",
+            "cannot-modify": "New physical device cannot be modified until they are used"
         },
         "new-physical-device": {
             "back": "back",
@@ -242,7 +243,7 @@
         "edit-physical-device": {
             "back": "back",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "done": "done",
+            "apply": "apply",
             "title": "Edit physical device",
             "status": "Status",
             "used": "Used",
@@ -273,7 +274,7 @@
             "error-name": "Name is required and must be pretty",
             "error-zone": "A zone must be selected",
             "error-class": "A class must be selected",
-            "warning-name-already-used": "This name is already used by another virtual device",
+            "warning-name-already-used": "This name is already used by another virtual device in the same zone",
             "fatal-error": "Something went wrong!"
         },
         "edit-virtual-device": {
@@ -292,21 +293,30 @@
                 "title": "Capabilities",
                 "new-native-capability": "New native capability",
                 "name": "Capability",
-                "capbility-unselected": "--Select a capability--",
+                "edit": "edit",
+                "status-title": "Status",
+                "status": {
+                    "new": "New",
+                    "unmodified": "Unmodified",
+                    "modified": "Modified",
+                    "updated": "Updated"
+                },
                 "options-title": "Option(s)",
                 "options": {
                     "units": "Unit",
                     "decimals": "Decimals",
                     "preventInsights": "Prevent Insights",
                     "preventTag": "Prevent Tag"
-                }
+                },
+                "physical-device": "Physical device"
             },
             "native-capability": {
                 "physical-device-name": "Physcial device",
                 "entity-id": "Native capability id",
                 "entity-name": "Native capability name"
             },
-            "warning-name-already-used": "This name is already used by another virtual device",
+            "warning-name-already-used": "This name is already used by another virtual device in the same zone",
+            "warning-capability-title-not-unique": "Several capabilities have the same title",
             "fatal-error": "Something went wrong!"
         }
     },

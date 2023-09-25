@@ -17,6 +17,11 @@ function onHomeyReady(Homey) {
     warningMessages: null,
     newPhysicalDeviceTimeout: null,
     newPhysicalDeviceId: null,
+
+    // components
+    errorList, ErrorList,
+    warningList, ErrorList,
+
     // methods
     alert(msg, icon = null) {
       return new Promise(resolve => {
@@ -104,6 +109,83 @@ function onHomeyReady(Homey) {
       this.errorMessages = errorMessages;
       this.warningMessages = warningMessages;
     },
+    async applyNewPhysicalDevice() {
+      wizardlog('applyNewPhysicalDevice');
+
+      Homey.showLoadingOverlay();
+
+      try {
+        this.newPhysicalDeviceId = 'Wizard' + Date.now();
+
+        await Homey.emit('connect-new-device', {
+          physicalDeviceId: this.newPhysicalDeviceId,
+          name: document.getElementById("NPDname").value,
+          ipAddress: document.getElementById("NPDipAddress").value,
+          port: document.getElementById("NPDport").value,
+          encryptionKey: document.getElementById("NPDencryptionKey").value,
+          password: document.getElementById("NPDpassword").value
+        }).catch(e => { throw e; });
+
+        // We wait 15 seconds maximum
+        this.newPhysicalDeviceTimeout = setTimeout(this.applyNewPhysicalDeviceTimeout, 15000);
+      } catch (e) {
+        this.newPhysicalDeviceId = null;
+        if (this.newPhysicalDeviceTimeout !== null) {
+          clearTimeout(this.newPhysicalDeviceTimeout);
+          this.newPhysicalDeviceTimeout = null;
+        }
+        wizardlog(e);
+
+        Homey.hideLoadingOverlay();
+        this.alert(Homey.__("wizard2.new-physical-device.fatal-error", "error"));
+      }
+    },
+    applyNewPhysicalDeviceTimeout() {
+      wizardlog('applyNewPhysicalDeviceTimeout');
+      this.newPhysicalDeviceTimeout = null;
+      this.newPhysicalDeviceId = null;
+
+      Homey.hideLoadingOverlay();
+      this.alert(Homey.__("wizard2.new-physical-device.timeout", "error"));
+    },
+    applyNewPhysicalDeviceConnected(newPhysicalDevice) {
+      wizardlog('applyNewPhysicalDeviceConnected:', newPhysicalDevice);
+
+      if (newPhysicalDevice.physicalDeviceId !== this.newPhysicalDeviceId) {
+        wizardlog('Unexpected new physical device, ignoring');
+        return;
+      }
+
+      // Cancel the timeout
+      if (this.newPhysicalDeviceTimeout !== null) {
+        clearTimeout(this.newPhysicalDeviceTimeout);
+        this.newPhysicalDeviceTimeout = null;
+      }
+
+      this.configuration.listPhysicalDevices.push(newPhysicalDevice);
+      this.newPhysicalDeviceId = null;
+
+      this.setPage("list-virtual-devices");
+    },
+    applyNewPhysicalDeviceFailed(data) {
+      wizardlog('applyNewPhysicalDeviceFailed:', data);
+
+      if (data.physicalDeviceId !== this.newPhysicalDeviceId) {
+        wizardlog('Unexpected new physical device failure, ignoring');
+        return;
+      }
+
+      // Cancel the timeout
+      if (this.newPhysicalDeviceTimeout !== null) {
+        clearTimeout(this.newPhysicalDeviceTimeout);
+        this.newPhysicalDeviceTimeout = null;
+      }
+
+      this.newPhysicalDeviceId = null;
+
+      Homey.hideLoadingOverlay();
+      this.alert(Homey.__("wizard2.new-physical-device.failed") + ": " + data.message, "error");
+    },
     checkNewVirtualDeviceValidity() {
       wizardlog('checkNewVirtualDeviceValidity');
 
@@ -127,7 +209,7 @@ function onHomeyReady(Homey) {
 
       // Name should be unique
       if (name.validity.valid) {
-        let tmp = this.configuration.listVirtualDevices.find(e => e.current.name === name.value);
+        let tmp = this.configuration.listVirtualDevices.find(e => e.current.zoneId === zone.value && e.current.name === name.value);
         if (tmp !== undefined) {
           warningMessages.push(Homey.__("wizard2.new-virtual-device.warning-name-already-used"));
         }
@@ -152,42 +234,8 @@ function onHomeyReady(Homey) {
       this.errorMessages = errorMessages;
       this.warningMessages = warningMessages;
     },
-    checkEditVirtualDeviceValidity() {
-      wizardlog('checkEditVirtualDeviceValidity');
-
-      // Disable the done button if any of the fields is invalid
-      const name = document.getElementById("EVDname");
-      //const zone = document.getElementById("EVDzone");
-      const device_class = document.getElementById("EVDclass");
-      const device_class_description = document.getElementById("EVDclassDescription");
-
-      // Reset error and warning messsages
-      let errorMessages = [];
-      let warningMessages = [];
-      name.setCustomValidity('');
-
-      // Name format
-      if (!name.validity.valid) {
-        errorMessages.push(Homey.__("wizard2.edit-virtual-device.error-name"));
-      }
-
-      // Name should be unique
-      if (name.validity.valid) {
-        let tmp = this.configuration.listVirtualDevices.find(e => e.virtualDeviceId !== this.editVirtualDevice.virtualDeviceId && e.current.name === name.value);
-        if (tmp !== undefined) {
-          warningMessages.push(Homey.__("wizard2.edit-virtual-device.warning-name-already-used"));
-        }
-      }
-
-      // Class description
-      device_class_description.innerHTML = Homey.__('deviceClass.' + device_class.value + '.description');
-      device_class_description.hidden = false;
-
-      this.errorMessages = errorMessages;
-      this.warningMessages = warningMessages;
-    },
     async createVirtualDevice() {
-      wizardlog('createPhysicalDevice');
+      wizardlog('createVirtualDevice');
 
       Homey.showLoadingOverlay();
 
@@ -213,82 +261,129 @@ function onHomeyReady(Homey) {
         this.alert(Homey.__("wizard2.new-virtual-device.fatal-error", "error"));
       }
     },
-    async createPhysicalDevice() {
-      wizardlog('createPhysicalDevice');
+    checkEditVirtualDeviceValidity() {
+      wizardlog('checkEditVirtualDeviceValidity');
 
-      Homey.showLoadingOverlay();
+      // Disable the done button if any of the fields is invalid
+      const name = document.getElementById("EVDname");
+      const zone = document.getElementById("EVDzone");
+      const device_class = document.getElementById("EVDclass");
+      const device_class_description = document.getElementById("EVDclassDescription");
 
-      try {
-        this.newPhysicalDeviceId = 'Wizard' + Date.now();
+      const capabilities = [];
+      document.querySelectorAll("#EVDcapability-title").forEach(element => {
+        capabilities.push({
+          capabilityId: element.dataset['capabilityId'],
+          'titleElement': element
+        });
+      });
+      document.querySelectorAll("#EVDcapability-type").forEach(element => {
+        capabilities.find(e => e.capabilityId === element.dataset['capabilityId'])['typeElement'] = element;
+      });
 
-        await Homey.emit('connect-new-device', {
-          physicalDeviceId: this.newPhysicalDeviceId,
-          name: document.getElementById("NPDname").value,
-          ipAddress: document.getElementById("NPDipAddress").value,
-          port: document.getElementById("NPDport").value,
-          encryptionKey: document.getElementById("NPDencryptionKey").value,
-          password: document.getElementById("NPDpassword").value
-        }).catch(e => { throw e; });
+      // Reset error and warning messsages
+      let errorMessages = [];
+      let warningMessages = [];
+      name.setCustomValidity('');
 
-        // We wait 15 seconds maximum
-        this.newPhysicalDeviceTimeout = setTimeout(this.timeoutNewPhysicalDevice, 15000);
-      } catch (e) {
-        this.newPhysicalDeviceId = null;
-        if (this.newPhysicalDeviceTimeout !== null) {
-          clearTimeout(this.newPhysicalDeviceTimeout);
-          this.newPhysicalDeviceTimeout = null;
-        }
-        wizardlog(e);
-
-        Homey.hideLoadingOverlay();
-        this.alert(Homey.__("wizard2.new-physical-device.fatal-error", "error"));
-      }
-    },
-    timeoutNewPhysicalDevice() {
-      wizardlog('timeoutNewPhysicalDevice');
-      this.newPhysicalDeviceTimeout = null;
-      this.newPhysicalDeviceId = null;
-
-      Homey.hideLoadingOverlay();
-      this.alert(Homey.__("wizard2.new-physical-device.timeout", "error"));
-    },
-    newPhysicalDeviceConnected(newPhysicalDevice) {
-      wizardlog('newPhysicalDeviceConnected:', newPhysicalDevice);
-
-      if (newPhysicalDevice.physicalDeviceId !== this.newPhysicalDeviceId) {
-        wizardlog('Unexpected new physical device, ignoring');
+      if (this.editVirtualDevice === null)
         return;
+
+      // Check if anything has been modified
+      this.editVirtualDeviceModified = name.value !== this.editVirtualDevice.current.name || zone.value !== this.editVirtualDevice.current.zoneId || device_class.value !== this.editVirtualDevice.current.class;
+
+      // Name format
+      if (!name.validity.valid) {
+        errorMessages.push(Homey.__("wizard2.edit-virtual-device.error-name"));
       }
 
-      // Cancel the timeout
-      if (this.newPhysicalDeviceTimeout !== null) {
-        clearTimeout(this.newPhysicalDeviceTimeout);
-        this.newPhysicalDeviceTimeout = null;
+      // Name should be unique
+      if (name.validity.valid) {
+        let tmp = this.configuration.listVirtualDevices.find(e => e.virtualDeviceId !== this.editVirtualDevice.virtualDeviceId && e.current.zoneId === zone.value && e.current.name === name.value);
+        if (tmp !== undefined) {
+          warningMessages.push(Homey.__("wizard2.edit-virtual-device.warning-name-already-used"));
+        }
       }
 
-      this.configuration.listPhysicalDevices.push(newPhysicalDevice);
-      this.newPhysicalDeviceId = null;
+      // Class description
+      device_class_description.innerHTML = Homey.__('deviceClass.' + device_class.value + '.description');
+      device_class_description.hidden = false;
+
+      this.errorMessages = errorMessages;
+      this.warningMessages = warningMessages;
+    },
+    computeCapabilityOptionsLabel(capability) {
+      wizardlog('computeCapabilityOptionsLabel:', capability);
+
+      let filteredOptions = Object.assign({}, capability.options);
+      delete filteredOptions['title'];
+      return JSON.stringify(filteredOptions, null, 2);
+    },
+
+    computeCapabilityPhysicalDeviceLabel(capability) {
+      wizardlog('computeCapabilityPhysicalDeviceLabel:', capability);
+
+      let physicalDevice = this.configuration.listPhysicalDevices.find(e => e.physicalDeviceId === capability.physicalDeviceId);
+      let nativeCapability = physicalDevice.nativeCapabilities.find(e => e.nativeCapabilityId === capability.nativeCapabilityId);
+
+      return JSON.stringify({
+        physicalDevice: physicalDevice.name,
+        entityName: nativeCapability.entityName,
+        attribut: nativeCapability.attribut
+      }, null, 2);
+    },
+    async backEditVirtualDevice() {
+      wizardlog('backEditVirtualDevice');
+
+      this.editVirtualDeviceModified ? (await this.confirm(Homey.__("wizard2.edit-virtual-device.loseModification", "warning")) ? this.setPage('list-virtual-devices') : true) : this.setPage('list-virtual-devices');
+    },
+    async applyEditVirtualDevice() {
+      wizardlog('applyEditVirtualDevice');
+
+      this.editVirtualDevice.current.name = document.getElementById("EVDname").value;
+      this.editVirtualDevice.current.zoneId = document.getElementById("EVDzone").value;
+      this.editVirtualDevice.current.class = document.getElementById("EVDclass").value;
+
+      // TODO: Should apply to Homey! And refresh configuration
 
       this.setPage("list-virtual-devices");
     },
-    newPhysicalDeviceFailed(data) {
-      wizardlog('newPhysicalDeviceFailed:', data);
+    checkEditCapabilityValidity() {
+      wizardlog('checkEditCapabilityValidity');
 
-      if (data.physicalDeviceId !== this.newPhysicalDeviceId) {
-        wizardlog('Unexpected new physical device failure, ignoring');
+      // Disable the done button if any of the fields is invalid
+      const name = document.getElementById("ECname");
+
+      // Reset error and warning messsages
+      let errorMessages = [];
+      let warningMessages = [];
+      name.setCustomValidity('');
+
+      if (this.editCapability === null)
         return;
+
+      // Check if anything has been modified
+      this.editCapabilityModified = name.value !== this.editCapability.name;
+
+      // Name format
+      if (!name.validity.valid) {
+        errorMessages.push(Homey.__("wizard2.edit-capability.error-name"));
       }
 
-      // Cancel the timeout
-      if (this.newPhysicalDeviceTimeout !== null) {
-        clearTimeout(this.newPhysicalDeviceTimeout);
-        this.newPhysicalDeviceTimeout = null;
-      }
+      this.errorMessages = errorMessages;
+      this.warningMessages = warningMessages;
+    },
+    async modifyCapability() {
+      wizardlog('modifyCapability');
 
-      this.newPhysicalDeviceId = null;
+      // TODO: modify capability
 
-      Homey.hideLoadingOverlay();
-      this.alert(Homey.__("wizard2.new-physical-device.failed") + ": " + data.message, "error");
+      this.editCapability = null;
+      this.setPreviousPage();
+    },
+    modifyVirtualDevice() {
+      wizardlog('modifyVirtualDevice');
+
     },
     checkEditPhysicalDeviceValidity() {
       wizardlog('checkEditPhysicalDeviceValidity');
@@ -464,6 +559,15 @@ function onHomeyReady(Homey) {
             setTimeout(this.checkEditVirtualDeviceValidity, 100);
             break;
 
+          case 'edit-capability':
+            this.editCapability = null;
+            this.editCapability = this.editVirtualDevice.find(e => e.capabilityId === data.capabilityId);
+            if (this.editCapability === undefined) {
+              throw new Error('Cannot find capability:', data.capabilityId, 'for page', page);
+            }
+            setTimeout(this.checkEditCapabilityValidity, 100);
+            break;
+
           case 'list-physical-devices':
             break;
 
@@ -512,13 +616,13 @@ function onHomeyReady(Homey) {
 
         for (let i = 0; i < a.zonePath.length; i++) {
           // If b path is shorter, it means it is before
-          if (b.zonePath.length < (i + 1) ) {
+          if (b.zonePath.length < (i + 1)) {
             return 1;
           }
 
           let result = a.zonePath[i] - b.zonePath[i];
           if (result !== 0) {
-              return result;
+            return result;
           }
         }
 
@@ -539,10 +643,13 @@ function onHomeyReady(Homey) {
       wizardlog('computeZonePathDepthAndOrder result:', JSON.parse(JSON.stringify(this.configuration.listZones)));
     },
     compareZoneId(a, b) {
+      wizardlog('compareZoneId:', a, b);
+
       return this.configuration.listZones.find(zone => zone.zoneId === a).zoneOrder - this.configuration.listZones.find(zone => zone.zoneId === a).zoneOrder;
     },
     async loadConfiguration() {
       wizardlog('loadConfiguration');
+
       this.configuration = {};
       this.configuration = await Homey.emit('get-configuration')
         .catch(e => wizarderror(e));
@@ -553,8 +660,8 @@ function onHomeyReady(Homey) {
       wizardlog('mounted');
 
       // Setup Homey listeners
-      Homey.on('new-device-connected', data => { this.newPhysicalDeviceConnected(data); });
-      Homey.on('new-device-failed', data => { this.newPhysicalDeviceFailed(data); });
+      Homey.on('new-device-connected', data => { this.applyNewPhysicalDeviceConnected(data); });
+      Homey.on('new-device-failed', data => { this.applyNewPhysicalDeviceFailed(data); });
 
       // load settings
       this.setMainPage();

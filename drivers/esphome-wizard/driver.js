@@ -634,10 +634,10 @@ class Driver extends Homey.Driver {
                             status: 'new',
                             used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === data.physicalDeviceId).length > 0).length > 0,
                             name: realPhysicalDevice.name,
-                            ipAddress: realPhysicalDevice.ipAddress,
-                            port: realPhysicalDevice.port,
-                            encryptionKey: realPhysicalDevice.encryptionKey,
-                            password: realPhysicalDevice.password,
+                            ipAddress: data.ipAddress,
+                            port: data.port,
+                            encryptionKey: data.encryptionKey,
+                            password: data.password,
                             nativeCapabilities: []
                         };
 

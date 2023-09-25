@@ -1,0 +1,26 @@
+<template id="template-main-page">
+  <div :class='{ active: pageHandler.currentPage === "main-page", page : true, fixed : true }' @vue:mounted='mounted'>
+    <header>
+      <span data-i18n='wizard2.main.title'></span>
+    </header>
+
+    <div class='list'>
+      <p data-i18n='wizard2.main.menu'></p>
+
+      <ul>
+        <li @click='pageHandler.setPage("list-virtual-devices-page")'>
+          <span data-i18n='wizard2.main.list-virtual-devices'></span>
+          <i class='arrow right'></i>
+        </li>
+        <li @click='pageHandler.setPage("list-physical-devices-page")'>
+          <span data-i18n='wizard2.main.list-physical-devices'></span>
+          <i class='arrow right'></i>
+        </li>
+        <li @click='pageHandler.setPage("new-physical-device-page")'>
+          <span data-i18n='wizard2.main.new-physical-device'></span>
+          <i class='arrow right'></i>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
