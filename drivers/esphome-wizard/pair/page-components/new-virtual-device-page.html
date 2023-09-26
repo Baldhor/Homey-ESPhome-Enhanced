@@ -1,11 +1,11 @@
 <template id="template-new-virtual-device-page">
   <div :class='{ active : pageHandler.currentPage === "new-virtual-device-page", page : true }' @vue:mounted='mounted'>
     <header>
-      <span class='back' @click='pageHandler.setPage("list-virtual-devices-page")'
+      <span class='back' @click='back()'
         data-i18n='wizard2.new-virtual-device.back'></span>
       <span data-i18n='wizard2.new-virtual-device.title'></span>
       <span class='done' id='NVDdone' @click='apply()' data-i18n='wizard2.new-virtual-device.done'
-        :hidden='errorAndWarningList.errors.length !== 0'></span>
+        :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
     </header>
 
     <div class='list'>
@@ -19,7 +19,7 @@
           <span></span>
           <select ref='zoneId' v-model='zoneId' @change='checkValidity'>
             <!--TODO: should use the zone used to start the wizard as default? -->
-            <option value='unselected' selected disabled>{{ Homey.__('wizard2.new-virtual-device.zone-unselected') }}
+            <option v-if='zoneId === "unselected"' value='unselected' selected disabled>{{ Homey.__('wizard2.new-virtual-device.zone-unselected') }}
             </option>
             <template v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
               <option :value='zone.zoneId'>
@@ -32,7 +32,7 @@
           <span class='pre'>{{ Homey.__('wizard2.new-virtual-device.class') }}</span>
           <span></span>
           <select ref='classId' v-model='classId' @change='checkValidity'>
-            <option value='unselected' selected disabled>{{ Homey.__('wizard2.new-virtual-device.class-unselected')
+            <option v-if='classId === "unselected"' value='unselected' selected disabled>{{ Homey.__('wizard2.new-virtual-device.class-unselected')
               }}</option>
             <template
               v-for='classSupportedId in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))'

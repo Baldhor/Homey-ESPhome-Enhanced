@@ -37,8 +37,12 @@ const pageHandler = PetiteVue.reactive({
           await this._registeredComponents[newPage].init(data.virtualDeviceId);
           break;
 
+        case 'select-native-capability-page':
+          await this._registeredComponents[newPage].init(data.virtualDeviceId);
+          break;
+
         case 'edit-capability-page':
-          await this._registeredComponents[newPage].init();
+          await this._registeredComponents[newPage].init(data.virtualDeviceId, data.capabilityId);
           break;
 
         case 'list-physical-devices-page':

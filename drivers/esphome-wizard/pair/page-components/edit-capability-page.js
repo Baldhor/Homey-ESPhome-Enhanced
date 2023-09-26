@@ -3,6 +3,9 @@ const EditCapabilityPage = function () {
     componentName: "edit-capability-page",
     $template: "#template-edit-capability-page",
 
+    _initValues: null,
+    _modified: null,
+
     mounted() {
       wizardlog('[' + this.componentName + '] ' + 'mounted');
 
@@ -11,12 +14,24 @@ const EditCapabilityPage = function () {
     async init() {
       wizardlog('[' + this.componentName + '] ' + 'init');
 
+      this._initValues = {};
+
       this.checkValidity();
     },
     checkValidity() {
       wizardlog('[' + this.componentName + '] ' + 'checkValidity');
 
+      // Reset error and warning messsages
+      errorAndWarningList.reset();
+
       // do nothing
+
+      this.checkModified();
+    },
+    checkModified() {
+      wizardlog('[' + this.componentName + '] ' + 'checkModified');
+
+      this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
     }
   };
 };

@@ -10,6 +10,8 @@ const EditPhysicalDevicePage = function () {
     password: null,
 
     _editPhysicalDevice: null,
+
+    _initValues: null,
     _modified: false,
 
     mounted() {
@@ -18,14 +20,16 @@ const EditPhysicalDevicePage = function () {
       pageHandler.registerComponent(this.componentName, this);
     },
     async init(physicalDeviceId) {
-      wizardlog('[' + this.componentName + '] ' + 'init');
+      wizardlog('[' + this.componentName + '] ' + 'init:', ...arguments);
 
       this._editPhysicalDevice = configuration.physicalDevices.find(e => e.physicalDeviceId === physicalDeviceId);
-      this.name = this._editPhysicalDevice.name;
-      this.ipAddress = this._editPhysicalDevice.ipAddress;
-      this.port = this._editPhysicalDevice.port;
-      this.encryptionKey = this._editPhysicalDevice.encryptionKey;
-      this.password = this._editPhysicalDevice.password;
+
+      this._initValues = {};
+      this.name = this._initValues.name = this._editPhysicalDevice.name;
+      this.ipAddress = this._initValues.ipAddress = this._editPhysicalDevice.ipAddress;
+      this.port = this._initValues.port = this._editPhysicalDevice.port;
+      this.encryptionKey = this._initValues.encryptionKey = this._editPhysicalDevice.encryptionKey;
+      this.password = this._initValues.password = this._editPhysicalDevice.password;
 
       await PetiteVue.nextTick();
       this.checkValidity();
@@ -53,9 +57,6 @@ const EditPhysicalDevicePage = function () {
       if (this._editPhysicalDevice === null) {
         return;
       }
-
-      // Check if anything has been modified
-      this._modified = this.name !== this._editPhysicalDevice.name || this.ipAddress !== this._editPhysicalDevice.ipAddress || this.port !== this._editPhysicalDevice.port || this.encryptionKey !== this._editPhysicalDevice.encryptionKey || this.password !== this._editPhysicalDevice.password;
 
       // Name format
       if (!nameElt.validity.valid) {
@@ -110,6 +111,13 @@ const EditPhysicalDevicePage = function () {
       if (encryptionKeyElt.validity.valid && this.encryptionKey === '') {
         errorAndWarningList.addWarning("wizard2.edit-physical-device.warning-encryption-key-recommended");
       }
+
+      this.checkModified();
+    },
+    checkModified() {
+      wizardlog('[' + this.componentName + '] ' + 'checkModified');
+
+      this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
     },
     async back() {
       wizardlog('[' + this.componentName + '] ' + 'back');

@@ -1,3 +1,52 @@
 <template id="template-select-native-capability-page">
+  <div :class='{ active : pageHandler.currentPage === "select-native-capability-page", page : true }'
+    @vue:mounted='mounted'>
+    <header>
+      <span class='back' @click='back()' data-i18n='wizard2.select-native-capability.back'></span>
+      <span data-i18n='wizard2.select-native-capability.title'></span>
+      <span class='done' id='EVDdone' @click='apply()' data-i18n='wizard2.select-native-capability.done'
+        :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
+    </header>
 
+    <div class='list'>
+      <ul>
+        <li>
+          <!-- select physical device -->
+          <span class='pre'>{{ Homey.__('wizard2.select-native-capability.physical-device') }}</span>
+          <span></span>
+          <select ref='physicalDeviceId' v-model='physicalDeviceId' @change='checkValidity'>
+            <option v-if='physicalDeviceId === "unselected"' value='unselected' selected disabled>{{
+              Homey.__('wizard2.select-native-capability.physical-device-unselected') }}
+            </option>
+            <template
+              v-for='physicalDevice in configuration.physicalDevices?.sort((a, b) => a.name.localeCompare(b.name))'
+              :key='physicalDevice.physicalDeviceId'>
+              <option :value='physicalDevice.physicalDeviceId'>
+                {{ physicalDevice.name }}
+              </option>
+            </template>
+          </select>
+        </li>
+        <li>
+          <!-- select native capability -->
+          <span class='pre'>{{ Homey.__('wizard2.select-native-capability.native-capability') }}</span>
+          <span></span>
+          <select ref='nativeCapabilityId' v-model='nativeCapabilityId' @change='checkValidity'>
+            <option v-if='nativeCapabilityId === "unselected"' value='unselected' selected disabled>{{
+              Homey.__('wizard2.select-native-capability.native-capability-unselected') }}
+            </option>
+            <template
+              v-for='nativeCapability in configuration.physicalDevices?.find(physicalDevice => physicalDevice.physicalDeviceId === physicalDeviceId)?.nativeCapabilities.sort((a, b) => { let compare = a.entityName.localeCompare(b.entityName); if (compare !== 0) return compare; return a.attribut.localeCompare(b.attribut); })'
+              :key='nativeCapability.nativeCapabilityId'>
+              <option :value='nativeCapability.nativeCapabilityId'>
+                {{ nativeCapability.entityName + ' - ' + nativeCapability.attribut }}
+              </option>
+            </template>
+          </select>
+        </li>
+        <li>
+          <!-- details of the selected native capability -->
+        </li>
+      </ul>
+    </div>
 </template>

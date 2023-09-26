@@ -12,6 +12,9 @@ const NewPhysicalDevicePage = function () {
     _newPhysicalDeviceId: null,
     _newPhysicalDeviceTimeout: null,
 
+    _initValues: null,
+    _modified: null,
+
     mounted() {
       wizardlog('[' + this.componentName + '] ' + 'mounted');
 
@@ -22,11 +25,12 @@ const NewPhysicalDevicePage = function () {
     async init() {
       wizardlog('[' + this.componentName + '] ' + 'init');
 
-      this.name = "";
-      this.ipAddress = "";
-      this.port = "6053";
-      this.encryptionKey = "";
-      this.password = "";
+      this._initValues = {};
+      this.name = this._initValues.name = "";
+      this.ipAddress = this._initValues.ipAddress = "";
+      this.port = this._initValues.port = "6053";
+      this.encryptionKey = this._initValues.encryptionKey = "";
+      this.password = this._initValues.password = "";
 
       this._newPhysicalDeviceId = null;
 
@@ -106,6 +110,18 @@ const NewPhysicalDevicePage = function () {
       if (encryptionKeyElt.validity.valid && this.encryptionKey === '') {
         errorAndWarningList.addWarning("wizard2.new-physical-device.warning-encryption-key-recommended");
       }
+
+      this.checkModified();
+    },
+    checkModified() {
+      wizardlog('[' + this.componentName + '] ' + 'checkModified');
+
+      this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
+    },
+    async back() {
+      wizardlog('[' + this.componentName + '] ' + 'back');
+
+      this._modified ? (await confirm(Homey.__("wizard2.new-physical-device.loseModification", "warning")) ? pageHandler.setPage('list-virtual-devices-page') : true) : pageHandler.setPage('list-virtual-devices-page');
     },
     async apply() {
       wizardlog('[' + this.componentName + '] ' + 'apply');

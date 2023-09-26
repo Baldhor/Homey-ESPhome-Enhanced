@@ -184,6 +184,7 @@
             "menu": "Choose a functionnality",
             "list-physical-devices": "Manage your physical devices",
             "list-virtual-devices": "Manage your virtual devices",
+            "shortcuts": "Choose a shortcut",
             "new-physical-device": "Add a new physical device"
         },
         "list-virtual-devices": {
@@ -222,6 +223,7 @@
         },
         "new-physical-device": {
             "back": "back",
+            "loseModification": "Your modification(s) will be lost. Are you sure?",
             "done": "done",
             "title": "New physical device",
             "ipAddress": "IP Address",
@@ -318,6 +320,16 @@
             "warning-name-already-used": "This name is already used by another virtual device in the same zone",
             "warning-capability-title-not-unique": "Several capabilities have the same title",
             "fatal-error": "Something went wrong!"
+        },
+        "select-native-capability": {
+            "back": "back",
+            "loseModification": "Your modification(s) will be lost. Are you sure?",
+            "done": "done",
+            "title": "New capability",
+            "physical-device": "Physical device",
+            "physical-device-unselected": "--Select a physical device--",
+            "native-capability": "Native capability",
+            "native-capability-unselected": "--Select a native capability--"
         }
     },
     "deviceClass": {

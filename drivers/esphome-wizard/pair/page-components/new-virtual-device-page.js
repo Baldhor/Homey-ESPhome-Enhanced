@@ -8,6 +8,9 @@ const NewVirtualDevicePage = function () {
     classId: null,
     classDescription: null,
 
+    _initValues: null,
+    _modified: null,
+
     mounted() {
       wizardlog('[' + this.componentName + '] ' + 'mounted');
 
@@ -16,9 +19,10 @@ const NewVirtualDevicePage = function () {
     async init() {
       wizardlog('[' + this.componentName + '] ' + 'init');
 
-      this.name = "";
-      this.zoneId = "unselected";
-      this.classId = "unselected";
+      this._initValues = {};
+      this.name = this._initValues.name = "";
+      this.zoneId = this._initValues.zoneId = "unselected";
+      this.classId = this._initValues.classId = "unselected";
       this.classDescription = "";
 
       await PetiteVue.nextTick();
@@ -67,8 +71,20 @@ const NewVirtualDevicePage = function () {
       } else {
         this.classDescription = Homey.__('deviceClass.' + this.classId + '.description');
       }
+
+      this.checkModified();
     },
-    apply() {
+    checkModified() {
+      wizardlog('[' + this.componentName + '] ' + 'checkModified');
+
+      this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
+    },
+    async back() {
+      wizardlog('[' + this.componentName + '] ' + 'back');
+
+      this._modified ? (await confirm(Homey.__("wizard2.new-virtual-device.loseModification", "warning")) ? pageHandler.setPage('list-virtual-devices-page') : true) : pageHandler.setPage('list-virtual-devices-page');
+    },
+    async apply() {
       wizardlog('[' + this.componentName + '] ' + 'apply');
 
       Homey.showLoadingOverlay();

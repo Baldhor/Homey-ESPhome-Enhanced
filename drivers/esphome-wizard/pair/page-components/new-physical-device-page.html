@@ -1,45 +1,42 @@
 <template id="template-new-physical-device-page">
   <div :class='{ active : pageHandler.currentPage === "new-physical-device-page", page : true }' @vue:mounted='mounted'>
     <header>
-      <span class='back' @click='pageHandler.setPage("list-virtual-devices-page")' data-i18n='wizard2.new-physical-device.back'></span>
+      <span class='back' @click='back()'
+        data-i18n='wizard2.new-physical-device.back'></span>
       <span data-i18n='wizard2.new-physical-device.title'></span>
-      <span class='done' id='NPDdone' @click='apply()'
-        data-i18n='wizard2.new-physical-device.done' :hidden='errorAndWarningList.errors.length !== 0'></span>
+      <span class='done' id='NPDdone' @click='apply()' data-i18n='wizard2.new-physical-device.done'
+        :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
     </header>
 
     <div class='list'>
       <ul>
         <li>
-          <input ref='name' v-model='name' @input='checkValidity' type='text'
-            required minlength=3 maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'
-            style='text-align: left; margin-left: 0;'>
+          <input ref='name' v-model='name' @input='checkValidity' type='text' required minlength=3 maxlength=30
+            pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$' style='text-align: left; margin-left: 0;'>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.ipAddress') }}</span>
           <span></span>
-          <input ref='ipAddress' v-model='ipAddress' @input='checkValidity'
-            type='text' required maxlength='15'
+          <input ref='ipAddress' v-model='ipAddress' @input='checkValidity' type='text' required maxlength='15'
             pattern='^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.port') }}</span>
           <span></span>
-          <input ref='port' v-model='port' @input='checkValidity' type='text'
-            required maxlength='5'
+          <input ref='port' v-model='port' @input='checkValidity' type='text' required maxlength='5'
             pattern='^((6553[0-5])|(655[0-2][0-9])|(65[0-4][0-9]{2})|(6[0-4][0-9]{3})|([1-5][0-9]{4})|([0-5]{0,5})|([0-9]{1,4}))$'>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.encryptionKey') }}</span>
           <span></span>
-          <input ref='encryptionKey' v-model='encryptionKey'
-            @input='checkValidity' type='text' minlength='44' maxlength='44'
+          <input ref='encryptionKey' v-model='encryptionKey' @input='checkValidity' type='text' minlength='44'
+            maxlength='44'
             pattern='^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/][AQgw]==|[A-Za-z0-9+\/]{2}[AEIMQUYcgkosw048]=)?$'>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.password') }}</span>
           <span></span>
-          <input ref='password' v-model='password' @input='checkValidity'
-            type='text' maxlength='20'>
+          <input ref='password' v-model='password' @input='checkValidity' type='text' maxlength='20'>
         </li>
       </ul>
     </div>

@@ -51,7 +51,7 @@
 
       <ul v-for='(capability, index) in _editVirtualDevice?.current.capabilities'
         :key='capability.capabilityId'>
-        <li v-if='index === 0' @click='switchPage("select-native-capability-page")'>
+        <li v-if='index === 0' @click='switchPage("select-native-capability-page", { virtualDeviceId: _editVirtualDevice.virtualDeviceId })'>
           <span>{{ Homey.__('wizard2.edit-virtual-device.capability.new-native-capability') }}</span>
           <i class='arrow right'></i>
         </li>
@@ -63,7 +63,7 @@
           <span>{{ capability.options.title !== null ? capability.options.title : '-default-' }}</span>
           <span></span>
           <span class='edit'
-            @click='switchPage("edit-capability-page", { capabilityId: capability.capabilityId })'>{{
+            @click='switchPage("edit-capability-page", { virtualDeviceId: _editVirtualDevice.virtualDeviceId, capabilityId: capability.capabilityId })'>{{
             Homey.__('wizard2.edit-virtual-device.capability.edit') }}</span>
         </li>
         <li class="sub">

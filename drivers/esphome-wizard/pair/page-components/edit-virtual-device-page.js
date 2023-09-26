@@ -9,6 +9,8 @@ const EditVirtualDevicePage = function () {
     classDescription: null,
 
     _editVirtualDevice: null,
+
+    _initValues: null,
     _modified: false,
 
     mounted() {
@@ -17,12 +19,14 @@ const EditVirtualDevicePage = function () {
       pageHandler.registerComponent(this.componentName, this);
     },
     async init(virtualDeviceId) {
-      wizardlog('[' + this.componentName + '] ' + 'init');
+      wizardlog('[' + this.componentName + '] ' + 'init:', ...arguments);
 
       this._editVirtualDevice = configuration.virtualDevices.find(e => e.virtualDeviceId === virtualDeviceId);
-      this.name = this._editVirtualDevice.current.name;
-      this.zoneId = this._editVirtualDevice.current.zoneId;
-      this.classId = this._editVirtualDevice.current.class;
+
+      this._initValues = {};
+      this.name = this._initValues.name = this._editVirtualDevice.current.name;
+      this.zoneId = this._initValues.zoneId = this._editVirtualDevice.current.zoneId;
+      this.classId = this._initValues.classId = this._editVirtualDevice.current.class;
       this.classDescription = "";
 
       await PetiteVue.nextTick();
@@ -48,9 +52,6 @@ const EditVirtualDevicePage = function () {
         return;
       }
 
-      // Check if anything has been modified
-      this._modified = this.name !== this._editVirtualDevice.current.name || this.zoneId !== this._editVirtualDevice.current.zoneId || this.classId !== this._editVirtualDevice.current.class;
-
       // Name format
       if (!nameElt.validity.valid) {
         errorAndWarningList.addError("wizard2.edit-virtual-device.error-name");
@@ -66,6 +67,13 @@ const EditVirtualDevicePage = function () {
 
       // Class description
       this.classDescription = Homey.__('deviceClass.' + this.classId + '.description');
+
+      this.checkModified();
+    },
+    checkModified() {
+      wizardlog('[' + this.componentName + '] ' + 'checkModified');
+
+      this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
     },
     async back() {
       wizardlog('[' + this.componentName + '] ' + 'back');
