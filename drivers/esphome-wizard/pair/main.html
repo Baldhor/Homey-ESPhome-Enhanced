@@ -30,25 +30,21 @@
 <script src="page-components/list-virtual-devices-page.js"></script>
 <div hidden w3-include-html="page-components/list-virtual-devices-page.html"></div>
 
-<!-- New physical device page -->
-<script src="page-components/new-physical-device-page.js"></script>
-<div hidden w3-include-html="page-components/new-physical-device-page.html"></div>
-
-<!-- New virtual device page -->
-<script src="page-components/new-virtual-device-page.js"></script>
-<div hidden w3-include-html="page-components/new-virtual-device-page.html"></div>
-
 <!-- Edit virtual device page -->
 <script src="page-components/edit-virtual-device-page.js"></script>
 <div hidden w3-include-html="page-components/edit-virtual-device-page.html"></div>
 
 <!-- Select native capability page -->
-<script src="page-components/select-native-capability-page.js"></script>
-<div hidden w3-include-html="page-components/select-native-capability-page.html"></div>
+<!--
+script src="page-components/new-capability-page.js"></script>
+<div hidden w3-include-html="page-components/new-capability-page.html"></div>
+-->
 
 <!-- Edit capability page -->
+<!--
 <script src="page-components/edit-capability-page.js"></script>
 <div hidden w3-include-html="page-components/edit-capability-page.html"></div>
+-->
 
 <!-- List physical devices page -->
 <script src="page-components/list-physical-devices-page.js"></script>
@@ -74,11 +70,9 @@
 <div v-scope :class='{ esphomewizard : true }' id='esphomewizard' hidden @vue:mounted="mounted($el)">
   <section id="main-page" v-scope="MainPage()"></section>
   <section id="list-virtual-devices-page" v-scope="ListVirtualDevicesPage()"></section>
-  <section id="new-physical-device-page" v-scope="NewPhysicalDevicePage()"></section>
-  <section id="new-virtual-device-page" v-scope="NewVirtualDevicePage()"></section>
   <section id="edit-virtual-device-page" v-scope="EditVirtualDevicePage()"></section>
-  <section id="select-native-capability-page" v-scope="SelectNativeCapabilityPage()"></section>
-  <section id="edit-capability-page" v-scope="EditCapabilityPage()"></section>
+  <!--<section id="new-capability-page" v-scope="SelectNativeCapabilityPage()"></section>-->
+  <!--<section id="edit-capability-page" v-scope="EditCapabilityPage()"></section>-->
   <section id="list-physical-devices-page" v-scope="ListPhysicalDevicesPage()"></section>
   <section id="edit-physical-device-page" v-scope="EditPhysicalDevicePage()"></section>
 </div>

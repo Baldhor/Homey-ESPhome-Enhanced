@@ -742,8 +742,6 @@ class Driver extends Homey.Driver {
             // Finaly store the new conf
             this.setConf(conf);
         });
-
-
     }
 
     /***********************

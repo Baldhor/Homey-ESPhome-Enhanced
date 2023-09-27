@@ -1,7 +1,7 @@
-const SelectNativeCapabilityPage = function () {
+const NewCapabilityPage = function () {
   return {
-    componentName: "select-native-capability-page",
-    $template: "#template-select-native-capability-page",
+    componentName: "new-capability-page",
+    $template: "#template-new-capability-page",
 
     physicalDeviceId: null,
     nativeCapabilityId: null,
@@ -54,14 +54,14 @@ const SelectNativeCapabilityPage = function () {
     async back() {
       wizardlog('[' + this.componentName + '] ' + 'back');
 
-      this._modified ? (await confirm(Homey.__("wizard2.select-native-capability.loseModification", "warning")) ? pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId }) : true) : pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
+      this._modified ? (await confirm(Homey.__("wizard2.new-capability.loseModification", "warning")) ? pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId }) : true) : pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
     },
     async apply() {
       wizardlog('[' + this.componentName + '] ' + 'back');
 
       // Add selected native capability to virtual device capability
       let tmpCapability = {
-        capabilityId: 'Wizard' + Date.now(), // Temporary identifier only, it will be updated in the edit-capability-page
+        capabilityId: 'Wizard' + Date.now(), // TODO
         type: null,
         index: null,
         options: null,
@@ -75,7 +75,7 @@ const SelectNativeCapabilityPage = function () {
       this._editVirtualDevice.current.capabilities.push(tmpCapability);
 
       // Added native capability must go through the edit-capability-page
-      pageHandler.setPage('edit-capability-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId, capabilityId: tmpCapability.capabilityId });
+      pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
     },
 
   };

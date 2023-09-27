@@ -11,7 +11,7 @@ const EditVirtualDevicePage = function () {
     _editVirtualDevice: null,
 
     _initValues: null,
-    _modified: false,
+    _modified: null,
 
     mounted() {
       wizardlog('[' + this.componentName + '] ' + 'mounted');
@@ -21,12 +21,22 @@ const EditVirtualDevicePage = function () {
     async init(virtualDeviceId) {
       wizardlog('[' + this.componentName + '] ' + 'init:', ...arguments);
 
-      this._editVirtualDevice = configuration.virtualDevices.find(e => e.virtualDeviceId === virtualDeviceId);
-
       this._initValues = {};
-      this.name = this._initValues.name = this._editVirtualDevice.current.name;
-      this.zoneId = this._initValues.zoneId = this._editVirtualDevice.current.zoneId;
-      this.classId = this._initValues.classId = this._editVirtualDevice.current.class;
+      if (virtualDeviceId === undefined) {
+        // new mode
+        this._editVirtualDevice = null;
+
+        this.name = this._initValues.name = "";
+        this.zoneId = this._initValues.zoneId = "unselected";
+        this.classId = this._initValues.classId = "unselected";
+      } else {
+        // edit mode
+        this._editVirtualDevice = configuration.virtualDevices.find(e => e.virtualDeviceId === virtualDeviceId);
+
+        this.name = this._initValues.name = this._editVirtualDevice.current.name;
+        this.zoneId = this._initValues.zoneId = this._editVirtualDevice.current.zoneId;
+        this.classId = this._initValues.classId = this._editVirtualDevice.current.class;
+      }
       this.classDescription = "";
 
       await PetiteVue.nextTick();
@@ -48,10 +58,6 @@ const EditVirtualDevicePage = function () {
       zoneIdElt.setCustomValidity('');
       classIdElt.setCustomValidity('');
 
-      if (this._editVirtualDevice === null) {
-        return;
-      }
-
       // Name format
       if (!nameElt.validity.valid) {
         errorAndWarningList.addError("wizard2.edit-virtual-device.error-name");
@@ -59,14 +65,26 @@ const EditVirtualDevicePage = function () {
 
       // Name should be unique
       if (nameElt.validity.valid) {
-        let tmp = configuration.virtualDevices.find(e => e.virtualDeviceId !== this._editVirtualDevice.virtualDeviceId && e.current.zoneId === this.zoneId && e.current.name === this.name);
+        let tmp = configuration.virtualDevices.find(e => (this._editVirtualDevice === null || e.virtualDeviceId !== this._editVirtualDevice.virtualDeviceId) && e.current.zoneId === this.zoneId && e.current.name === this.name);
         if (tmp !== undefined) {
           errorAndWarningList.addWarning("wizard2.edit-virtual-device.warning-name-already-used");
         }
       }
 
-      // Class description
-      this.classDescription = Homey.__('deviceClass.' + this.classId + '.description');
+      // Zone unselected
+      if (this.zoneId === 'unselected') {
+        zoneIdElt.setCustomValidity(false);
+        errorAndWarningList.addError("wizard2.edit-virtual-device.error-zone");
+      }
+
+      // Class unselected
+      if (this.classId === 'unselected') {
+        classIdElt.setCustomValidity(false);
+        this.classDescription = "";
+        errorAndWarningList.addError("wizard2.edit-virtual-device.error-class");
+      } else {
+        this.classDescription = Homey.__('deviceClass.' + this.classId + '.description');
+      }
 
       this.checkModified();
     },
@@ -80,11 +98,52 @@ const EditVirtualDevicePage = function () {
 
       this._modified ? (await confirm(Homey.__("wizard2.edit-virtual-device.loseModification", "warning")) ? pageHandler.setPage('list-virtual-devices-page') : true) : pageHandler.setPage('list-virtual-devices-page');
     },
+    async apply() {
+      wizardlog('[' + this.componentName + '] ' + 'apply');
+
+      Homey.showLoadingOverlay();
+
+      if (this._editVirtualDevice === null) {
+        await this._applyNew();
+      } else {
+        await this._applyEdit();
+      }
+    },
+    async _applyNew() {
+      wizardlog('[' + this.componentName + '] ' + '_applyNew');
+
+      try {
+        let tmp = {
+          'virtualDeviceId': 'Wizard' + Date.now(),
+          'initial': null,
+          'current': {
+            name: this.name,
+            zoneId: this.zoneId,
+            class: this.classId,
+            status: 'new',
+            capabilities: []
+          }
+        }
+
+        configuration.virtualDevices.push(tmp);
+
+        pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: tmp.virtualDeviceId });
+      } catch (e) {
+        wizardlog(e);
+
+        Homey.hideLoadingOverlay();
+        this.alert(Homey.__("wizard2.new-virtual-device.fatal-error", "error"));
+      }
+    },
+    async _applyEdit() {
+      wizardlog('[' + this.componentName + '] ' + '_applyEdit');
+
+      // TODO: To be implemented
+    },
     async switchPage(newPage, data) {
       wizardlog('[' + this.componentName + '] ' + 'switchPage:', ...arguments);
 
       this._modified ? (await confirm(Homey.__("wizard2.edit-virtual-device.loseModification", "warning")) ? pageHandler.setPage(newPage, data) : true) : pageHandler.setPage(newPage, data);
-    },
-
+    }
   };
 };

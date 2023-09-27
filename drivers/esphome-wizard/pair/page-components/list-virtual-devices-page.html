@@ -14,7 +14,7 @@
 
       <ul>
         <!-- allow connection to new physical devices -->
-        <li @click='pageHandler.setPage("new-physical-device-page")'>
+        <li @click='pageHandler.setPage("edit-physical-device-page")'>
           <span data-i18n='wizard2.list-virtual-devices.list-physical-devices.new-physical-device'></span>
           <i class='arrow right'></i>
         </li>
@@ -46,12 +46,11 @@
       </p>
 
       <ul>
-        <li @click='pageHandler.setPage("new-virtual-device-page")'>
+        <li @click='pageHandler.setPage("edit-virtual-device-page")'>
           <span>{{ Homey.__('wizard2.list-virtual-devices.list-virtual-devices.new-virtual-device') }}</span>
           <i class='arrow right'></i>
         </li>
 
-        <!-- For each virtual device (sorted by zone and name) -->
         <template
           v-for='virtualDevice in configuration.virtualDevices?.sort((a, b) => { let _sort = compareZoneId(a.current.zoneId, b.current.zoneId); return _sort === 0 ? a.current.name.localeCompare(b.current.name) : _sort ; })'
           :key='virtualDevice.virtualDeviceId'>

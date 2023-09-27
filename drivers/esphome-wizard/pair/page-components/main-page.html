@@ -22,8 +22,14 @@
       <p data-i18n='wizard2.main.shortcuts'></p>
 
       <ul>
-        <li @click='pageHandler.setPage("new-physical-device-page")'>
+        <li @click='pageHandler.setPage("edit-physical-device-page")'>
           <span data-i18n='wizard2.main.new-physical-device'></span>
+          <i class='arrow right'></i>
+        </li>
+      </ul>
+      <ul>
+        <li @click='pageHandler.setPage("edit-virtual-device-page")'>
+          <span data-i18n='wizard2.main.new-virtual-device'></span>
           <i class='arrow right'></i>
         </li>
       </ul>

@@ -28,6 +28,11 @@ const ListPhysicalDevicesPage = function () {
       // do nothing
 
       this.checkModified();
+    },
+    checkModified() {
+      wizardlog('[' + this.componentName + '] ' + 'checkModified');
+
+      this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
     }
   };
 };

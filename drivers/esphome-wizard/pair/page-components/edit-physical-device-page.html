@@ -1,8 +1,10 @@
 <template id="template-edit-physical-device-page">
-  <div :class='{ active : pageHandler.currentPage === "edit-physical-device-page", page : true }' @vue:mounted='mounted'>
+  <div :class='{ active : pageHandler.currentPage === "edit-physical-device-page", page : true }'
+    @vue:mounted='mounted'>
     <header>
       <span class='back' @click='back()' data-i18n='wizard2.edit-physical-device.back'></span>
-      <span data-i18n='wizard2.edit-physical-device.title'></span>
+      <span>{{ _editPhysicalDevice === null ? Homey.__('wizard2.edit-physical-device.title-new') :
+        Homey.__('wizard2.edit-physical-device.title-edit') }}</span>
       <span class='done' id='EPDdone' @click='apply()' data-i18n='wizard2.edit-physical-device.apply'
         :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
     </header>
@@ -12,15 +14,16 @@
         <li>
           <input ref='name' v-model='name' @input='checkValidity' type='text' required minlength=3 maxlength=30
             pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$' style='text-align: left; margin-left: 0;'>
+          <span></span>
         </li>
-        <li>
+        <li v-if='_editPhysicalDevice !== null'>
           <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.status') }}</span>
           <span></span>
           <span :class='{ danger: _editPhysicalDevice?.status === "unavailable" }'>{{
             _editPhysicalDevice?.status
             }}</span>
         </li>
-        <li>
+        <li v-if='_editPhysicalDevice !== null'>
           <span class='pre'>{{ Homey.__('wizard2.edit-physical-device.used') }}</span>
           <span></span>
           <span>{{ _editPhysicalDevice?.used }}</span>

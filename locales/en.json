@@ -185,7 +185,8 @@
             "list-physical-devices": "Manage your physical devices",
             "list-virtual-devices": "Manage your virtual devices",
             "shortcuts": "Choose a shortcut",
-            "new-physical-device": "Add a new physical device"
+            "new-physical-device": "Add a new physical device",
+            "new-virtual-device": "Add a new virtual device"
         },
         "list-virtual-devices": {
             "back": "back",
@@ -221,11 +222,14 @@
             "port": "Port",
             "cannot-modify": "New physical device cannot be modified until they are used"
         },
-        "new-physical-device": {
+        "edit-physical-device": {
             "back": "back",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "done": "done",
-            "title": "New physical device",
+            "apply": "apply",
+            "title-new": "New physical device",
+            "title-edit": "Edit physical device",
+            "status": "Status",
+            "used": "Used",
             "ipAddress": "IP Address",
             "port": "Port",
             "encryptionKey": "Encryption key",
@@ -242,54 +246,19 @@
             "failed": "Failed to connect to new physical device. Try again?",
             "timeout": "Seems 15 seconds is not enough time to connect. What's wrong?"
         },
-        "edit-physical-device": {
-            "back": "back",
-            "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "apply": "apply",
-            "title": "Edit physical device",
-            "status": "Status",
-            "used": "Used",
-            "ipAddress": "IP Address",
-            "port": "Port",
-            "encryptionKey": "Encryption key",
-            "password": "Password",
-            "error-name": "Name is required and must be pretty",
-            "error-name-already-used": "This name is already used by another physical device",
-            "error-ip-address": "IP address is required and must have a correct format: 192.168.0.12",
-            "error-port": "Port is required and must have a correct format: 1 to 65535",
-            "error-ipAddress-and-port-already-used": "Those IP address and port are already used by another physical device",
-            "error-encryption-key": "Encryption Key must be a 32-byte base64 encoded string",
-            "error-encryption-key-and-password-are-exclusive": "Encryption Key and Password are exclusive",
-            "warning-encryption-key-recommended": "Using an encryption key is highly recommended!"
-        },
-        "new-virtual-device": {
+        "edit-virtual-device": {
             "back": "back",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
             "done": "done",
-            "title": "New virtual device",
+            "title-new": "New virtual device",
+            "title-edit": "Edit virtual device",
             "zone": "Zone",
             "zone-unselected": "--Select a zone--",
-            "to_be_implemented": "to be implemented",
             "name": "Name",
             "class": "Class",
             "class-unselected": "--Select a class--",
             "error-name": "Name is required and must be pretty",
             "error-zone": "A zone must be selected",
-            "error-class": "A class must be selected",
-            "warning-name-already-used": "This name is already used by another virtual device in the same zone",
-            "fatal-error": "Something went wrong!"
-        },
-        "edit-virtual-device": {
-            "back": "back",
-            "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "done": "done",
-            "title": "Edit virtual device",
-            "zone": "Zone",
-            "to_be_implemented": "to be implemented",
-            "name": "Name",
-            "class": "Class",
-            "class-unselected": "--Select a class--",
-            "error-name": "Name is required and must be pretty",
             "error-class": "A class must be selected",
             "capability": {
                 "title": "Capabilities",
@@ -321,15 +290,34 @@
             "warning-capability-title-not-unique": "Several capabilities have the same title",
             "fatal-error": "Something went wrong!"
         },
-        "select-native-capability": {
+        "new-capability": {
             "back": "back",
             "loseModification": "Your modification(s) will be lost. Are you sure?",
             "done": "done",
             "title": "New capability",
-            "physical-device": "Physical device",
-            "physical-device-unselected": "--Select a physical device--",
-            "native-capability": "Native capability",
-            "native-capability-unselected": "--Select a native capability--"
+            "native-capability": {
+                "title": "Choose a native capability",
+                "physical-device": "Physical device",
+                "physical-device-unselected": "--Select a physical device--",
+                "native-capability": "Native capability",
+                "native-capability-unselected": "--Select a native capability--",
+                "type": "Type",
+                "used": "Number usage",
+                "config": "Configuration",
+                "constraints": "Constraints"
+            },
+            "capability": {
+                "title": "Choose and configure the capability",
+                "type": "Type",
+                "index": "Index",
+                "options-title": "Option(s)",
+                "options": {
+                    "units": "Unit",
+                    "decimals": "Decimals",
+                    "preventInsights": "Prevent Insights",
+                    "preventTag": "Prevent Tag"
+                }
+            }
         }
     },
     "deviceClass": {

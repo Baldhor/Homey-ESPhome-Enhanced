@@ -9,6 +9,8 @@ const EditPhysicalDevicePage = function () {
     encryptionKey: null,
     password: null,
 
+    _newPhysicalDeviceId: null,
+    _newPhysicalDeviceTimeout: null,
     _editPhysicalDevice: null,
 
     _initValues: null,
@@ -18,18 +20,35 @@ const EditPhysicalDevicePage = function () {
       wizardlog('[' + this.componentName + '] ' + 'mounted');
 
       pageHandler.registerComponent(this.componentName, this);
+      Homey.on('new-device-connected', data => { this._applyNewConnected(data); });
+      Homey.on('new-device-failed', data => { this._applyNewFailed(data); });
     },
     async init(physicalDeviceId) {
       wizardlog('[' + this.componentName + '] ' + 'init:', ...arguments);
 
-      this._editPhysicalDevice = configuration.physicalDevices.find(e => e.physicalDeviceId === physicalDeviceId);
-
       this._initValues = {};
-      this.name = this._initValues.name = this._editPhysicalDevice.name;
-      this.ipAddress = this._initValues.ipAddress = this._editPhysicalDevice.ipAddress;
-      this.port = this._initValues.port = this._editPhysicalDevice.port;
-      this.encryptionKey = this._initValues.encryptionKey = this._editPhysicalDevice.encryptionKey;
-      this.password = this._initValues.password = this._editPhysicalDevice.password;
+      if (physicalDeviceId === undefined) {
+        // new mode
+        wizardlog('[' + this.componentName + '] ' + 'new mode');
+
+        this._editPhysicalDevice = null;
+        this.name = this._initValues.name = "";
+        this.ipAddress = this._initValues.ipAddress = "";
+        this.port = this._initValues.port = "6053";
+        this.encryptionKey = this._initValues.encryptionKey = "";
+        this.password = this._initValues.password = "";
+      } else {
+        // edit mode
+        wizardlog('[' + this.componentName + '] ' + 'edit mode');
+
+        this._editPhysicalDevice = configuration.physicalDevices.find(e => e.physicalDeviceId === physicalDeviceId);
+
+        this.name = this._initValues.name = this._editPhysicalDevice.name;
+        this.ipAddress = this._initValues.ipAddress = this._editPhysicalDevice.ipAddress;
+        this.port = this._initValues.port = this._editPhysicalDevice.port;
+        this.encryptionKey = this._initValues.encryptionKey = this._editPhysicalDevice.encryptionKey;
+        this.password = this._initValues.password = this._editPhysicalDevice.password;
+      }
 
       await PetiteVue.nextTick();
       this.checkValidity();
@@ -54,10 +73,6 @@ const EditPhysicalDevicePage = function () {
       encryptionKeyElt.setCustomValidity('');
       passwordElt.setCustomValidity('');
 
-      if (this._editPhysicalDevice === null) {
-        return;
-      }
-
       // Name format
       if (!nameElt.validity.valid) {
         errorAndWarningList.addError("wizard2.edit-physical-device.error-name");
@@ -65,7 +80,7 @@ const EditPhysicalDevicePage = function () {
 
       // Name must be unique
       if (nameElt.validity.valid) {
-        let tmp = configuration.physicalDevices.find(e => e.physicalDeviceId !== this._editPhysicalDevice.physicalDeviceId && e.name === this.name);
+        let tmp = configuration.physicalDevices.find(e => (this._editPhysicalDevice === null || e.physicalDeviceId !== this._editPhysicalDevice.physicalDeviceId) && e.name === this.name);
         if (tmp !== undefined) {
           nameElt.setCustomValidity(false);
           errorAndWarningList.addError("wizard2.edit-physical-device.error-name-already-used");
@@ -84,7 +99,7 @@ const EditPhysicalDevicePage = function () {
 
       // IP Address and port must be unique
       if (ipAddressElt.validity.valid && portElt.validity.valid) {
-        let tmp = configuration.physicalDevices.find(e => e.physicalDeviceId !== this._editPhysicalDevice.physicalDeviceId && e.ipAddress === this.ipAddress && e.port === this.port);
+        let tmp = configuration.physicalDevices.find(e => (this._editPhysicalDevice === null || e.physicalDeviceId !== this._editPhysicalDevice.physicalDeviceId) && e.ipAddress === this.ipAddress && e.port === this.port);
         if (tmp !== undefined) {
           ipAddressElt.setCustomValidity(false);
           portElt.setCustomValidity(false);
@@ -129,6 +144,90 @@ const EditPhysicalDevicePage = function () {
 
       Homey.showLoadingOverlay();
 
+      if (this._editPhysicalDevice === null) {
+        await this._applyNew();
+      } else {
+        await this._applyEdit();
+      }
+    },
+    async _applyNew() {
+      wizardlog('[' + this.componentName + '] ' + '_applyNew');
+
+      try {
+        this._newPhysicalDeviceId = 'Wizard' + Date.now();
+
+        await Homey.emit('connect-new-device', {
+          physicalDeviceId: this._newPhysicalDeviceId,
+          name: this.name,
+          ipAddress: this.ipAddress,
+          port: this.port,
+          encryptionKey: this.encryptionKey,
+          password: this.password
+        }).catch(e => { throw e; });
+
+        // We wait 15 seconds maximum
+        this._timeout = setTimeout(this._applyNewTimeout, 15000);
+      } catch (e) {
+        this._newPhysicalDeviceId = null;
+        if (this._timeout !== null) {
+          clearTimeout(this._newPhysicalDeviceTimeout);
+          this._timeout = null;
+        }
+        wizardlog(e);
+
+        Homey.hideLoadingOverlay();
+        alert(Homey.__("wizard2.edit-physical-device.fatal-error", "error"));
+      }
+    },
+    _applyNewTimeout() {
+      wizardlog('[' + this.componentName + '] ' + '_applyNewTimeout');
+      this._timeout = null;
+      this._newPhysicalDeviceId = null;
+
+      Homey.hideLoadingOverlay();
+      alert(Homey.__("wizard2.edit-physical-device.timeout", "error"));
+    },
+    _applyNewConnected(newPhysicalDevice) {
+      wizardlog('[' + this.componentName + '] ' + '_applyNewConnected: ', ...arguments);
+
+      if (newPhysicalDevice.physicalDeviceId !== this._newPhysicalDeviceId) {
+        wizardlog('[' + this.componentName + '] ' + 'Unexpected new physical device, ignoring');
+        return;
+      }
+
+      // Cancel the timeout
+      if (this._timeout !== null) {
+        clearTimeout(this._timeout);
+        this._timeout = null;
+      }
+
+      configuration.addNewPhysicalDevice(newPhysicalDevice);
+      this._newPhysicalDeviceId = null;
+
+      pageHandler.setPage("list-virtual-devices-page");
+    },
+    _applyNewFailed(data) {
+      wizardlog('[' + this.componentName + '] ' + '_applyNewFailed: ', ...arguments);
+
+      if (data.physicalDeviceId !== this._newPhysicalDeviceId) {
+        wizardlog('[' + this.componentName + '] ' + 'Unexpected new physical device failure, ignoring');
+        return;
+      }
+
+      // Cancel the timeout
+      if (this._timeout !== null) {
+        clearTimeout(this._timeout);
+        this._timeout = null;
+      }
+
+      this._newPhysicalDeviceId = null;
+
+      Homey.hideLoadingOverlay();
+      alert(Homey.__("wizard2.edit-physical-device.failed") + ": " + data.message, "error");
+    },
+    async _applyEdit() {
+      wizardlog('[' + this.componentName + '] ' + '_applyEdit');
+
       try {
         await Homey.emit('modify-physical-device', {
           physicalDeviceId: this._editPhysicalDevice.physicalDeviceId,
@@ -140,7 +239,7 @@ const EditPhysicalDevicePage = function () {
         }).catch(e => { throw e; });
 
         // Let's wait 5 seconds, the time to collect initial capability values from the physical device
-        setTimeout(this._applied, 5000);
+        setTimeout(this._applyEditDone, 5000);
       } catch (e) {
         wizarderror(e);
 
@@ -148,8 +247,8 @@ const EditPhysicalDevicePage = function () {
         this.alert(Homey.__("wizard2.edit-physical-device.failed", "error"));
       }
     },
-    async _applied() {
-      wizardlog('[' + this.componentName + '] ' + 'applied');
+    async _applyEditDone() {
+      wizardlog('[' + this.componentName + '] ' + '_applyEditDone');
 
       pageHandler.setMainPage();
     }

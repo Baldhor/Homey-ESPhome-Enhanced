@@ -25,16 +25,14 @@ const pageHandler = PetiteVue.reactive({
           await this._registeredComponents[newPage].init();
           break;
 
-        case 'new-physical-device-page':
-          await this._registeredComponents[newPage].init();
-          break;
-
-        case 'new-virtual-device-page':
-          await this._registeredComponents[newPage].init();
-          break;
-
         case 'edit-virtual-device-page':
-          await this._registeredComponents[newPage].init(data.virtualDeviceId);
+          if (data === undefined) {
+            // new mode
+            await this._registeredComponents[newPage].init();
+          } else {
+            // edit mode
+            await this._registeredComponents[newPage].init(data.virtualDeviceId);
+          }
           break;
 
         case 'select-native-capability-page':
@@ -50,7 +48,13 @@ const pageHandler = PetiteVue.reactive({
           break;
 
         case 'edit-physical-device-page':
-          await this._registeredComponents[newPage].init(data.physicalDeviceId);
+          if (data === undefined) {
+            // new mode
+            await this._registeredComponents[newPage].init();
+          } else {
+            // edit mode
+            await this._registeredComponents[newPage].init(data.physicalDeviceId);
+          }
           break;
 
         default:
