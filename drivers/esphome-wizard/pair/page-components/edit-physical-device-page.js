@@ -137,7 +137,7 @@ const EditPhysicalDevicePage = function () {
     async back() {
       wizardlog('[' + this.componentName + '] ' + 'back');
 
-      this._modified ? (await confirm(Homey.__("wizard2.edit-physical-device.loseModification", "warning")) ? pageHandler.setPage('list-physical-devices-page') : true) : pageHandler.setPage('list-physical-devices-page');
+      this._modified ? (await confirm(Homey.__("wizard2.edit-physical-device.loseModification", "warning")) ? pageHandler.setPage('list-virtual-devices-page') : true) : pageHandler.setPage('list-virtual-devices-page');
     },
     async apply() {
       wizardlog('[' + this.componentName + '] ' + 'apply');

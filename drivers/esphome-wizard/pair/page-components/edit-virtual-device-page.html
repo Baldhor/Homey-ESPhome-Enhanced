@@ -2,7 +2,8 @@
   <div :class='{ active : pageHandler.currentPage === "edit-virtual-device-page", page : true }' @vue:mounted='mounted'>
     <header>
       <span class='back' @click='back()' data-i18n='wizard2.edit-virtual-device.back'></span>
-      <span>{{ _editVirtualDevice === null ? Homey.__('wizard2.edit-virtual-device.title-new') : Homey.__('wizard2.edit-virtual-device.title-edit') }}</span>
+      <span>{{ _editVirtualDevice === null ? Homey.__('wizard2.edit-virtual-device.title-new') :
+        Homey.__('wizard2.edit-virtual-device.title-edit') }}</span>
       <span class='done' id='EVDdone' @click='apply()' data-i18n='wizard2.edit-virtual-device.done'
         :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
     </header>
@@ -19,14 +20,13 @@
           <span></span>
           <select ref='zoneId' v-model='zoneId' @change='checkValidity'>
             <!--TODO: should use the zone used to start the wizard as default? -->
-            <option v-if='zoneId === "unselected"' value='unselected' selected disabled>{{
+            <option v-if='zoneId === "unselected"' value='unselected' selected disabled :key='"unselected"'>{{
               Homey.__('wizard2.edit-virtual-device.zone-unselected') }}
             </option>
-            <template v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'>
-              <option :value='zone.zoneId'>
-                {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
-              </option>
-            </template>
+            <option v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'
+              :value='zone.zoneId'>
+              {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
+            </option>
           </select>
         </li>
         <li>
@@ -36,18 +36,16 @@
             <option v-if='classId === "unselected"' value='unselected' selected disabled>{{
               Homey.__('wizard2.edit-virtual-device.class-unselected')
               }}</option>
-            <template
+            <option
               v-for='classSupportedId in CLASS_SUPPORTED.sort((a, b) => Homey.__("deviceClass." + a + ".label").localeCompare(Homey.__("deviceClass." + b + ".label")))'
-              :key='classSupportedId'>
-              <option :value='classSupportedId'>{{
-                Homey.__('deviceClass.' + classSupportedId + '.label')
-                }}</option>
-            </template>
+              :key='classSupportedId' :value='classSupportedId'>{{
+              Homey.__('deviceClass.' + classSupportedId + '.label')
+              }}</option>
           </select>
         </li>
       </ul>
 
-      <p ref='classDescription' v-model='classDescription' v-show='classDescription !== ""'></p>
+      <p ref='classDescription' v-show='classDescription !== ""'>{{ classDescription }}</p>
     </div>
 
     <div class='list' v-if='_editVirtualDevice !== null'>
@@ -56,8 +54,7 @@
       </p>
 
       <ul>
-        <li
-          @click='switchPage("select-native-capability-page", { virtualDeviceId: _editVirtualDevice.virtualDeviceId })'>
+        <li @click='switchPage("edit-capability-page", { virtualDeviceId: _editVirtualDevice.virtualDeviceId })'>
           <span>{{ Homey.__('wizard2.edit-virtual-device.capability.new-native-capability') }}</span>
           <i class='arrow right'></i>
         </li>

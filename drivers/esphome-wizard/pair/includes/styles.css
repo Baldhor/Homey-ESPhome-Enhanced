@@ -228,9 +228,13 @@ body {
 }
 .esphomewizard .list ul li.sub {
   margin-left: 40px;
+  font-size: 13px;
+  line-height: 32px;
 }
 .esphomewizard .list ul li.subsub {
   margin-left: 80px;
+  font-size: 12px;
+  line-height: 28px;
 }
 .esphomewizard .list ul li:not(last-child) {
   border-bottom: 1px solid var(--hk-background-color);

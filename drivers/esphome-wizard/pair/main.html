@@ -22,6 +22,10 @@
      * Init pages
      ************************ -->
 
+<!-- Welcome page -->
+<script src="page-components/welcome-page.js"></script>
+<div hidden w3-include-html="page-components/welcome-page.html"></div>
+
 <!-- Main page -->
 <script src="page-components/main-page.js"></script>
 <div hidden w3-include-html="page-components/main-page.html"></div>
@@ -34,17 +38,9 @@
 <script src="page-components/edit-virtual-device-page.js"></script>
 <div hidden w3-include-html="page-components/edit-virtual-device-page.html"></div>
 
-<!-- Select native capability page -->
-<!--
-script src="page-components/new-capability-page.js"></script>
-<div hidden w3-include-html="page-components/new-capability-page.html"></div>
--->
-
 <!-- Edit capability page -->
-<!--
 <script src="page-components/edit-capability-page.js"></script>
 <div hidden w3-include-html="page-components/edit-capability-page.html"></div>
--->
 
 <!-- List physical devices page -->
 <script src="page-components/list-physical-devices-page.js"></script>
@@ -68,11 +64,11 @@ script src="page-components/new-capability-page.js"></script>
      * Init app
      ************************ -->
 <div v-scope :class='{ esphomewizard : true }' id='esphomewizard' hidden @vue:mounted="mounted($el)">
+  <section id="welcome-page" v-scope="WelcomePage()"></section>
   <section id="main-page" v-scope="MainPage()"></section>
   <section id="list-virtual-devices-page" v-scope="ListVirtualDevicesPage()"></section>
   <section id="edit-virtual-device-page" v-scope="EditVirtualDevicePage()"></section>
-  <!--<section id="new-capability-page" v-scope="SelectNativeCapabilityPage()"></section>-->
-  <!--<section id="edit-capability-page" v-scope="EditCapabilityPage()"></section>-->
+  <section id="edit-capability-page" v-scope="EditCapabilityPage()"></section>
   <section id="list-physical-devices-page" v-scope="ListPhysicalDevicesPage()"></section>
   <section id="edit-physical-device-page" v-scope="EditPhysicalDevicePage()"></section>
 </div>
@@ -87,7 +83,10 @@ script src="page-components/new-capability-page.js"></script>
     errorAndWarningList,
     mounted(el) {
       wizardlog('app mounted');
+
+      // TODO: Show welcome page if needed!
       pageHandler.setMainPage();
+
       el.hidden = false;
     }
   }).mount();

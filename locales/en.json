@@ -1,425 +1,663 @@
 {
-    "pair": {
-        "credentials": {
-            "title": "Connect your ESP Home device",
-            "description": "Please provide the IP adress and, optionally, a password for your device.",
-            "submit": "Connect",
-            "label_hostname": "IP address",
-            "label_port": "Port",
-            "label_passwd": "Password",
-            "connection_failed": "Failed connecting to device: ",
-            "connection_timeout": "Time out while connecting to device",
-            "connection_refused": "Connection refused by remote host",
-            "connection_invalid_credentials": "Invalid password"
-        },
-        "capabilities": {
-            "title": "Link Homey capabilities",
-            "nothing_to_map": "No supported capabilities have been detected on your ESPhome device",
-            "description": "Link your ESPhome sensors to Homeys capabilities.",
-            "table_header_name": "Name",
-            "table_header_unit": "Unit",
-            "table_header_capacity": "Capability",
-            "table_header_decimals": "Decimals",
-            "submit_warning": "Are you sure you have all capabilites linked?",
-            "button_save": "Save"
-        }
+  "pair": {
+    "credentials": {
+      "title": "Connect your ESP Home device",
+      "description": "Please provide the IP adress and, optionally, a password for your device.",
+      "submit": "Connect",
+      "label_hostname": "IP address",
+      "label_port": "Port",
+      "label_passwd": "Password",
+      "connection_failed": "Failed connecting to device: ",
+      "connection_timeout": "Time out while connecting to device",
+      "connection_refused": "Connection refused by remote host",
+      "connection_invalid_credentials": "Invalid password"
     },
-    "wizard": {
-        "welcome": {
-            "title": "ESPhome Wizard",
-            "description": "How my magic can assist you?",
-            "new": "Configure a new physical device",
-            "update": "Update an existing physical device",
-            "updateDeviceClass": "Update your virtual devices class"
-        },
-        "new_device": {
-            "title": "Connect to the new device",
-            "description": "To assist you, I need to connect to your physical device!",
-            "ipAddress": "IP address",
-            "port": "Port",
-            "encryptionKey": "Encryption key",
-            "password": "Password",
-            "already_exist": "I already know a physical device with those IP address and port, please use 'Update an existing physical device' in previous screen or correct your input",
-            "connect": "Connect",
-            "connected": "Great, I was able to connect, let's start to use magic",
-            "failed": "Connection failed, maybe your input is wrong"
-        },
-        "update_device": {
-            "title": "Choose an existing device",
-            "description": "To assist you, I need you to choose an existing device",
-            "info": "To change the IP address, port, encryption key or password, use the dedicated screen",
-            "none": "I didn't find any existing physical device, are you sure?",
-            "list": "Here is the list of the physical devices I know, please choose one!",
-            "physical_device_id": "Id",
-            "physical_device_ipAddress": "IP address",
-            "physical_device_port": "Port",
-            "physical_device_bound": "Number of virtual device bound",
-            "select": "Select",
-            "update_settings": "Update settings"
-        },
-        "conf_main": {
-            "title": "There goes the magic",
-            "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
-            "physical_device": {
-                "title": "Characteristics of the physical device",
-                "id": "ID",
-                "ipAddress": "IP address",
-                "port": "Port"
-            },
-            "virtual_devices": {
-                "title": "List of virtual devices",
-                "none": "None yet, create your first one!",
-                "create": "Add a virtual device",
-                "actions": {
-                    "title": "Available action(s)",
-                    "delete_virtual_device": "Delete virtual device",
-                    "delete_capability": "Delete capability",
-                    "modify_capability": "Modify capability",
-                    "no_capability_selected": "Select a capability"
-                },
-                "delete_warning": "Deletetion of a virtual device can break your flows! Are you sure?",
-                "no_native_capability_alert": "Add at least one native capability",
-                "delete_through_settings": "You can delete virtual device through their setting screen",
-                "change_name_format": "The name you input is not nice, try again!",
-                "native_capability_deleted": "Deleted!",
-                "name_must_be_changed_alert": "Don't forget to change the name!",
-                "native_capability_deleted_warning": "This virtual device has an (at least one) existing capability deleted",
-                "delete_existing_native_capability_warning": "Removing this capability can/will break your flows! Are you sure?",
-                "capability_updated_warning": "A capability has been updated with new configuration"
-            },
-            "settings": {
-                "title": "List of settings",
-                "info": "Seetings are shared for all the virtual device",
-                "none": "None yet, add your first one!",
-                "go": "Modify"
-            },
-            "unbind_native_capabilities": {
-                "title": "List of unbind native capabilities",
-                "info": "It's ok to leave some behind",
-                "none": "All native capabilities have been assigned!",
-                "action": {
-                    "label": "Choose a virtual device to assign",
-                    "no_virtual_device_selected": "Select a virtual device",
-                    "new_virtual_device": "Create a virtual device"
-                }
-            },
-            "confirm": "Confirm",
-            "confirm_warning": "There are at least one warning (orange), are you sure?",
-            "virtual_device": {
-                "name": "Name",
-                "stateLabel": "State",
-                "state": {
-                    "existing": "Existing",
-                    "added": "New"
-                }
-            },
-            "native_capability": {
-                "entity_id": "Entity ID",
-                "name": "Entity name",
-                "type": "Entity type",
-                "attribut": "Attribut(s)",
-                "value": "Current value",
-                "configs": "Config(s)",
-                "constraints": "Constraint(s)",
-                "state": {
-                    "added": "Added",
-                    "modified": "Modified",
-                    "deleted": "Deleted",
-                    "unmodified": "Unmodified",
-                    "updated": "Updated"
-                }
-            },
-            "homey_capability": {
-                "title": "Homey capability",
-                "name": "Capability",
-                "options": "Option(s)"
-            },
-            "config_label": {
-                "precision": "Precision",
-                "unit": "Unit"
-            },
-            "constraint_label": {
-                "min_value": "Min",
-                "max_value": "Max",
-                "step": "Step",
-                "mode": {
-                    "box": "Box",
-                    "slidder": "Slidder"
-                }
-            }
-        },
-        "conf_settings": {
-            "title": "There goes the magic",
-            "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
-            "ipAddress": "IP address",
-            "port": "Port",
-            "encryptionKey": "Encryption key",
-            "password": "Password",
-            "apply": "Apply"
-        },
-        "conf_deviceclass": {
-            "deviceName": "Device name",
-            "deviceClass": "Device class",
-            "deviceClassDescription": "Class description"
-        }
-    },
-    "settings": {
-        "port_number_incorrect": "Port number should be between 1 and 65535",
-        "ip_address_incorrect": "Please enter an valid IP address",
-        "title": "Application settings",
-        "log.subtitle": "Log configuration",
-        "consolere.subtitle": "Console.re configuration"
-    },
-    "app": {
-        "error": {
-            "connection_failed": "Failed connecting to device: ",
-            "connection_disconnected": "Disconnected from the device",
-            "connection_error": "Connection error: "
-        },
-        "initializing": "Initializing device, please wait..."
-    },
-    "wizard2": {
-        "main": {
-            "title": "Main menu",
-            "menu": "Choose a functionnality",
-            "list-physical-devices": "Manage your physical devices",
-            "list-virtual-devices": "Manage your virtual devices",
-            "shortcuts": "Choose a shortcut",
-            "new-physical-device": "Add a new physical device",
-            "new-virtual-device": "Add a new virtual device"
-        },
-        "list-virtual-devices": {
-            "back": "back",
-            "title": "Manage your virtual devices",
-            "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "apply": "apply",
-            "list-physical-devices": {
-                "title": "Short list of physical devices",
-                "unused": "Unused",
-                "used": "Used",
-                "new-physical-device": "New physical device",
-                "help": "Unused physical devices will be deleted"
-            },
-            "list-virtual-devices": {
-                "title": "List of virtual devices",
-                "new-virtual-device": "New virtual device"
-            },
-            "virtual-device": {
-                "edit": "edit",
-                "class": "Class",
-                "status": "Status",
-                "native-capability-count": "Native capability linked",
-                "no-native-capability": "none"
-            }
-        },
-        "list-physical-devices": {
-            "back": "back",
-            "title": "Manage your physical devices",
-            "edit": "edit",
-            "status": "Status",
-            "used": "Used",
-            "ipAddress": "IP Address",
-            "port": "Port",
-            "cannot-modify": "New physical device cannot be modified until they are used"
-        },
-        "edit-physical-device": {
-            "back": "back",
-            "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "apply": "apply",
-            "title-new": "New physical device",
-            "title-edit": "Edit physical device",
-            "status": "Status",
-            "used": "Used",
-            "ipAddress": "IP Address",
-            "port": "Port",
-            "encryptionKey": "Encryption key",
-            "password": "Password",
-            "error-name": "Name is required and must be pretty",
-            "error-name-already-used": "This name is already used by another physical device",
-            "error-ip-address": "IP address is required and must have a correct format: 192.168.0.12",
-            "error-port": "Port is required and must have a correct format: 1 to 65535",
-            "error-ipAddress-and-port-already-used": "Those IP address and port are already used by another physical device",
-            "error-encryption-key": "Encryption Key must be a 32-byte base64 encoded string",
-            "error-encryption-key-and-password-are-exclusive": "Encryption Key and Password are exclusive",
-            "warning-encryption-key-recommended": "Using an encryption key is highly recommended!",
-            "fatal-error": "Something went wrong!",
-            "failed": "Failed to connect to new physical device. Try again?",
-            "timeout": "Seems 15 seconds is not enough time to connect. What's wrong?"
-        },
-        "edit-virtual-device": {
-            "back": "back",
-            "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "done": "done",
-            "title-new": "New virtual device",
-            "title-edit": "Edit virtual device",
-            "zone": "Zone",
-            "zone-unselected": "--Select a zone--",
-            "name": "Name",
-            "class": "Class",
-            "class-unselected": "--Select a class--",
-            "error-name": "Name is required and must be pretty",
-            "error-zone": "A zone must be selected",
-            "error-class": "A class must be selected",
-            "capability": {
-                "title": "Capabilities",
-                "new-native-capability": "New native capability",
-                "name": "Capability",
-                "edit": "edit",
-                "status-title": "Status",
-                "status": {
-                    "new": "New",
-                    "unmodified": "Unmodified",
-                    "modified": "Modified",
-                    "updated": "Updated"
-                },
-                "options-title": "Option(s)",
-                "options": {
-                    "units": "Unit",
-                    "decimals": "Decimals",
-                    "preventInsights": "Prevent Insights",
-                    "preventTag": "Prevent Tag"
-                },
-                "physical-device": "Physical device"
-            },
-            "native-capability": {
-                "physical-device-name": "Physcial device",
-                "entity-id": "Native capability id",
-                "entity-name": "Native capability name"
-            },
-            "warning-name-already-used": "This name is already used by another virtual device in the same zone",
-            "warning-capability-title-not-unique": "Several capabilities have the same title",
-            "fatal-error": "Something went wrong!"
-        },
-        "new-capability": {
-            "back": "back",
-            "loseModification": "Your modification(s) will be lost. Are you sure?",
-            "done": "done",
-            "title": "New capability",
-            "native-capability": {
-                "title": "Choose a native capability",
-                "physical-device": "Physical device",
-                "physical-device-unselected": "--Select a physical device--",
-                "native-capability": "Native capability",
-                "native-capability-unselected": "--Select a native capability--",
-                "type": "Type",
-                "used": "Number usage",
-                "config": "Configuration",
-                "constraints": "Constraints"
-            },
-            "capability": {
-                "title": "Choose and configure the capability",
-                "type": "Type",
-                "index": "Index",
-                "options-title": "Option(s)",
-                "options": {
-                    "units": "Unit",
-                    "decimals": "Decimals",
-                    "preventInsights": "Prevent Insights",
-                    "preventTag": "Prevent Tag"
-                }
-            }
-        }
-    },
-    "deviceClass": {
-        "amplifier": {
-            "label": "Amplifier",
-            "description": "Use this device class for audio amplifier devices."
-        },
-        "blinds": {
-            "label": "Blinds",
-            "description": "Use this device class for blinds, both horizontal and vertical."
-        },
-        "button": {
-            "label": "Button",
-            "description": "Use this device class for buttons, such as a remote."
-        },
-        "camera": {
-            "label": "Camera",
-            "description": "Security camera"
-        },
-        "coffeemachine": {
-            "label": "Coffee machine",
-            "description": "Use this device class for coffee machines."
-        },
-        "curtain": {
-            "label": "Curtains",
-            "description": "Use this device class for curtains."
-        },
-        "doorbell": {
-            "label": "Doorbell",
-            "description": "Use this device class for doorbells, usually together with the `button` capability."
-        },
-        "fan": {
-            "label": "Fan",
-            "description": "Use this device class for fans that cool your home."
-        },
-        "garagedoor": {
-            "label": "Garage door",
-            "description": "Use this device class for garage doors, usually together with the `garagedoor_closed` capability."
-        },
-        "heater": {
-            "label": "Heater",
-            "description": "Use this device class for heaters, that warm your home."
-        },
-        "homealarm": {
-            "label": "Home Security",
-            "description": "Use this device class for home alarm systems."
-        },
-        "kettle": {
-            "label": "Kettle",
-            "description": "Use this device class for kettle devices, that can heat water."
-        },
-        "light": {
-            "label": "Light",
-            "description": "Use this device class for lights, usually together with the `onoff`, `dim` and `light_*` capabilities."
-        },
-        "lock": {
-            "label": "Lock",
-            "description": "Use this device class for lock devices, usually together with the `locked` and `lock_mode` capabilities."
-        },
-        "other": {
-            "label": "Other",
-            "description": "Use this device class for devices that do not fit any other device class."
-        },
-        "remote": {
-            "label": "Remote",
-            "description": "Use this device class for (TV/Sunblind/Keyfob etc.) remotes."
-        },
-        "sensor": {
-            "label": "Sensor",
-            "description": "Use this device class for sensors, e.g. a contact or motion sensor."
-        },
-        "socket": {
-            "label": "Wall Plug",
-            "description": "Use this device class for sockets (built-in or plug-in socket switches). When adding the `choose_slave` pair template, the user is presented a `What's plugged in?` question."
-        },
-        "speaker": {
-            "label": "Speaker",
-            "description": "Use this device class for devices that can play music, usually together with the `speaker_*` capabilities."
-        },
-        "solarpanel": {
-            "label": "Solar Panel",
-            "description": "Use this device class for solar panels."
-        },
-        "sunshade": {
-            "label": "Sunshade",
-            "description": "Use this device class for sunshades (window coverings against the sun)."
-        },
-        "thermostat": {
-            "label": "Thermostat",
-            "description": "Use this device class for thermostats, either for the entire home or radiator-mounted, usually together with the `measure_temperature`, `target_temperature` and `thermostat_mode` capabilities."
-        },
-        "tv": {
-            "label": "TV",
-            "description": "Use this device class for TVs."
-        },
-        "vacuumcleaner": {
-            "label": "Vacuum Cleaner",
-            "description": "Use this device class for vacuum cleaners, usually together with the `vacuumcleaner_state` capability."
-        },
-        "windowcoverings": {
-            "label": "Window Coverings",
-            "description": "Use this device class for window coverings, when the `curtains`, `blinds` or `sunshade` device class doesn't apply."
-        }
+    "capabilities": {
+      "title": "Link Homey capabilities",
+      "nothing_to_map": "No supported capabilities have been detected on your ESPhome device",
+      "description": "Link your ESPhome sensors to Homeys capabilities.",
+      "table_header_name": "Name",
+      "table_header_unit": "Unit",
+      "table_header_capacity": "Capability",
+      "table_header_decimals": "Decimals",
+      "submit_warning": "Are you sure you have all capabilites linked?",
+      "button_save": "Save"
     }
+  },
+  "wizard": {
+    "welcome": {
+      "title": "ESPhome Wizard",
+      "description": "How my magic can assist you?",
+      "new": "Configure a new physical device",
+      "update": "Update an existing physical device",
+      "updateDeviceClass": "Update your virtual devices class"
+    },
+    "new_device": {
+      "title": "Connect to the new device",
+      "description": "To assist you, I need to connect to your physical device!",
+      "ipAddress": "IP address",
+      "port": "Port",
+      "encryptionKey": "Encryption key",
+      "password": "Password",
+      "already_exist": "I already know a physical device with those IP address and port, please use 'Update an existing physical device' in previous screen or correct your input",
+      "connect": "Connect",
+      "connected": "Great, I was able to connect, let's start to use magic",
+      "failed": "Connection failed, maybe your input is wrong"
+    },
+    "update_device": {
+      "title": "Choose an existing device",
+      "description": "To assist you, I need you to choose an existing device",
+      "info": "To change the IP address, port, encryption key or password, use the dedicated screen",
+      "none": "I didn't find any existing physical device, are you sure?",
+      "list": "Here is the list of the physical devices I know, please choose one!",
+      "physical_device_id": "Id",
+      "physical_device_ipAddress": "IP address",
+      "physical_device_port": "Port",
+      "physical_device_bound": "Number of virtual device bound",
+      "select": "Select",
+      "update_settings": "Update settings"
+    },
+    "conf_main": {
+      "title": "There goes the magic",
+      "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
+      "physical_device": {
+        "title": "Characteristics of the physical device",
+        "id": "ID",
+        "ipAddress": "IP address",
+        "port": "Port"
+      },
+      "virtual_devices": {
+        "title": "List of virtual devices",
+        "none": "None yet, create your first one!",
+        "create": "Add a virtual device",
+        "actions": {
+          "title": "Available action(s)",
+          "delete_virtual_device": "Delete virtual device",
+          "delete_capability": "Delete capability",
+          "modify_capability": "Modify capability",
+          "no_capability_selected": "Select a capability"
+        },
+        "delete_warning": "Deletetion of a virtual device can break your flows! Are you sure?",
+        "no_native_capability_alert": "Add at least one native capability",
+        "delete_through_settings": "You can delete virtual device through their setting screen",
+        "change_name_format": "The name you input is not nice, try again!",
+        "native_capability_deleted": "Deleted!",
+        "name_must_be_changed_alert": "Don't forget to change the name!",
+        "native_capability_deleted_warning": "This virtual device has an (at least one) existing capability deleted",
+        "delete_existing_native_capability_warning": "Removing this capability can/will break your flows! Are you sure?",
+        "capability_updated_warning": "A capability has been updated with new configuration"
+      },
+      "settings": {
+        "title": "List of settings",
+        "info": "Seetings are shared for all the virtual device",
+        "none": "None yet, add your first one!",
+        "go": "Modify"
+      },
+      "unbind_native_capabilities": {
+        "title": "List of unbind native capabilities",
+        "info": "It's ok to leave some behind",
+        "none": "All native capabilities have been assigned!",
+        "action": {
+          "label": "Choose a virtual device to assign",
+          "no_virtual_device_selected": "Select a virtual device",
+          "new_virtual_device": "Create a virtual device"
+        }
+      },
+      "confirm": "Confirm",
+      "confirm_warning": "There are at least one warning (orange), are you sure?",
+      "virtual_device": {
+        "name": "Name",
+        "stateLabel": "State",
+        "state": {
+          "existing": "Existing",
+          "added": "New"
+        }
+      },
+      "native_capability": {
+        "entity_id": "Entity ID",
+        "name": "Entity name",
+        "type": "Entity type",
+        "attribut": "Attribut(s)",
+        "value": "Current value",
+        "configs": "Config(s)",
+        "constraints": "Constraint(s)",
+        "state": {
+          "added": "Added",
+          "modified": "Modified",
+          "deleted": "Deleted",
+          "unmodified": "Unmodified",
+          "updated": "Updated"
+        }
+      },
+      "homey_capability": {
+        "title": "Homey capability",
+        "name": "Capability",
+        "options": "Option(s)"
+      },
+      "config_label": {
+        "precision": "Precision",
+        "unit": "Unit"
+      },
+      "constraint_label": {
+        "min_value": "Min",
+        "max_value": "Max",
+        "step": "Step",
+        "mode": {
+          "box": "Box",
+          "slidder": "Slidder"
+        }
+      }
+    },
+    "conf_settings": {
+      "title": "There goes the magic",
+      "description": "I gonna use a lot of magic for you, but first, you need to compose the right spell formula!",
+      "ipAddress": "IP address",
+      "port": "Port",
+      "encryptionKey": "Encryption key",
+      "password": "Password",
+      "apply": "Apply"
+    },
+    "conf_deviceclass": {
+      "deviceName": "Device name",
+      "deviceClass": "Device class",
+      "deviceClassDescription": "Class description"
+    }
+  },
+  "settings": {
+    "port_number_incorrect": "Port number should be between 1 and 65535",
+    "ip_address_incorrect": "Please enter an valid IP address",
+    "title": "Application settings",
+    "log.subtitle": "Log configuration",
+    "consolere.subtitle": "Console.re configuration"
+  },
+  "app": {
+    "error": {
+      "connection_failed": "Failed connecting to device: ",
+      "connection_disconnected": "Disconnected from the device",
+      "connection_error": "Connection error: "
+    },
+    "initializing": "Initializing device, please wait..."
+  },
+  "wizard2": {
+    "main": {
+      "title": "Main menu",
+      "menu": "Choose a functionnality",
+      "list-physical-devices": "Manage your physical devices",
+      "list-virtual-devices": "Manage your virtual devices",
+      "shortcuts": "Choose a shortcut",
+      "new-physical-device": "Add a new physical device",
+      "new-virtual-device": "Add a new virtual device"
+    },
+    "list-virtual-devices": {
+      "back": "back",
+      "title": "Manage your virtual devices",
+      "loseModification": "Your modification(s) will be lost. Are you sure?",
+      "apply": "apply",
+      "list-physical-devices": {
+        "title": "Short list of physical devices",
+        "unused": "Unused",
+        "used": "Used",
+        "new-physical-device": "New physical device",
+        "help": "Unused physical devices will be deleted"
+      },
+      "list-virtual-devices": {
+        "title": "List of virtual devices",
+        "new-virtual-device": "New virtual device"
+      },
+      "virtual-device": {
+        "edit": "edit",
+        "class": "Class",
+        "status": "Status",
+        "native-capability-count": "Native capability linked",
+        "no-native-capability": "none"
+      }
+    },
+    "list-physical-devices": {
+      "back": "back",
+      "title": "Manage your physical devices",
+      "edit": "edit",
+      "status": "Status",
+      "used": "Used",
+      "ipAddress": "IP Address",
+      "port": "Port",
+      "cannot-modify": "New physical device cannot be modified until they are used"
+    },
+    "edit-physical-device": {
+      "back": "back",
+      "loseModification": "Your modification(s) will be lost. Are you sure?",
+      "apply": "apply",
+      "title-new": "New physical device",
+      "title-edit": "Edit physical device",
+      "status": "Status",
+      "used": "Used",
+      "ipAddress": "IP Address",
+      "port": "Port",
+      "encryptionKey": "Encryption key",
+      "password": "Password",
+      "error-name": "Name is required and must be pretty",
+      "error-name-already-used": "This name is already used by another physical device",
+      "error-ip-address": "IP address is required and must have a correct format: 192.168.0.12",
+      "error-port": "Port is required and must have a correct format: 1 to 65535",
+      "error-ipAddress-and-port-already-used": "Those IP address and port are already used by another physical device",
+      "error-encryption-key": "Encryption Key must be a 32-byte base64 encoded string",
+      "error-encryption-key-and-password-are-exclusive": "Encryption Key and Password are exclusive",
+      "warning-encryption-key-recommended": "Using an encryption key is highly recommended!",
+      "fatal-error": "Something went wrong!",
+      "failed": "Failed to connect to new physical device. Try again?",
+      "timeout": "Seems 15 seconds is not enough time to connect. What's wrong?"
+    },
+    "edit-virtual-device": {
+      "back": "back",
+      "loseModification": "Your modification(s) will be lost. Are you sure?",
+      "done": "done",
+      "title-new": "New virtual device",
+      "title-edit": "Edit virtual device",
+      "zone": "Zone",
+      "zone-unselected": "--Select a zone--",
+      "name": "Name",
+      "class": "Class",
+      "class-unselected": "--Select a class--",
+      "error-name": "Name is required and must be pretty",
+      "error-zone": "A zone must be selected",
+      "error-class": "A class must be selected",
+      "capability": {
+        "title": "Capabilities",
+        "new-native-capability": "New native capability",
+        "name": "Capability",
+        "edit": "edit",
+        "status-title": "Status",
+        "status": {
+          "new": "New",
+          "unmodified": "Unmodified",
+          "modified": "Modified",
+          "updated": "Updated"
+        },
+        "options-title": "Option(s)",
+        "options": {
+          "units": "Unit",
+          "decimals": "Decimals",
+          "preventInsights": "Prevent Insights",
+          "preventTag": "Prevent Tag"
+        },
+        "physical-device": "Physical device"
+      },
+      "native-capability": {
+        "physical-device-name": "Physcial device",
+        "entity-id": "Native capability id",
+        "entity-name": "Native capability name"
+      },
+      "warning-name-already-used": "This name is already used by another virtual device in the same zone",
+      "warning-capability-title-not-unique": "Several capabilities have the same title",
+      "fatal-error": "Something went wrong!"
+    },
+    "edit-capability": {
+      "back": "back",
+      "loseModification": "Your modification(s) will be lost. Are you sure?",
+      "done": "done",
+      "title-new": "New capability",
+      "title-edit": "Edit capability",
+      "native-capability": {
+        "title": "Choose a native capability",
+        "physical-device": "Physical device",
+        "physical-device-unselected": "--Select a physical device--",
+        "native-capability": "Native capability",
+        "native-capability-unselected": "--Select a native capability--",
+        "type": "Type",
+        "current-value": "Current value",
+        "used": "Number usage",
+        "configs-title": "Configuration",
+        "configs": {
+          "precision": "Precision",
+          "showUI": "Show in UI",
+          "usage-title": "Usage",
+          "usage": {
+            "diagnostic": "Diagnostic",
+            "setting": "Setting"
+          },
+          "deviceClass": "Category",
+          "readWrite-title": "Read / Write",
+          "readWrite": {
+            "readOnly": "Read only",
+            "writeOnly": "Write only"
+          }
+        },
+        "constraints-title": "Constraints",
+        "constraints": {
+          "min": "Min",
+          "max": "Max",
+          "mode-title": "Mode",
+          "mode": {
+            "box": "Box",
+            "slidder": "Slidder"
+          },
+          "step": "Step"
+        }
+      },
+      "capability": {
+        "title": "Choose and configure the capability",
+        "capability-type": "Type",
+        "capability-type-unselected": "--Select a type--",
+        "capability-index": "Index",
+        "index-default": "<default>",
+        "options-title": "Option(s)",
+        "options": {
+          "units": "Unit",
+          "decimals": "Decimals",
+          "preventInsights": "Prevent Insights",
+          "preventTag": "Prevent Tag"
+        }
+      },
+      "error-physical-device": "A physical device must be selected",
+      "error-native-capability": "A native capability must be selected",
+      "error-capability-type": "A capability type must be selected"
+    }
+  },
+  "deviceClass": {
+    "amplifier": {
+      "label": "Amplifier",
+      "description": "Use this device class for audio amplifier devices."
+    },
+    "blinds": {
+      "label": "Blinds",
+      "description": "Use this device class for blinds, both horizontal and vertical."
+    },
+    "button": {
+      "label": "Button",
+      "description": "Use this device class for buttons, such as a remote."
+    },
+    "camera": {
+      "label": "Camera",
+      "description": "Security camera"
+    },
+    "coffeemachine": {
+      "label": "Coffee machine",
+      "description": "Use this device class for coffee machines."
+    },
+    "curtain": {
+      "label": "Curtains",
+      "description": "Use this device class for curtains."
+    },
+    "doorbell": {
+      "label": "Doorbell",
+      "description": "Use this device class for doorbells, usually together with the `button` capability."
+    },
+    "fan": {
+      "label": "Fan",
+      "description": "Use this device class for fans that cool your home."
+    },
+    "garagedoor": {
+      "label": "Garage door",
+      "description": "Use this device class for garage doors, usually together with the `garagedoor_closed` capability."
+    },
+    "heater": {
+      "label": "Heater",
+      "description": "Use this device class for heaters, that warm your home."
+    },
+    "homealarm": {
+      "label": "Home Security",
+      "description": "Use this device class for home alarm systems."
+    },
+    "kettle": {
+      "label": "Kettle",
+      "description": "Use this device class for kettle devices, that can heat water."
+    },
+    "light": {
+      "label": "Light",
+      "description": "Use this device class for lights, usually together with the `onoff`, `dim` and `light_*` capabilities."
+    },
+    "lock": {
+      "label": "Lock",
+      "description": "Use this device class for lock devices, usually together with the `locked` and `lock_mode` capabilities."
+    },
+    "other": {
+      "label": "Other",
+      "description": "Use this device class for devices that do not fit any other device class."
+    },
+    "remote": {
+      "label": "Remote",
+      "description": "Use this device class for (TV/Sunblind/Keyfob etc.) remotes."
+    },
+    "sensor": {
+      "label": "Sensor",
+      "description": "Use this device class for sensors, e.g. a contact or motion sensor."
+    },
+    "socket": {
+      "label": "Wall Plug",
+      "description": "Use this device class for sockets (built-in or plug-in socket switches). When adding the `choose_slave` pair template, the user is presented a `What's plugged in?` question."
+    },
+    "speaker": {
+      "label": "Speaker",
+      "description": "Use this device class for devices that can play music, usually together with the `speaker_*` capabilities."
+    },
+    "solarpanel": {
+      "label": "Solar Panel",
+      "description": "Use this device class for solar panels."
+    },
+    "sunshade": {
+      "label": "Sunshade",
+      "description": "Use this device class for sunshades (window coverings against the sun)."
+    },
+    "thermostat": {
+      "label": "Thermostat",
+      "description": "Use this device class for thermostats, either for the entire home or radiator-mounted, usually together with the `measure_temperature`, `target_temperature` and `thermostat_mode` capabilities."
+    },
+    "tv": {
+      "label": "TV",
+      "description": "Use this device class for TVs."
+    },
+    "vacuumcleaner": {
+      "label": "Vacuum Cleaner",
+      "description": "Use this device class for vacuum cleaners, usually together with the `vacuumcleaner_state` capability."
+    },
+    "windowcoverings": {
+      "label": "Window Coverings",
+      "description": "Use this device class for window coverings, when the `curtains`, `blinds` or `sunshade` device class doesn't apply."
+    }
+  },
+  "capabilityType": {
+    "text": {
+      "label": "text",
+      "description": "text"
+    },
+    "onoff": {
+      "label": "onoff",
+      "description": "onoff"
+    },
+    "dim": {
+      "label": "dim",
+      "description": "dim"
+    },
+    "target_temperature": {
+      "label": "target_temperature",
+      "description": "target_temperature"
+    },
+    "measure_temperature": {
+      "label": "measure_temperature",
+      "description": "measure_temperature"
+    },
+    "measure_co": {
+      "label": "measure_co",
+      "description": "measure_co"
+    },
+    "measure_co2": {
+      "label": "measure_co2",
+      "description": "measure_co2"
+    },
+    "measure_pm25": {
+      "label": "measure_pm25",
+      "description": "measure_pm25"
+    },
+    "measure_humidity": {
+      "label": "measure_humidity",
+      "description": "measure_humidity"
+    },
+    "measure_pressure": {
+      "label": "measure_pressure",
+      "description": "measure_pressure"
+    },
+    "measure_noise": {
+      "label": "measure_noise",
+      "description": "measure_noise"
+    },
+    "measure_rain": {
+      "label": "measure_rain",
+      "description": "measure_rain"
+    },
+    "measure_wind_strength": {
+      "label": "measure_wind_strength",
+      "description": "measure_wind_strength"
+    },
+    "measure_wind_angle": {
+      "label": "measure_wind_angle",
+      "description": "measure_wind_angle"
+    },
+    "measure_gust_strength": {
+      "label": "measure_gust_strength",
+      "description": "measure_gust_strength"
+    },
+    "measure_gust_angle": {
+      "label": "measure_gust_angle",
+      "description": "measure_gust_angle"
+    },
+    "measure_battery": {
+      "label": "measure_battery",
+      "description": "measure_battery"
+    },
+    "measure_power": {
+      "label": "measure_power",
+      "description": "measure_power"
+    },
+    "measure_voltage": {
+      "label": "measure_voltage",
+      "description": "measure_voltage"
+    },
+    "measure_current": {
+      "label": "measure_current",
+      "description": "measure_current"
+    },
+    "measure_luminance": {
+      "label": "measure_luminance",
+      "description": "measure_luminance"
+    },
+    "measure_ultraviolet": {
+      "label": "measure_ultraviolet",
+      "description": "measure_ultraviolet"
+    },
+    "measure_water": {
+      "label": "measure_water",
+      "description": "measure_water"
+    },
+    "alarm_generic": {
+      "label": "alarm_generic",
+      "description": "alarm_generic"
+    },
+    "alarm_motion": {
+      "label": "alarm_motion",
+      "description": "alarm_motion"
+    },
+    "alarm_contact": {
+      "label": "alarm_contact",
+      "description": "alarm_contact"
+    },
+    "alarm_co": {
+      "label": "alarm_co",
+      "description": "alarm_co"
+    },
+    "alarm_co2": {
+      "label": "alarm_co2",
+      "description": "alarm_co2"
+    },
+    "alarm_pm25": {
+      "label": "alarm_pm25",
+      "description": "alarm_pm25"
+    },
+    "alarm_tamper": {
+      "label": "alarm_tamper",
+      "description": "alarm_tamper"
+    },
+    "alarm_smoke": {
+      "label": "alarm_smoke",
+      "description": "alarm_smoke"
+    },
+    "alarm_fire": {
+      "label": "alarm_fire",
+      "description": "alarm_fire"
+    },
+    "alarm_heat": {
+      "label": "alarm_heat",
+      "description": "alarm_heat"
+    },
+    "alarm_water": {
+      "label": "alarm_water",
+      "description": "alarm_water"
+    },
+    "alarm_battery": {
+      "label": "alarm_battery",
+      "description": "alarm_battery"
+    },
+    "alarm_night": {
+      "label": "alarm_night",
+      "description": "alarm_night"
+    },
+    "meter_power": {
+      "label": "meter_power",
+      "description": "meter_power"
+    },
+    "meter_water": {
+      "label": "meter_water",
+      "description": "meter_water"
+    },
+    "meter_gas": {
+      "label": "meter_gas",
+      "description": "meter_gas"
+    },
+    "meter_rain": {
+      "label": "meter_rain",
+      "description": "meter_rain"
+    },
+    "volume_set": {
+      "label": "volume_set",
+      "description": "volume_set"
+    },
+    "volume_up": {
+      "label": "volume_up",
+      "description": "volume_up"
+    },
+    "volume_down": {
+      "label": "volume_down",
+      "description": "volume_down"
+    },
+    "volume_mute": {
+      "label": "volume_mute",
+      "description": "volume_mute"
+    },
+    "channel_up": {
+      "label": "channel_up",
+      "description": "channel_up"
+    },
+    "channel_down": {
+      "label": "channel_down",
+      "description": "channel_down"
+    },
+    "locked": {
+      "label": "locked",
+      "description": "locked"
+    },
+    "windowcoverings_tilt_set": {
+      "label": "windowcoverings_tilt_set",
+      "description": "windowcoverings_tilt_set"
+    },
+    "windowcoverings_closed": {
+      "label": "windowcoverings_closed",
+      "description": "windowcoverings_closed"
+    },
+    "windowcoverings_set": {
+      "label": "windowcoverings_set",
+      "description": "windowcoverings_set"
+    },
+    "button": {
+      "label": "button",
+      "description": "button"
+    }
+  }
 }

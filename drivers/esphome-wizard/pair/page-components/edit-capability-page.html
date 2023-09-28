@@ -1,2 +1,200 @@
 <template id="template-edit-capability-page">
+  <div :class='{ active : pageHandler.currentPage === "edit-capability-page", page : true }' @vue:mounted='mounted'>
+    <header>
+      <span class='back' @click='back()' data-i18n='wizard2.edit-capability.back'></span>
+      <span>{{ _editCapability === null ? Homey.__('wizard2.edit-capability.title-new') :
+        Homey.__('wizard2.edit-capability.title-edit') }}</span>
+      <span class='done' id='EVDdone' @click='apply()' data-i18n='wizard2.edit-capability.done'
+        :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
+    </header>
+
+    <div class='list'>
+      <p>
+        <span>{{ Homey.__('wizard2.edit-capability.native-capability.title') }}</span>
+      </p>
+
+      <ul>
+        <li>
+          <!-- select physical device -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.physical-device') }}</span>
+          <span></span>
+          <select ref='physicalDeviceId' v-model='physicalDeviceId' @change='checkValidity'>
+            <option v-if='physicalDeviceId === "unselected"' value='unselected' selected disabled>{{
+              Homey.__('wizard2.edit-capability.native-capability.physical-device-unselected') }}
+            </option>
+            <template
+              v-for='physicalDevice in configuration.physicalDevices?.sort((a, b) => a.name.localeCompare(b.name))'
+              :key='physicalDevice.physicalDeviceId'>
+              <option :value='physicalDevice.physicalDeviceId'>
+                {{ physicalDevice.name }}
+              </option>
+            </template>
+          </select>
+        </li>
+        <li>
+          <!-- select native capability -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.native-capability') }}</span>
+          <span></span>
+          <select ref='nativeCapabilityId' v-model='nativeCapabilityId' @change='checkValidity'>
+            <option v-if='nativeCapabilityId === "unselected"' value='unselected' selected disabled>{{
+              Homey.__('wizard2.edit-capability.native-capability.native-capability-unselected') }}
+            </option>
+            <template
+              v-for='nativeCapability in configuration.physicalDevices?.find(physicalDevice => physicalDevice.physicalDeviceId === physicalDeviceId)?.nativeCapabilities.sort((a, b) => { let compare = a.entityName.localeCompare(b.entityName); if (compare !== 0) return compare; return a.attribut.localeCompare(b.attribut); })'
+              :key='nativeCapability.nativeCapabilityId'>
+              <option :value='nativeCapability.nativeCapabilityId'>
+                {{ nativeCapability.entityName + ' - ' + nativeCapability.attribut }}
+              </option>
+            </template>
+          </select>
+        </li>
+
+        <template v-if='nativeCapabilityId !== "unselected"'>
+          <li class="sub">
+            <!-- type -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.type') }}</span>
+            <span></span>
+            <span>{{ _nativeCapabilitySelected?.type }}</span>
+          </li>
+          <li class="sub"
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.writeOnly !== true">
+            <!-- current value -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.current-value') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.value }}</span>
+          </li>
+          <li class="sub">
+            <!-- used -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.used') }}</span>
+            <span></span>
+            <span>{{ _nativeCapabilitySelected?.used }}</span>
+          </li class="sub">
+          <li class="sub"
+            v-show='_nativeCapabilitySelected !== null && Object.keys(_nativeCapabilitySelected.configs).length > 0'>
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs-title') }}</span>
+            <span></span>
+          </li>
+          <li class="subsub"
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.precision !== undefined">
+            <!-- configs.precision -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.precision') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.configs.precision }}</span>
+          </li>
+          <li class="subsub"
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.showUI !== undefined">
+            <!-- configs.showUI -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.showUI') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.configs.showUI }}</span>
+          </li>
+          <li class="subsub"
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.usage !== undefined">
+            <!-- configs.usage -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.usage-title') }}</span>
+            <span></span>
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.usage.' +
+              _nativeCapabilitySelected?.configs.usage) }}</span>
+          </li>
+          <li class="subsub"
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.deviceClass !== undefined">
+            <!-- configs.deviceClass -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.deviceClass') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.configs.deviceClass }}</span>
+          </li>
+          <li class="subsub"
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.readOnly === true">
+            <!-- configs.readOnly -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.readWrite-title') }}</span>
+            <span></span>
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.readWrite.readOnly')
+              }}</span>
+          </li>
+          <li class="subsub"
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.writeOnly === true">
+            <!-- configs.writeOnly -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.readWrite-title') }}</span>
+            <span></span>
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.readWrite.writeOnly')
+              }}</span>
+          </li>
+          <li class="sub"
+            v-show='_nativeCapabilitySelected !== null && Object.keys(_nativeCapabilitySelected.constraints).length > 0'>
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints-title') }}</span>
+            <span></span>
+          </li>
+          <li class="subsub"
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.min !== undefined'>
+            <!-- constraints.min -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.min') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.constraints.min }}</span>
+          </li>
+          <li class="subsub"
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.max !== undefined'>
+            <!-- constraints.max -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.max') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.constraints.max }}</span>
+          </li>
+          <li class="subsub"
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.mode !== undefined'>
+            <!-- constraints.mode -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.mode-title') }}</span>
+            <span></span>
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.mode.' +
+              _nativeCapabilitySelected?.constraints.mode) }}</span>
+          </li>
+          <li class="subsub"
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.step !== undefined'>
+            <!-- constraints.step -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.step') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.constraints.step }}</span>
+          </li>
+        </template>
+      </ul>
+    </div>
+
+    <div class='list' v-show="_nativeCapabilitySelected !== null">
+      <p>
+        <span>{{ Homey.__('wizard2.edit-capability.capability.title') }}</span>
+      </p>
+
+      <ul>
+        <li>
+          <!-- select capability -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.capability-type') }}</span>
+          <span></span>
+          <select ref='capabilityType' v-model='capabilityType' @change='checkValidity'>
+            <option v-if='capabilityType === "unselected"' value='unselected' selected disabled :key='"unselected"'>{{
+              Homey.__('wizard2.edit-capability.capability.capability-type-unselected') }}
+            </option>
+            <option v-for='capabilityConf in CAPABILITY_CONFIGURATION.sort((a, b) => Homey.__("capabilityType." + a.type
+                + ".label").localeCompare(Homey.__("capabilityType." + b.type + ".label")))' :key='capabilityConf.type'
+              :value='capabilityConf.type' v-show='_compatibleTypes?.includes(capabilityConf.type)'>
+              {{ Homey.__('capabilityType.' + capabilityConf.type + '.label') }}
+            </option>
+          </select>
+        </li>
+        <!--<li>-->
+        <!-- index -->
+        <!--</li>-->
+        <!--<li>-->
+        <!-- options -->
+        <!--</li>-->
+        <!--<li class="sub" v-for>-->
+        <!-- units -->
+        <!-- decimals -->
+        <!-- preventInsights -->
+        <!-- preventTag -->
+        <!--</li>-->
+      </ul>
+
+      <p ref='capabilityTypeDescription' v-show='capabilityTypeDescription !== ""'>{{ capabilityTypeDescription }}</p>
+    </div>
+
+    <section v-scope="ErrorAndWarningList()"></section>
+  </div>
 </template>
