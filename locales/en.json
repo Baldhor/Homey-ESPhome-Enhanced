@@ -360,7 +360,8 @@
       "error-native-capability": "A native capability must be selected",
       "error-capability-type": "A capability type must be selected",
       "error-capability-index": "Capability index must be pretty (only lowercase and dot)",
-      "error-capability-title": "Capability title must be pretty"
+      "error-capability-title": "Capability title must be pretty",
+      "fatal-error": "Something went wrong!"
     }
   },
   "deviceClass": {

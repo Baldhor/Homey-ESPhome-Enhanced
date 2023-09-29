@@ -10,13 +10,13 @@ class Driver extends Homey.Driver {
 
     async onInit() {
         //TODO: To be removed!
-        this.resetConf();
+        //this.resetConf();
 
         // Check for migration or init conf
         this.checkMigration();
         this.initConf();
 
-        await this.cleanUpConf();
+        this.cleanUpConf();
 
         PhysicalDeviceManager.init(this);
 
@@ -29,7 +29,7 @@ class Driver extends Homey.Driver {
         this.log('ESPhomeWizard initialized');
     }
 
-    async cleanUpConf() {
+    cleanUpConf() {
         this.log('cleanUpConf');
 
         // Go through all the virtual devices, to build up the list of usefull physical device ids
@@ -56,6 +56,12 @@ class Driver extends Homey.Driver {
             }
         });
         this.setConf(conf);
+    }
+
+    cleanUpPhysicalDevices() {
+        this.cleanUpConf();
+
+        // TODO: clean physical devices from the manager
     }
 
     async onPair(session) {
@@ -493,10 +499,11 @@ class Driver extends Homey.Driver {
                     // Capabilities are: <capabilityType>[.<index>]
                     virtualDevice.getCapabilities().forEach(capability => {
                         let capabilityValueV2 = virtualDevice.getStoreValue('capabilityKeysV2')[capability];
+                        this.log('capabilityValueV2:', capabilityValueV2);
                         let tmpCapability = {
                             capabilityId: capability,
                             type: capability.split(".")[0],
-                            index: capability.split(".").length > 1 ? parseInt(capability.split(".")[1]) : '1',
+                            index: capability.split(".").length > 1 ? capability.split(".")[1] : '1',
                             status: 'unmodified',
                             options: virtualDevice.getCapabilityOptions(capability),
                             physicalDeviceId: capabilityValueV2.physicalDeviceId,
@@ -691,7 +698,82 @@ class Driver extends Homey.Driver {
                 this.log('connect-new-device finished');
             }
         });
+
+        session.setHandler('apply-capability', (data) => {
+            this.log('apply-capability:', data);
+
+            let virtualDeviceId = data.virtualDeviceId;
+            let action = data.action;
+            let capability = data.capability;
+
+            try {
+                let virtualDevice = this.getDevices().find(virtualDevice => virtualDevice.getData().id === virtualDeviceId);
+                if (virtualDevice === undefined) {
+                    throw new Error("Cannot find virtualDevice:", virtualDeviceId);
+                }
+
+                if (action === 'edit' && capability.initialCapabilityId === capability.capabilityId) {
+                    // Modification but capabilityId remains the same!
+                    // For whatever reason, we cannot remove/add the capability, we need to modify it
+
+                    // Modify the capabilityKeys (different pohysical device and/or native capability)
+                    let capabilityKeysV2 = virtualDevice.getStoreValue('capabilityKeysV2');
+                    capabilityKeysV2[capability.capabilityId] = {
+                        physicalDeviceId: capability.physicalDeviceId,
+                        nativeCapabilityId: capability.nativeCapabilityId
+                    };
+                    virtualDevice.setStoreValue('capabilityKeysV2', capabilityKeysV2)
+                        .catch(e => { throw e; });
+
+                    virtualDevice.setCapabilityOptions(capability.capabilityId, capability.options)
+                        .catch(e => { throw e; });
+
+                    // Just in case a physical device became useless
+                    this.cleanUpPhysicalDevices();
+                } else {
+                    // Remove the old capability
+                    if (action === "edit") {
+                        // Remove capabilityKeys first
+                        let capabilityKeysV2 = virtualDevice.getStoreValue('capabilityKeysV2');
+                        delete capabilityKeysV2[capability.initialCapabilityId];
+                        virtualDevice.setStoreValue('capabilityKeysV2', capabilityKeysV2)
+                            .catch(e => { throw e; });
+
+                        // Remove capability
+                        virtualDevice.removeCapability(capability.initialCapabilityId)
+                            .catch(e => { throw e; });
+
+                        // Remove the capability listener
+                        virtualDevice._removeCapabilityListener(capability.initialCapabilityId);
+                    }
+
+                    // Add the new capability
+                    virtualDevice.addCapability(capability.capabilityId)
+                        .catch(e => { throw e; });
+                    virtualDevice.setCapabilityOptions(capability.capabilityId, capability.options)
+                        .catch(e => { throw e; });
+
+                    // Add the capabilityKeys
+                    let capabilityKeysV2 = virtualDevice.getStoreValue('capabilityKeysV2');
+                    capabilityKeysV2[capability.capabilityId] = {
+                        physicalDeviceId: capability.physicalDeviceId,
+                        nativeCapabilityId: capability.nativeCapabilityId
+                    };
+                    virtualDevice.setStoreValue('capabilityKeysV2', capabilityKeysV2)
+                        .catch(e => { throw e; });
+
+                    // Add capability listener
+                    virtualDevice._addCapabilityListener(capability.capabilityId);
+                }
+            } catch (e) {
+                this.error(e);
+                throw e;
+            } finally {
+                this.log('apply-capability finished');
+            }
+        });
     }
+
 
     /***********************
      * Check migration from wizard v1 to v2
@@ -732,9 +814,12 @@ class Driver extends Homey.Driver {
             let capabilityKeysV1 = virtualDevice.getStoreValue('capabilityKeys');
             let capabilityKeysV2 = {};
             Object.keys(capabilityKeysV1).forEach(capabilityKey => {
-                capabilityKeysV2[capabilityKey] = {
-                    physicalDeviceId: physicalDeviceId,
-                    nativeCapabilityId: capabilityKeysV1[capabilityKey]
+                if (virtualDevice.getCapabilities().includes(capabilityKey)) {
+
+                    capabilityKeysV2[capabilityKey] = {
+                        physicalDeviceId: physicalDeviceId,
+                        nativeCapabilityId: capabilityKeysV1[capabilityKey]
+                    }
                 }
             });
             virtualDevice.setStoreValue('capabilityKeysV2', capabilityKeysV2);
@@ -818,7 +903,7 @@ class Driver extends Homey.Driver {
         this.log('getDeviceZone:', ...arguments);
 
         try {
-            let apiDevice = await this.homeyApi.devices.getDevice({id:device.getId()});
+            let apiDevice = await this.homeyApi.devices.getDevice({ id: device.getId() });
             let apiZone = await apiDevice.getZone();
             let zoneId = apiZone.id;
             this.log('zoneName:', zoneId);

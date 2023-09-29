@@ -65,7 +65,7 @@
                 In read only mode, the capability can only be 'deleted'
               -->
           <li style='align-items: left;'>
-            <span>{{ capability.options.title !== null ? capability.options.title : '-default-' }}</span>
+            <span>{{ capability.options.title !== null && capability.options.title !== '' ? capability.options.title : capability.capabilityId }}</span>
             <span></span>
             <span class='edit'
               @click='switchPage("edit-capability-page", { virtualDeviceId: _editVirtualDevice.virtualDeviceId, capabilityId: capability.capabilityId })'>{{
@@ -74,7 +74,7 @@
           <li class="sub">
             <span>{{ Homey.__('wizard2.edit-virtual-device.capability.name') }}</span>
             <span></span>
-            <span>{{ capability.type }}</span>
+            <span>{{ capability.capabilityId }}</span>
           </li>
           <li class="sub">
             <span>{{ Homey.__('wizard2.edit-virtual-device.capability.status-title') }}</span>
@@ -85,7 +85,7 @@
             <span>{{ Homey.__('wizard2.edit-virtual-device.capability.options-title') }}</span>
             <span></span>
           </li>
-          <li class="subsub" v-for='optionKey in Object.keys(capability.options).filter(e => e !== "title").sort((a, b) => Homey.__("wizard2.edit-virtual-device.capability.options." +
+          <li class="subsub" v-for='optionKey in Object.keys(capability.options).filter(e => e !== "title" && e !== "index").sort((a, b) => Homey.__("wizard2.edit-virtual-device.capability.options." +
           a).localeCompare(Homey.__("wizard2.edit-virtual-device.capability.options." + b)))'
             :key='capability.capabilityId + ":" + optionKey'>
             <span>{{ Homey.__('wizard2.edit-virtual-device.capability.options.' + optionKey) }}</span>

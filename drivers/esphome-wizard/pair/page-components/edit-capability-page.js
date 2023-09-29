@@ -35,7 +35,7 @@ const EditCapabilityPage = function () {
       this._initValues = {};
       this._hideConfigs = true;
       this._hideConstraints = true;
-      
+
       if (capabilityId === undefined) {
         // new mode
         this._editCapability = null;
@@ -109,7 +109,6 @@ const EditCapabilityPage = function () {
       // Update capability options as needed
       this._updateCapabilityOptions();
 
-
       // Retrieve elements from refs
       const physicalDeviceIdElt = this.$refs.physicalDeviceId;
       const nativeCapabilityIdElt = this.$refs.nativeCapabilityId;
@@ -146,6 +145,8 @@ const EditCapabilityPage = function () {
         errorAndWarningList.addError("wizard2.edit-capability.error-capability-index");
       }
 
+      // TODO: Index should be unique or empty for default behaviour
+
       if (capabilityTitleElt !== undefined && !capabilityTitleElt.validity.valid) {
         errorAndWarningList.addError("wizard2.edit-capability.error-capability-title");
       }
@@ -177,25 +178,78 @@ const EditCapabilityPage = function () {
       this._modified ? (await confirm(Homey.__("wizard2.edit-capability.loseModification", "warning")) ? pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId }) : true) : pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
     },
     async apply() {
-      wizardlog('[' + this.componentName + '] ' + 'back');
+      wizardlog('[' + this.componentName + '] ' + 'apply');
 
-      // Add selected native capability to virtual device capability
-      let tmpCapability = {
-        capabilityId: 'Wizard' + Date.now(), // TODO
-        type: null,
-        index: null,
-        options: null,
-        physicalDeviceId: this.physicalDeviceId,
-        nativeCapabilityId: this.nativeCapabilityId,
-        status: "new"
+      Homey.showLoadingOverlay();
+
+      try {
+        let tmpAction = null;
+        let tmpCapability = {};
+
+        if (this._editCapability === null) {
+          // new mode
+          tmpAction = 'new';
+
+          // index
+          tmpCapability.index = this.capabilityOptions.index;
+          if (tmpCapability.index === "") {
+            // If index is empty, we need to calculate one
+            let tmpIndex = 1;
+            this._editVirtualDevice.current.capabilities.filter(capability => capability.type === this.capabilityType && capability.options.index === "").forEach(capability => {
+              if (tmpIndex <= parseInt(capability.index)) {
+                tmpIndex = parseInt(capability.index) + 1;
+              }
+            });
+            tmpCapability.index = tmpIndex.toString();
+          }
+        } else {
+          // edit mode
+          tmpAction = 'edit';
+          tmpCapability.initialCapabilityId = this._editCapability.capabilityId;
+
+          // index
+          tmpCapability.index = this.capabilityOptions.index;
+          if (tmpCapability.index === "") {
+            // If index is empty, we reuse current index
+            tmpCapability.index = this._editCapability.index;
+          }
+        }
+
+        // type
+        tmpCapability.type = this.capabilityType;
+
+        // capabilityId
+        if (tmpCapability.index === "1") {
+          tmpCapability.capabilityId = tmpCapability.type;
+        } else {
+          tmpCapability.capabilityId = tmpCapability.type + "." + tmpCapability.index;
+        }
+
+        // physicalDeviceId
+        tmpCapability.physicalDeviceId = this.physicalDeviceId;
+
+        // nativeCapabilityId
+        tmpCapability.nativeCapabilityId = this.nativeCapabilityId;
+
+        // options
+        tmpCapability.options = Object.assign({}, this.capabilityOptions); // shallow copy
+
+        // Add or update the capability to the virtual device
+        await Homey.emit('apply-capability', {
+          virtualDeviceId: this._editVirtualDevice.virtualDeviceId,
+          action: tmpAction,
+          capability: tmpCapability
+        }).catch(e => { throw e; });
+
+        // Refresh configuration and go to previous page
+        await configuration.load();
+        pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
+      } catch (e) {
+        wizardlog(e);
+
+        Homey.hideLoadingOverlay();
+        alert(Homey.__("wizard2.edit-capability.fatal-error", "error"));
       }
-
-      // Save the new capability
-      // Remark: if not fully edited in the edit capability page, it will be removed later (cf. init function of edit-virtual-device-page)
-      this._editVirtualDevice.current.capabilities.push(tmpCapability);
-
-      // Added native capability must go through the edit-capability-page
-      pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
     },
     _updateCompatibleTypes() {
       wizardlog('[' + this.componentName + '] ' + '_updateCompatibleTypes');
