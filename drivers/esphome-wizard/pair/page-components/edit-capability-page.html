@@ -209,6 +209,15 @@
             style='text-align: left; margin-left: 0;'
             :placeholder='Homey.__("wizard2.edit-capability.capability.title-default")'>
         </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.zoneActivity !== undefined'>
+          <!-- zoneActivity - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.zoneActivity') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='capabilityZoneActivity'
+                v-model='capabilityOptions.zoneActivity' @change='checkValidity'><i></i></label>
+          </i>
+        </li>
         <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.units !== undefined'>
           <!-- units - text-->
           <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.units') }}</span>
@@ -222,24 +231,6 @@
           <span></span>
           <input ref='capabilityDecimals' v-model='capabilityOptions.decimals' @input='checkValidity' type='number'
             min="0" max="10" style='text-align: left; margin-left: 0;'>
-        </li>
-        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.preventInsights !== undefined'>
-          <!-- preventInsights - boolean -->
-          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.preventInsights') }}</span>
-          <span></span>
-          <i class='switch'>
-            <label class="form-switch"><input type="checkbox" ref='capabilityPreventInsights'
-                v-model='capabilityOptions.preventInsights' @change='checkValidity'><i></i></label>
-          </i>
-        </li>
-        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.preventTag !== undefined'>
-          <!-- preventTag - boolean -->
-          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.preventTag') }}</span>
-          <span></span>
-          <i class='switch'>
-            <label class="form-switch"><input type="checkbox" ref='capabilityPreventTag'
-                v-model='capabilityOptions.preventTag' @change='checkValidity'><i></i></label>
-          </i>
         </li>
         <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.min !== undefined'>
           <!-- min - float -infinite,infinite -->
@@ -280,13 +271,22 @@
                 v-model='capabilityOptions.approximated' @change='checkValidity'><i></i></label>
           </i>
         </li>
-        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.zoneActivity !== undefined'>
-          <!-- zoneActivity - boolean -->
-          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.zoneActivity') }}</span>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.preventInsights !== undefined'>
+          <!-- preventInsights - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.preventInsights') }}</span>
           <span></span>
           <i class='switch'>
-            <label class="form-switch"><input type="checkbox" ref='capabilityZoneActivity'
-                v-model='capabilityOptions.zoneActivity' @change='checkValidity'><i></i></label>
+            <label class="form-switch"><input type="checkbox" ref='capabilityPreventInsights'
+                v-model='capabilityOptions.preventInsights' @change='checkValidity'><i></i></label>
+          </i>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.preventTag !== undefined'>
+          <!-- preventTag - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.preventTag') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='capabilityPreventTag'
+                v-model='capabilityOptions.preventTag' @change='checkValidity'><i></i></label>
           </i>
         </li>
       </ul>

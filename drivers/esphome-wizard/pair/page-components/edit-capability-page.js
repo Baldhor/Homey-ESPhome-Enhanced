@@ -67,7 +67,7 @@ const EditCapabilityPage = function () {
         Object.keys(this._editCapability.options).forEach(optionKey => {
           this._initValues.capabilityOptions[optionKey] = this._editCapability.options[optionKey];
         });
-        this.capabilityOptions = JSON.parse(JSON.stringify(this._initValues.capabilityOptions)); // must be a seperate instance (deep copy)
+        this.capabilityOptions = Object.assign({ 'index': "", 'title': "" }, this._initValues.capabilityOptions); // must be a seperate instance (shallow copy)
       }
       this.capabilityTypeDescription = "";
 
@@ -297,6 +297,12 @@ const EditCapabilityPage = function () {
         switch (optionKey) {
           case 'index':
           case 'title':
+            // Set default value, in case it's null by default ...
+            optionValue = this.capabilityOptions[optionKey];
+            if (optionValue === null || optionValue === undefined) {
+              optionValue = "";
+            }
+            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           case 'preventInsights':
