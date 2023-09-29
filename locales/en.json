@@ -331,25 +331,36 @@
             "slidder": "Slidder"
           },
           "step": "Step"
-        }
+        },
+        "hide": "hide",
+        "show": "show"
       },
       "capability": {
         "title": "Choose and configure the capability",
         "capability-type": "Type",
         "capability-type-unselected": "--Select a type--",
-        "capability-index": "Index",
-        "index-default": "<default>",
         "options-title": "Option(s)",
         "options": {
-          "units": "Unit",
-          "decimals": "Decimals",
-          "preventInsights": "Prevent Insights",
-          "preventTag": "Prevent Tag"
-        }
+          "index": "Index",
+          "title": "Title",
+          "preventInsights": "Prevent insights",
+          "preventTag": "Prevent tag",
+          "getable": "Getable only",
+          "approximated": "Approimated",
+          "decimals": "Precision",
+          "min": "Min",
+          "max": "Max",
+          "step": "Step",
+          "units": "Unit"
+        },
+        "index-default": "<default>",
+        "title-default": "<default>"
       },
       "error-physical-device": "A physical device must be selected",
       "error-native-capability": "A native capability must be selected",
-      "error-capability-type": "A capability type must be selected"
+      "error-capability-type": "A capability type must be selected",
+      "error-capability-index": "Capability index must be pretty (only lowercase and dot)",
+      "error-capability-title": "Capability title must be pretty"
     }
   },
   "deviceClass": {

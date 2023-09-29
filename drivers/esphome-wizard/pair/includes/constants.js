@@ -13,7 +13,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'decimals']
   },
   {
     type: 'onoff',
@@ -25,7 +25,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'decimals', 'min', 'max', 'step', 'getable']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'decimals', 'min', 'max', 'step', 'getable']
   },
   {
     type: 'dim',
@@ -37,7 +37,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
   },
   // Skip light_hue
   // Skip light_saturation
@@ -55,7 +55,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals', 'min', 'max', 'step']
   },
   {
     type: 'measure_temperature',
@@ -67,7 +67,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_co',
@@ -79,7 +79,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_co2',
@@ -91,7 +91,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_pm25',
@@ -103,7 +103,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_humidity',
@@ -115,7 +115,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_pressure',
@@ -127,7 +127,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_noise',
@@ -139,7 +139,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_rain',
@@ -151,7 +151,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_wind_strength',
@@ -163,7 +163,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_wind_angle',
@@ -175,7 +175,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_gust_strength',
@@ -187,7 +187,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_gust_angle',
@@ -199,7 +199,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_battery',
@@ -211,7 +211,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_power',
@@ -223,7 +223,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals', 'approximated']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals', 'approximated']
   },
   {
     type: 'measure_voltage',
@@ -235,7 +235,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_current',
@@ -247,7 +247,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_luminance',
@@ -259,7 +259,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_ultraviolet',
@@ -271,7 +271,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'measure_water',
@@ -283,7 +283,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'alarm_generic',
@@ -295,7 +295,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_motion',
@@ -307,7 +307,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'zoneActivity']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'zoneActivity']
   },
   {
     type: 'alarm_contact',
@@ -319,7 +319,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'zoneActivity']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'zoneActivity']
   },
   {
     type: 'alarm_co',
@@ -331,7 +331,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_co2',
@@ -343,7 +343,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_pm25',
@@ -355,7 +355,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_tamper',
@@ -367,7 +367,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_smoke',
@@ -379,7 +379,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_fire',
@@ -391,7 +391,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_heat',
@@ -403,7 +403,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_water',
@@ -415,7 +415,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_battery',
@@ -427,7 +427,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'alarm_night',
@@ -439,7 +439,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'meter_power',
@@ -451,7 +451,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'meter_water',
@@ -463,7 +463,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'meter_gas',
@@ -475,7 +475,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'meter_rain',
@@ -487,7 +487,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   // Skip homealarm_state
   {
@@ -500,7 +500,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'units', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
     type: 'volume_up',
@@ -512,7 +512,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'volume_down',
@@ -524,7 +524,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'volume_mute',
@@ -536,7 +536,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag', 'getable']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'getable']
   },
   {
     type: 'channel_up',
@@ -548,7 +548,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'channel_down',
@@ -560,7 +560,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'locked',
@@ -572,7 +572,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   // Skip lock_mode
   // Skip garagedoor_closed
@@ -589,7 +589,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: ['Cover.tilt'],
     nativeCapabilityUnsupported: ['Cover.position'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   // Skip windowcoverings_closed
   {
@@ -602,7 +602,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: ['Cover.position'],
     nativeCapabilityUnsupported: null,
     specialCaseSupported: ['templateCover'],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'windowcoverings_set',
@@ -614,7 +614,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: ['Cover.position'],
     nativeCapabilityUnsupported: ['Cover.tilt'],
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
     type: 'button',
@@ -626,7 +626,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: ['Button.state'],
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['title', 'preventInsights', 'preventTag']
+    options: ['index', 'title', 'preventInsights', 'preventTag']
   }
   // Skip speaker_playing
   // Skip speaker_next

@@ -6,7 +6,11 @@ const EditCapabilityPage = function () {
     physicalDeviceId: null,
     nativeCapabilityId: null,
     capabilityType: null,
+    capabilityOptions: {},
     capabilityTypeDescription: null,
+
+    _hideConfigs: true,
+    _hideConstraints: true,
 
     _editVirtualDevice: null,
     _editCapability: null,
@@ -29,6 +33,9 @@ const EditCapabilityPage = function () {
       this._editVirtualDevice = configuration.virtualDevices.find(e => e.virtualDeviceId === virtualDeviceId);
 
       this._initValues = {};
+      this._hideConfigs = true;
+      this._hideConstraints = true;
+      
       if (capabilityId === undefined) {
         // new mode
         this._editCapability = null;
@@ -41,6 +48,12 @@ const EditCapabilityPage = function () {
         }
         this.nativeCapabilityId = this._initValues.nativeCapabilityId = "unselected";
         this.capabilityType = this._initValues.capabilityType = "unselected";
+
+        // Other options!
+        this._initValues.capabilityOptions = {};
+        this._initValues.capabilityOptions['index'] = "";
+        this._initValues.capabilityOptions['title'] = "";
+        this.capabilityOptions = JSON.parse(JSON.stringify(this._initValues.capabilityOptions)); // must be a seperate instance (deep copy)
       } else {
         // edit mode
         this._editCapability = this._editVirtualDevice.current.capabilities.find(capability => capability.capabilityId === capabilityId);
@@ -48,9 +61,16 @@ const EditCapabilityPage = function () {
         this.physicalDeviceId = this._initValues.physicalDeviceId = this._editCapability.physicalDeviceId;
         this.nativeCapabilityId = this._initValues.nativeCapabilityId = this._editCapability.nativeCapabilityId;
         this.capabilityType = this._initValues.capabilityType = this._editCapability.type;
+
+        // Other options!
+        this._initValues.capabilityOptions = [];
+        Object.keys(this._editCapability.options).forEach(optionKey => {
+          this._initValues.capabilityOptions[optionKey] = this._editCapability.options[optionKey];
+        });
+        this.capabilityOptions = JSON.parse(JSON.stringify(this._initValues.capabilityOptions)); // must be a seperate instance (deep copy)
       }
       this.capabilityTypeDescription = "";
-      
+
       await PetiteVue.nextTick();
       this.checkValidity();
     },
@@ -86,10 +106,16 @@ const EditCapabilityPage = function () {
         }
       }
 
+      // Update capability options as needed
+      this._updateCapabilityOptions();
+
+
       // Retrieve elements from refs
       const physicalDeviceIdElt = this.$refs.physicalDeviceId;
       const nativeCapabilityIdElt = this.$refs.nativeCapabilityId;
       const capabilityTypeElt = this.$refs.capabilityType;
+      const capabilityIndexElt = this.$refs.capabilityIndex;
+      const capabilityTitleElt = this.$refs.capabilityTitle;
 
       // Reset custom validity
       physicalDeviceIdElt.setCustomValidity('');
@@ -107,19 +133,43 @@ const EditCapabilityPage = function () {
       }
 
       if (this.capabilityType === "unselected") {
-        capabilityTypeElt.setCustomValidity(false);
-        errorAndWarningList.addError("wizard2.edit-capability.error-capability-type");
+        if (this.nativeCapabilityId !== "unselected") {
+          capabilityTypeElt.setCustomValidity(false);
+          errorAndWarningList.addError("wizard2.edit-capability.error-capability-type");
+        }
         this.capabilityTypeDescription = "";
       } else {
         this.capabilityTypeDescription = Homey.__('capabilityType.' + this.capabilityType + '.description');
       }
+
+      if (capabilityIndexElt !== undefined && !capabilityIndexElt.validity.valid) {
+        errorAndWarningList.addError("wizard2.edit-capability.error-capability-index");
+      }
+
+      if (capabilityTitleElt !== undefined && !capabilityTitleElt.validity.valid) {
+        errorAndWarningList.addError("wizard2.edit-capability.error-capability-title");
+      }
+
+      // TODO: remove this log
+      wizardlog('capabilityOptions:', this.capabilityOptions);
 
       this.checkModified();
     },
     checkModified() {
       wizardlog('[' + this.componentName + '] ' + 'checkModified');
 
-      this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
+      // process capabilityOptions separatly
+      let modified = Object.keys(this._initValues).filter(key => key !== 'capabilityOptions').find(key => this._initValues[key] !== this[key]) !== undefined;
+      if (!modified) {
+        // It means that the capability type is unmodified
+        // We can trust the each option "should have" an initial value
+        // However, a capability option may be missing in the initial values, or be null
+        modified = Object.keys(this.capabilityOptions).find(capabilityKey => {
+          let initialValue = this._initValues.capabilityOptions[capabilityKey];
+          return initialValue === undefined || initialValue === null || initialValue !== this.capabilityOptions[capabilityKey];
+        }) !== undefined;
+      }
+      this._modified = modified;
     },
     async back() {
       wizardlog('[' + this.componentName + '] ' + 'back');
@@ -223,6 +273,274 @@ const EditCapabilityPage = function () {
       capabilityList.forEach(capability => compatibleCapabilityTypes.push(capability.type));
 
       this._compatibleTypes = compatibleCapabilityTypes;
+    },
+    _updateCapabilityOptions() {
+      wizardlog('[' + this.componentName + '] ' + '_updateCapabilityOptions');
+
+      if (this.capabilityType === "unselected") {
+        return;
+      }
+
+      // Get applicable options and apply default values
+      let capabilityConf = CAPABILITY_CONFIGURATION.find(capabilityConf => capabilityConf.type === this.capabilityType);
+
+      // default values come in order:
+      // 1- From the current value (bounded if needed)
+      // 2- From the initial value (bounded if needed)
+      // 3- From the native capability
+      // 4- Arbitrary
+      // 5- Enforced
+      capabilityConf.options.forEach(optionKey => {
+        // Add this option key
+        let optionValue = null;
+
+        switch (optionKey) {
+          case 'index':
+          case 'title':
+            break;
+
+          case 'preventInsights':
+          case 'preventTag':
+          case 'getable':
+          case 'approximated':
+            // 1- From the current value (bounded if needed)
+            optionValue = this.capabilityOptions[optionKey];
+            if (optionValue === undefined || typeof optionValue !== 'boolean') {
+              optionValue = null;
+            }
+
+            // 2- From the initial value (bounded if needed)
+            if (optionValue === null) {
+              optionValue = this._initValues.capabilityOptions[optionKey];
+              if (optionValue === undefined || typeof optionValue !== 'boolean') {
+                optionValue = null;
+              }
+            }
+
+            // 3- From the native capability
+            // do nothing
+
+            // 4- Arbitrary
+            if (optionValue === null) {
+              optionValue = false;
+            }
+
+            // 5- Enforced
+            // getable should be true by default if the option is readOnly!
+            if (optionKey === 'getable' && optionValue === false && this._nativeCapabilitySelected.configs.readOnly === true) {
+              optionValue = true;
+            }
+
+            this.capabilityOptions[optionKey] = optionValue;
+            break;
+
+          case 'decimals':
+            // 1- From the current value (bounded if needed)
+            optionValue = this.capabilityOptions[optionKey];
+            if (optionValue === undefined || typeof optionValue !== 'number' || !Number.isInteger(optionValue)) {
+              optionValue = null;
+            } else if (optionValue < 0) {
+              optionValue = 0;
+            } else if (optionValue > 10) {
+              optionValue = 10;
+            }
+
+            // 2- From the initial value (bounded if needed)
+            if (optionValue === null) {
+              optionValue = this._initValues.capabilityOptions[optionKey];
+              if (optionValue === undefined || typeof optionValue !== 'number' || !Number.isInteger(optionValue)) {
+                optionValue = null;
+              } else if (optionValue < 0) {
+                optionValue = 0;
+              } else if (optionValue > 10) {
+                optionValue = 10;
+              }
+            }
+
+            // 3- From the native capability
+            if (optionValue === null) {
+              optionValue = this._nativeCapabilitySelected.configs.precision;
+              if (optionValue === undefined) {
+                optionValue = null;
+              }
+            }
+
+            // 4- Arbitrary
+            if (optionValue === null) {
+              optionValue = 0;
+            }
+
+            // 5- Enforced
+            // do nothing
+
+            this.capabilityOptions[optionKey] = optionValue;
+            break;
+
+          case 'min':
+            // 1- From the current value (bounded if needed)
+            optionValue = this.capabilityOptions[optionKey];
+            if (optionValue === undefined || typeof optionValue !== 'number') {
+              optionValue = null;
+            } else if (this._nativeCapabilitySelected.constraints.min !== undefined && optionValue < this._nativeCapabilitySelected.constraints.min) {
+              optionValue = this._nativeCapabilitySelected.constraints.min;
+            } else if (this._nativeCapabilitySelected.constraints.max !== undefined && optionValue > this._nativeCapabilitySelected.constraints.max) {
+              optionValue = this._nativeCapabilitySelected.constraints.max;
+            }
+
+            // 2- From the initial value (bounded if needed)
+            if (optionValue === null) {
+              optionValue = this._initValues.capabilityOptions[optionKey];
+              if (optionValue === undefined || typeof optionValue !== 'number') {
+                optionValue = null;
+              } else if (this._nativeCapabilitySelected.constraints.min !== undefined && optionValue < this._nativeCapabilitySelected.constraints.min) {
+                optionValue = this._nativeCapabilitySelected.constraints.min;
+              } else if (this._nativeCapabilitySelected.constraints.max !== undefined && optionValue > this._nativeCapabilitySelected.constraints.max) {
+                optionValue = this._nativeCapabilitySelected.constraints.max;
+              }
+            }
+
+            // 3- From the native capability
+            if (optionValue === null) {
+              optionValue = this._nativeCapabilitySelected.constraints.min;
+              if (optionValue === undefined) {
+                optionValue = null;
+              }
+            }
+
+            // 4- Arbitrary
+            if (optionValue === null) {
+              optionValue = 0;
+            }
+
+            // 5- Enforced
+            // do nothing
+
+            this.capabilityOptions[optionKey] = optionValue;
+            break;
+
+          case 'max':
+            // 1- From the current value (bounded if needed)
+            optionValue = this.capabilityOptions[optionKey];
+            if (optionValue === undefined || typeof optionValue !== 'number') {
+              optionValue = null;
+            } else if (this._nativeCapabilitySelected.constraints.min !== undefined && optionValue < this._nativeCapabilitySelected.constraints.min) {
+              optionValue = this._nativeCapabilitySelected.constraints.min;
+            } else if (this._nativeCapabilitySelected.constraints.max !== undefined && optionValue > this._nativeCapabilitySelected.constraints.max) {
+              optionValue = this._nativeCapabilitySelected.constraints.max;
+            }
+
+            // 2- From the initial value (bounded if needed)
+            if (optionValue === null) {
+              optionValue = this._initValues.capabilityOptions[optionKey];
+              if (optionValue === undefined || typeof optionValue !== 'number') {
+                optionValue = null;
+              } else if (this._nativeCapabilitySelected.constraints.min !== undefined && optionValue < this._nativeCapabilitySelected.constraints.min) {
+                optionValue = this._nativeCapabilitySelected.constraints.min;
+              } else if (this._nativeCapabilitySelected.constraints.max !== undefined && optionValue > this._nativeCapabilitySelected.constraints.max) {
+                optionValue = this._nativeCapabilitySelected.constraints.max;
+              }
+            }
+
+            // 3- From the native capability
+            if (optionValue === null) {
+              optionValue = this._nativeCapabilitySelected.constraints.max;
+              if (optionValue === undefined) {
+                optionValue = null;
+              }
+            }
+
+            // 4- Arbitrary
+            if (optionValue === null) {
+              optionValue = 100;
+            }
+
+            // 5- Enforced
+            // do nothing
+
+            this.capabilityOptions[optionKey] = optionValue;
+            break;
+
+          case 'step':
+            // 1- From the current value (bounded if needed)
+            optionValue = this.capabilityOptions[optionKey];
+            if (optionValue === undefined || typeof optionValue !== 'number') {
+              optionValue = null;
+            }
+
+            // 2- From the initial value (bounded if needed)
+            if (optionValue === null) {
+              optionValue = this._initValues.capabilityOptions[optionKey];
+              if (optionValue === undefined || typeof optionValue !== 'number') {
+                optionValue = null;
+              }
+            }
+
+            // 3- From the native capability
+            if (optionValue === null) {
+              optionValue = this._nativeCapabilitySelected.constraints.step;
+              if (optionValue === undefined || typeof optionValue !== 'number') {
+                optionValue = null;
+              }
+            }
+
+            // 4- Arbitrary
+            if (optionValue === null) {
+              optionValue = 1;
+            }
+
+            // 5- Enforced
+            if (optionValue < 0) {
+              optionValue = 0 - optionValue;
+            }
+
+            this.capabilityOptions[optionKey] = optionValue;
+            break;
+
+          case 'units':
+            // 1- From the current value (bounded if needed)
+            optionValue = this.capabilityOptions[optionKey];
+            if (optionValue === undefined) {
+              optionValue = null;
+            }
+
+            // 2- From the initial value (bounded if needed)
+            if (optionValue === null) {
+              optionValue = this._initValues.capabilityOptions[optionKey];
+              if (optionValue === undefined) {
+                optionValue = null;
+              }
+            }
+
+            // 3- From the native capability
+            if (optionValue === null) {
+              this._nativeCapabilitySelected.configs.unit
+              if (optionValue === undefined) {
+                optionValue = null;
+              }
+            }
+
+            // 4- Arbitrary
+            if (optionValue === null) {
+              optionValue = ""; // TODO: default unit based on the capability type?
+            }
+
+            // 5- Enforced
+            // do nothing
+
+            this.capabilityOptions[optionKey] = optionValue;
+            break;
+
+          default:
+            throw new Error('Unknown optionKey, please fix the code:', optionKey);
+        }
+      });
+
+      // Remove not applicable options
+      Object.keys(this.capabilityOptions).forEach(capabilityKey => {
+        if (!capabilityConf.options.includes(capabilityKey)) {
+          delete this.capabilityOptions[capabilityKey];
+        }
+      });
     }
   };
 };

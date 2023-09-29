@@ -69,27 +69,32 @@
             <span></span>
             <span>{{ _nativeCapabilitySelected?.used }}</span>
           </li class="sub">
+
+          <!-- Configs -->
           <li class="sub"
             v-show='_nativeCapabilitySelected !== null && Object.keys(_nativeCapabilitySelected.configs).length > 0'>
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs-title') }}</span>
             <span></span>
+            <span class='edit' @click='_hideConfigs = !_hideConfigs'>{{
+              _hideConfigs ? Homey.__('wizard2.edit-capability.native-capability.show') :
+              Homey.__('wizard2.edit-capability.native-capability.hide') }}</span>
           </li>
           <li class="subsub"
-            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.precision !== undefined">
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.precision !== undefined && !_hideConfigs">
             <!-- configs.precision -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.precision') }}</span>
             <span></span>
             <span class='pre'>{{ _nativeCapabilitySelected?.configs.precision }}</span>
           </li>
           <li class="subsub"
-            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.showUI !== undefined">
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.showUI !== undefined && !_hideConfigs">
             <!-- configs.showUI -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.showUI') }}</span>
             <span></span>
             <span class='pre'>{{ _nativeCapabilitySelected?.configs.showUI }}</span>
           </li>
           <li class="subsub"
-            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.usage !== undefined">
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.usage !== undefined && !_hideConfigs">
             <!-- configs.usage -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.usage-title') }}</span>
             <span></span>
@@ -97,14 +102,14 @@
               _nativeCapabilitySelected?.configs.usage) }}</span>
           </li>
           <li class="subsub"
-            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.deviceClass !== undefined">
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.deviceClass !== undefined && !_hideConfigs">
             <!-- configs.deviceClass -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.deviceClass') }}</span>
             <span></span>
             <span class='pre'>{{ _nativeCapabilitySelected?.configs.deviceClass }}</span>
           </li>
           <li class="subsub"
-            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.readOnly === true">
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.readOnly === true && !_hideConfigs">
             <!-- configs.readOnly -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.readWrite-title') }}</span>
             <span></span>
@@ -112,34 +117,39 @@
               }}</span>
           </li>
           <li class="subsub"
-            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.writeOnly === true">
+            v-show="_nativeCapabilitySelected !== null && _nativeCapabilitySelected.configs.writeOnly === true && !_hideConfigs">
             <!-- configs.writeOnly -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.readWrite-title') }}</span>
             <span></span>
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.configs.readWrite.writeOnly')
               }}</span>
           </li>
+
+          <!-- Constraints -->
           <li class="sub"
             v-show='_nativeCapabilitySelected !== null && Object.keys(_nativeCapabilitySelected.constraints).length > 0'>
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints-title') }}</span>
             <span></span>
+            <span class='edit' @click='_hideConstraints = !_hideConstraints'>{{
+              _hideConstraints ? Homey.__('wizard2.edit-capability.native-capability.show') :
+              Homey.__('wizard2.edit-capability.native-capability.hide') }}</span>
           </li>
           <li class="subsub"
-            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.min !== undefined'>
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.min !== undefined && !_hideConstraints'>
             <!-- constraints.min -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.min') }}</span>
             <span></span>
             <span class='pre'>{{ _nativeCapabilitySelected?.constraints.min }}</span>
           </li>
           <li class="subsub"
-            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.max !== undefined'>
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.max !== undefined && !_hideConstraints'>
             <!-- constraints.max -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.max') }}</span>
             <span></span>
             <span class='pre'>{{ _nativeCapabilitySelected?.constraints.max }}</span>
           </li>
           <li class="subsub"
-            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.mode !== undefined'>
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.mode !== undefined && !_hideConstraints'>
             <!-- constraints.mode -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.mode-title') }}</span>
             <span></span>
@@ -147,7 +157,7 @@
               _nativeCapabilitySelected?.constraints.mode) }}</span>
           </li>
           <li class="subsub"
-            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.step !== undefined'>
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.step !== undefined && !_hideConstraints'>
             <!-- constraints.step -->
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.step') }}</span>
             <span></span>
@@ -178,18 +188,107 @@
             </option>
           </select>
         </li>
-        <!--<li>-->
-        <!-- index -->
-        <!--</li>-->
-        <!--<li>-->
-        <!-- options -->
-        <!--</li>-->
-        <!--<li class="sub" v-for>-->
-        <!-- units -->
-        <!-- decimals -->
-        <!-- preventInsights -->
-        <!-- preventTag -->
-        <!--</li>-->
+        <li v-show='capabilityType !== "unselected"'>
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options-title') }}</span>
+          <span></span>
+        </li>
+        <li class='sub' v-show='capabilityType !== "unselected"'>
+          <!-- index - text - default hint -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.index') }}</span>
+          <span></span>
+          <input ref='capabilityIndex' v-model='capabilityOptions.index' @input='checkValidity' type='text' minlength=3
+            maxlength=30 pattern='^[a-z][a-z\.]{1,28}[a-z]{1,1}$' style='text-align: left; margin-left: 0;'
+            :placeholder='Homey.__("wizard2.edit-capability.capability.index-default")'>
+        </li>
+        <li class='sub' v-show='capabilityType !== "unselected"'>
+          <!-- title - text -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.title') }}</span>
+          <span></span>
+          <input ref='capabilityTitle' v-model='capabilityOptions.title' @input='checkValidity' type='text' minlength=3
+            maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'
+            style='text-align: left; margin-left: 0;'
+            :placeholder='Homey.__("wizard2.edit-capability.capability.title-default")'>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.units !== undefined'>
+          <!-- units - text-->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.units') }}</span>
+          <span></span>
+          <input ref='capabilityUnits' v-model='capabilityOptions.units' @input='checkValidity' type='text' minlength=1
+            maxlength=10 pattern='^[A-Za-z][A-Za-z0-9]{0,9}$' style='text-align: left; margin-left: 0;'>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.decimals !== undefined'>
+          <!-- decimals - positive 0,10-->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.decimals') }}</span>
+          <span></span>
+          <input ref='capabilityDecimals' v-model='capabilityOptions.decimals' @input='checkValidity' type='number'
+            min="0" max="10" style='text-align: left; margin-left: 0;'>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.preventInsights !== undefined'>
+          <!-- preventInsights - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.preventInsights') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='capabilityPreventInsights'
+                v-model='capabilityOptions.preventInsights' @change='checkValidity'><i></i></label>
+          </i>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.preventTag !== undefined'>
+          <!-- preventTag - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.preventTag') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='capabilityPreventTag'
+                v-model='capabilityOptions.preventTag' @change='checkValidity'><i></i></label>
+          </i>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.min !== undefined'>
+          <!-- min - float -infinite,infinite -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.min') }}</span>
+          <span></span>
+          <input ref='capabilityMin' v-model='capabilityOptions.min' @input='checkValidity' type='number'
+            style='text-align: left; margin-left: 0;'>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.max !== undefined'>
+          <!-- max - float -infinite,infinite - >min-->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.max') }}</span>
+          <span></span>
+          <input ref='capabilityMax' v-model='capabilityOptions.max' @input='checkValidity' type='number'
+            style='text-align: left; margin-left: 0;'>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.step !== undefined'>
+          <!-- step - positive float - cannot be more precise than decimals -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.step') }}</span>
+          <span></span>
+          <input ref='capabilityStep' v-model='capabilityOptions.step' @input='checkValidity' type='number'
+            style='text-align: left; margin-left: 0;'>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.getable !== undefined'>
+          <!-- getable - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.getable') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='capabilityGetable'
+                v-model='capabilityOptions.getable' @change='checkValidity'><i></i></label>
+          </i>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.approximated !== undefined'>
+          <!-- approximated - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.approximated') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='capabilityApproximated'
+                v-model='capabilityOptions.approximated' @change='checkValidity'><i></i></label>
+          </i>
+        </li>
+        <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.zoneActivity !== undefined'>
+          <!-- zoneActivity - boolean -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.zoneActivity') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='capabilityZoneActivity'
+                v-model='capabilityOptions.zoneActivity' @change='checkValidity'><i></i></label>
+          </i>
+        </li>
       </ul>
 
       <p ref='capabilityTypeDescription' v-show='capabilityTypeDescription !== ""'>{{ capabilityTypeDescription }}</p>
