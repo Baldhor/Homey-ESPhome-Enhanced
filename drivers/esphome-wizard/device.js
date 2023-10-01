@@ -68,18 +68,22 @@ class VirtualDevice extends Device {
 
         let listPhysicalDeviceIds = [];
         let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
-        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
-            this.log('startAvailabilityListener 3:', capabilityKeyV2);
-            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
-            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
-                this.log('startAvailabilityListener 4:', capabilityKeyV2);
-                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
-                PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('available', callback);
 
-                // Register listener
-                this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'available', callback);
-            }
-        });
+        // Maybe it doesn't have any capabilities
+        if (capabilityKeysV2 !== null) {
+            Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+                this.log('startAvailabilityListener 3:', capabilityKeyV2);
+                let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+                if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                    this.log('startAvailabilityListener 4:', capabilityKeyV2);
+                    listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                    PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('available', callback);
+
+                    // Register listener
+                    this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'available', callback);
+                }
+            });
+        }
     }
 
     startUnavailabilityListener() {
@@ -91,16 +95,20 @@ class VirtualDevice extends Device {
 
         let listPhysicalDeviceIds = [];
         let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
-        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
-            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
-            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
-                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
-                PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('unavailable', callback);
 
-                // Register listener
-                this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'unavailable', callback);
-            }
-        });
+        // Maybe there are no capabilities
+        if (capabilityKeysV2 !== null) {
+            Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+                let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+                if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                    listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                    PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('unavailable', callback);
+
+                    // Register listener
+                    this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'unavailable', callback);
+                }
+            });
+        }
     }
 
     async _checkAvailability() {
@@ -110,16 +118,22 @@ class VirtualDevice extends Device {
 
         let listPhysicalDeviceIds = [];
         let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
-        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
-            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
-            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
-                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
-                if (!PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).available) {
-                    available = false;
-                    return;
+
+        // Maybe there are no capabilities
+        if (capabilityKeysV2 !== null) {
+            Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+                let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+                if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                    listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                    if (!PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).available) {
+                        available = false;
+                        return;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            available = false;
+        }
 
         if (available) {
             await this.setAvailable().catch(this.error);
@@ -135,21 +149,24 @@ class VirtualDevice extends Device {
 
         let listNativeCapabilityIds = [];
         let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
-        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
-            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
-            if (!listNativeCapabilityIds.includes(capabilityValueV2.physicalDeviceId + ':' + capabilityValueV2.nativeCapabilityId)) {
-                listNativeCapabilityIds.push(capabilityValueV2.physicalDeviceId + ':' + capabilityValueV2.nativeCapabilityId);
 
-                PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('stateChanged.' + capabilityValueV2.nativeCapabilityId, callback);
+        // Maybe there are no capabilities
+        if (capabilityKeysV2 !== null) {
+            Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+                let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+                if (!listNativeCapabilityIds.includes(capabilityValueV2.physicalDeviceId + ':' + capabilityValueV2.nativeCapabilityId)) {
+                    listNativeCapabilityIds.push(capabilityValueV2.physicalDeviceId + ':' + capabilityValueV2.nativeCapabilityId);
 
-                // Register listener
-                this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'stateChanged.' + capabilityValueV2.nativeCapabilityId, callback);
+                    PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).on('stateChanged.' + capabilityValueV2.nativeCapabilityId, callback);
 
-                // Get current value
-                this._forceUpdateCurrentValue(capabilityKeyV2);
-            }
-        });
+                    // Register listener
+                    this._registerListener(PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId), 'stateChanged.' + capabilityValueV2.nativeCapabilityId, callback);
 
+                    // Get current value
+                    this._forceUpdateCurrentValue(capabilityKeyV2);
+                }
+            });
+        }
     }
 
     /**
@@ -158,9 +175,14 @@ class VirtualDevice extends Device {
     startCapabilityListeners() {
         this.log('startCapabilityListeners');
 
-        this.getCapabilities().forEach(capability => {
-            this._addCapabilityListener(capability);
-        });
+        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+
+        // Maybe there are no capabilities
+        if (capabilityKeysV2 !== null) {
+            Object.keys(capabilityKeysV2).forEach(capabilityKey => {
+                this._addCapabilityListener(capabilityKey);
+            });
+        }
     }
 
     _forceUpdateCurrentValue(capability) {

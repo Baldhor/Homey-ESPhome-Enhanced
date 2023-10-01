@@ -173,7 +173,7 @@ const EditPhysicalDevicePage = function () {
           clearTimeout(this._newPhysicalDeviceTimeout);
           this._timeout = null;
         }
-        wizardlog(e);
+        wizardlog(e.stack);
 
         Homey.hideLoadingOverlay();
         alert(Homey.__("wizard2.edit-physical-device.fatal-error", "error"));

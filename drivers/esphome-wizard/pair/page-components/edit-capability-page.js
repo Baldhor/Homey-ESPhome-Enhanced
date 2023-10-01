@@ -245,7 +245,7 @@ const EditCapabilityPage = function () {
         await configuration.load();
         pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
       } catch (e) {
-        wizardlog(e);
+        wizardlog(e.stack);
 
         Homey.hideLoadingOverlay();
         alert(Homey.__("wizard2.edit-capability.fatal-error", "error"));

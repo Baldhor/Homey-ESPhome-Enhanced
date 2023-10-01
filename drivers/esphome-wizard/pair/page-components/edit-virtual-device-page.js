@@ -103,42 +103,63 @@ const EditVirtualDevicePage = function () {
 
       Homey.showLoadingOverlay();
 
-      if (this._editVirtualDevice === null) {
-        await this._applyNew();
-      } else {
-        await this._applyEdit();
-      }
-    },
-    async _applyNew() {
-      wizardlog('[' + this.componentName + '] ' + '_applyNew');
-
       try {
-        let tmp = {
-          'virtualDeviceId': 'Wizard' + Date.now(),
-          'initial': null,
-          'current': {
-            name: this.name,
-            zoneId: this.zoneId,
-            class: this.classId,
-            status: 'new',
-            capabilities: []
-          }
+        if (this._editVirtualDevice === null) {
+          await this._applyCreate();
+        } else {
+          await this._applyUpdate();
         }
-
-        configuration.virtualDevices.push(tmp);
-
-        pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: tmp.virtualDeviceId });
       } catch (e) {
-        wizardlog(e);
+        wizardlog(e.stack);
 
         Homey.hideLoadingOverlay();
-        this.alert(Homey.__("wizard2.new-virtual-device.fatal-error", "error"));
+        alert(Homey.__("wizard2.edit-virtual-device.fatal-error", "error"));
       }
     },
-    async _applyEdit() {
-      wizardlog('[' + this.componentName + '] ' + '_applyEdit');
+    async _applyCreate() {
+      wizardlog('[' + this.componentName + '] ' + '_applyCreate');
 
-      // TODO: To be implemented
+      let tmpVirtualDevice = {
+        name: this.name,
+        zone: this.zoneId,
+        class: this.classId,
+        data: {
+          id: 'Wizard' + Date.now()
+        }
+      };
+
+      await Homey.createDevice(tmpVirtualDevice)
+        .catch(e => { throw e; });
+      
+      // Refresh configuration and refresh the page
+      await configuration.load();
+
+      // Find our new virtual device
+      let virtualDevice = configuration.virtualDevices.find(virtualDevice => virtualDevice.internalDeviceId === tmpVirtualDevice.data.id);
+      if (virtualDevice !== undefined) {
+        pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: virtualDevice.virtualDeviceId });
+      } else {
+        throw new Error('Virtual device creation failed, cannot find it using internalDeviceId');
+      }
+    },
+    async _applyUpdate() {
+      wizardlog('[' + this.componentName + '] ' + '_applyUpdate');
+
+      let tmpVirtualDevice = {
+        virtualDeviceId: this._editVirtualDevice.virtualDeviceId,
+        name: this.name,
+        zoneId: this.zoneId,
+        classId: this.classId
+      };
+
+      await Homey.emit('apply-virtual-device', {
+        virtualDevice: tmpVirtualDevice,
+        action: 'edit'
+      }).catch(e => { throw e; });
+
+      // Refresh configuration and refresh the page
+      await configuration.load();
+      pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: tmpVirtualDevice.virtualDeviceId });
     },
     async switchPage(newPage, data) {
       wizardlog('[' + this.componentName + '] ' + 'switchPage:', ...arguments);

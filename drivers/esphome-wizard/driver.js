@@ -10,7 +10,7 @@ class Driver extends Homey.Driver {
 
     async onInit() {
         //TODO: To be removed!
-        //this.resetConf();
+        this.resetConf();
 
         // Check for migration or init conf
         this.checkMigration();
@@ -39,12 +39,16 @@ class Driver extends Homey.Driver {
         let listPhysicalDeviceIds = [];
         this.getDevices().forEach(virtualDevice => {
             let capabilityKeysV2 = virtualDevice.getStoreValue('capabilityKeysV2');
-            Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
-                let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
-                if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
-                    listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
-                }
-            });
+
+            // Maybe there are no capabilities
+            if (capabilityKeysV2 !== null) {
+                Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+                    let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
+                    if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
+                        listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
+                    }
+                });
+            }
         });
 
         let conf = this.getConf();
@@ -485,7 +489,8 @@ class Driver extends Homey.Driver {
                     this.log('Processing device:', virtualDevice);
 
                     let tmpVirtualDevice = {
-                        'virtualDeviceId': virtualDevice.getData().id,
+                        'virtualDeviceId': virtualDevice.getId(),
+                        'internalDeviceId': virtualDevice.getData().id, // Only used post creation of a new virtual device
                         'initial': {
                             name: virtualDevice.getName(),
                             zoneId: await this.getDeviceZone(virtualDevice),
@@ -497,21 +502,25 @@ class Driver extends Homey.Driver {
                     };
 
                     // Capabilities are: <capabilityType>[.<index>]
-                    virtualDevice.getCapabilities().forEach(capability => {
-                        let capabilityValueV2 = virtualDevice.getStoreValue('capabilityKeysV2')[capability];
-                        this.log('capabilityValueV2:', capabilityValueV2);
-                        let tmpCapability = {
-                            capabilityId: capability,
-                            type: capability.split(".")[0],
-                            index: capability.split(".").length > 1 ? capability.split(".")[1] : '1',
-                            status: 'unmodified',
-                            options: virtualDevice.getCapabilityOptions(capability),
-                            physicalDeviceId: capabilityValueV2.physicalDeviceId,
-                            nativeCapabilityId: capabilityValueV2.nativeCapabilityId
-                        };
+                    let capabilityKeysV2 = virtualDevice.getStoreValue('capabilityKeysV2');
+                    // Maybe there are no capabilities
+                    if (capabilityKeysV2 !== null) {
+                        virtualDevice.getCapabilities().forEach(capability => {
+                            let capabilityValueV2 = capabilityKeysV2[capability];
+                            this.log('capabilityValueV2:', capabilityValueV2);
+                            let tmpCapability = {
+                                capabilityId: capability,
+                                type: capability.split(".")[0],
+                                index: capability.split(".").length > 1 ? capability.split(".")[1] : '1',
+                                status: 'unmodified',
+                                options: virtualDevice.getCapabilityOptions(capability),
+                                physicalDeviceId: capabilityValueV2.physicalDeviceId,
+                                nativeCapabilityId: capabilityValueV2.nativeCapabilityId
+                            };
 
-                        tmpVirtualDevice.initial.capabilities.push(tmpCapability);
-                    });
+                            tmpVirtualDevice.initial.capabilities.push(tmpCapability);
+                        });
+                    }
 
                     tmpVirtualDevice.current = tmpVirtualDevice.initial;
 
@@ -526,7 +535,7 @@ class Driver extends Homey.Driver {
                     let tmpPhysicalDevice = {
                         physicalDeviceId: physicalDevice.physicalDeviceId,
                         status: realPhysicalDevice.available === true ? 'available' : 'unavailable',
-                        used: this.getDevices().filter(virtualDevice => Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === physicalDevice.physicalDeviceId).length > 0).length > 0,
+                        used: this.getDevices().filter(virtualDevice => virtualDevice.getStoreValue('capabilityKeysV2') === null ? 0 : Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeyV2 => capabilityKeyV2.physicalDeviceId === physicalDevice.physicalDeviceId).length > 0).length > 0,
                         name: physicalDevice.name,
                         ipAddress: physicalDevice.ipAddress,
                         port: physicalDevice.port,
@@ -540,7 +549,7 @@ class Driver extends Homey.Driver {
                         // We cannot use a simple filter on the virtual device list
                         let countUsed = 0;
                         this.getDevices().forEach(virtualDevice => {
-                            countUsed += Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeysV2 => capabilityKeysV2.nativeCapabilityId === nativeCapability.getId()).length;
+                            countUsed += virtualDevice.getStoreValue('capabilityKeysV2') === null ? 0 : Object.values(virtualDevice.getStoreValue('capabilityKeysV2')).filter(capabilityKeysV2 => capabilityKeysV2.nativeCapabilityId === nativeCapability.getId()).length;
                         });
 
                         tmpPhysicalDevice.nativeCapabilities.push({
@@ -699,7 +708,35 @@ class Driver extends Homey.Driver {
             }
         });
 
-        session.setHandler('apply-capability', (data) => {
+        session.setHandler('apply-virtual-device', async (data) => {
+            this.log('apply-virtual-device:', data);
+
+            let virtualDevice = data.virtualDevice;
+            let action = data.action;
+
+            try {
+                if (action !== "edit") {
+                    await this.createDevice(virtualDevice.virtualDeviceId, {
+                        name: virtualDevice.name,
+                        zoneId: virtualDevice.zoneId,
+                        classId: virtualDevice.classId
+                    });
+                } else {
+                    await this.updateDevice(virtualDevice.virtualDeviceId, {
+                        name: virtualDevice.name,
+                        zoneId: virtualDevice.zoneId,
+                        classId: virtualDevice.classId
+                    });
+                }
+            } catch (e) {
+                this.error(e);
+                throw e;
+            } finally {
+                this.log('apply-virtual-device finished');
+            }
+        });
+
+        session.setHandler('apply-capability', async (data) => {
             this.log('apply-capability:', data);
 
             let virtualDeviceId = data.virtualDeviceId;
@@ -707,7 +744,7 @@ class Driver extends Homey.Driver {
             let capability = data.capability;
 
             try {
-                let virtualDevice = this.getDevices().find(virtualDevice => virtualDevice.getData().id === virtualDeviceId);
+                let virtualDevice = this.getDevices().find(virtualDevice => virtualDevice.getId() === virtualDeviceId);
                 if (virtualDevice === undefined) {
                     throw new Error("Cannot find virtualDevice:", virtualDeviceId);
                 }
@@ -812,17 +849,24 @@ class Driver extends Homey.Driver {
 
             // Migrate the capabilityKeys
             let capabilityKeysV1 = virtualDevice.getStoreValue('capabilityKeys');
-            let capabilityKeysV2 = {};
-            Object.keys(capabilityKeysV1).forEach(capabilityKey => {
-                if (virtualDevice.getCapabilities().includes(capabilityKey)) {
 
-                    capabilityKeysV2[capabilityKey] = {
-                        physicalDeviceId: physicalDeviceId,
-                        nativeCapabilityId: capabilityKeysV1[capabilityKey]
+            // Maybe it doesn't have any capabilities
+            if (capabilityKeysV1 !== null) {
+                let capabilityKeysV2 = {};
+                Object.keys(capabilityKeysV1).forEach(capabilityKey => {
+                    if (virtualDevice.getCapabilities().includes(capabilityKey)) {
+
+                        capabilityKeysV2[capabilityKey] = {
+                            physicalDeviceId: physicalDeviceId,
+                            nativeCapabilityId: capabilityKeysV1[capabilityKey]
+                        }
                     }
-                }
-            });
-            virtualDevice.setStoreValue('capabilityKeysV2', capabilityKeysV2);
+                });
+                virtualDevice.setStoreValue('capabilityKeysV2', capabilityKeysV2);
+            } else {
+                // no capabilities => no physical devices!
+                return;
+            }
 
             // Finaly store the new conf
             this.setConf(conf);
@@ -882,18 +926,79 @@ class Driver extends Homey.Driver {
 
     async initHomeyApi() {
         if (this.homeyApi === null) {
-            this.homeyApi = await HomeyAPI.createAppAPI({
-                homey: this.homey,
+            this.homeyApi = await HomeyAPI.createLocalAPI({
+                address: "http://127.0.0.1",
+                token: "0572acf2-78ca-46bc-b25c-51289986f636:2886d20f-ed23-4fc2-8e81-a38e8bf780be:e8a223ceaba436028eb4a0f1316b35ab4b748f14"
             });
+
+            /*this.homeyApi = await HomeyAPI.createAppAPI({
+                homey: this.homey
+            });
+            */
         }
     }
 
-    async deleteDevice(device) {
+    async createDevice(data) {
+        this.log('createDevice:', ...arguments);
+
+        try {
+            // TODO: Works or not?
+            let result = await this.homeyApi.drivers.createPairSessionDevice({
+                id: this.homeyApi.drivers.getPairSession().id,
+                device: {
+                    name: data.name,
+                    zone: data.zoneId,
+                    class: data.classId
+                }
+            });
+
+            this.log('createDevice result:', result);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async updateDevice(virtualDeviceId, data) {
+        this.log('updateDevice:', ...arguments);
+
+        try {
+            // Need to retrieve the homey id of the device
+            let realDevice = this.getDevices().find(device => device.getId() === virtualDeviceId);
+            if (realDevice === undefined) {
+                throw new Error('Could not find the device to delete:', virtualDeviceId);
+            }
+
+            if (data.name !== realDevice.getName() || data.zoneId !== realDevice.getZone()) {
+                await this.homeyApi.devices.updateDevice({
+                    id: realDevice.getId(),
+                    device: {
+                        name: data.name,
+                        zone: data.zoneId
+                    }
+                });
+            }
+
+            if (data.classId !== realDevice.getClass()) {
+                realDevice.setClass(data.classId);
+            }
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async deleteDevice(virtualDeviceId) {
         this.log('deleteDevice:', ...arguments);
 
-        // Get all the devices, and log their names.
         try {
-            await this.homeyApi.devices.deleteDevice(device.id);
+            // Need to retrieve the homey id of the device
+            let realDevice = this.getDevices().find(device => device.getId() === virtualDeviceId);
+            if (realDevice === undefined) {
+                throw new Error('Could not find the device to delete:', virtualDeviceId);
+            }
+
+            await this.homeyApi.devices.deleteDevice({
+                id: realDevice.getId()
+            });
         } catch (e) {
             throw e;
         }
@@ -903,21 +1008,13 @@ class Driver extends Homey.Driver {
         this.log('getDeviceZone:', ...arguments);
 
         try {
-            let apiDevice = await this.homeyApi.devices.getDevice({ id: device.getId() });
+            let apiDevice = await this.homeyApi.devices.getDevice({
+                id: device.getId()
+            });
             let apiZone = await apiDevice.getZone();
             let zoneId = apiZone.id;
             this.log('zoneName:', zoneId);
             return zoneId;
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    async setDeviceZone(device, zoneId) {
-        this.log('setDeviceZoneName:', ...arguments);
-
-        try {
-            await this.homeyApi.devices.updateDevice(device.id, { zone: zone.id });
         } catch (e) {
             throw e;
         }

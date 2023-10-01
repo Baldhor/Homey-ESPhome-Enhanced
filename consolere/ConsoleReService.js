@@ -349,8 +349,8 @@ class ConsoleReService {
         // Check size of the queue
         if (!instance.queue) {
             return;
-        } else if (instance.queue.size >= QUEUE_MAX_SIZE) {
-            // Queue is full, just skip
+        } else if (level === 'debug' && instance.queue.size >= QUEUE_MAX_SIZE) {
+            // Queue is full, if log is debug level, just skip
             instance.tooManyLogs();
             return;
         }

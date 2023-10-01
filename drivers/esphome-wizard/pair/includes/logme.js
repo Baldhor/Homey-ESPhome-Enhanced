@@ -1,3 +1,47 @@
+function _filterWizardLogs(args) {
+  let newArgs = [];
+
+  let instance = this.getInstance();
+
+  // Let's make a deep copy and filter anything that need to be
+  args.forEach(arg => {
+    if (arg === undefined) {
+      newArgs.push(undefined);
+    } else {
+      const stringifyCircularJSON = obj => {
+        const seen = new WeakSet();
+        const filterList = ['encryptionKey', 'newEncryptionKey', 'password', 'newPassword'];
+
+        return JSON.stringify(obj, (k, v) => {
+          if (v !== null && typeof v === 'object') {
+            if (seen.has(v)) return;
+            seen.add(v);
+
+            if (util.types.isNativeError(v)) {
+              return instance.serializeError(v);
+            }
+          }
+
+          if (filterList.includes(k)) {
+            if (v === null || v === '') {
+              return '<no value>';
+            } else {
+              return '<hidden value>';
+            }
+          }
+
+          return v;
+        });
+      };
+
+      let obj = JSON.parse(stringifyCircularJSON(arg));
+      newArgs.push(obj);
+    }
+  });
+
+  return newArgs;
+}
+
 function wizardlog(...args) {
   console.log(...JSON.parse(JSON.stringify(args)));
 
