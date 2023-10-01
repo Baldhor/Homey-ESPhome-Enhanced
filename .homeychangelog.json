@@ -109,5 +109,8 @@
   },
   "1.0.0": {
     "en": "Full redesign of the wizard, this version is for TEST purpose ONLY"
+  },
+  "1.0.1": {
+    "en": "Corrected a few bugs related to bearer token for new virtual device"
   }
 }
