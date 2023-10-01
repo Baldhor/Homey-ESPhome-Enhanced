@@ -252,6 +252,8 @@
       "done": "done",
       "title-new": "New virtual device",
       "title-edit": "Edit virtual device",
+      "delete": "Delete",
+      "warning-delete": "The virtual device will be deleted, it could damage your existing flows!",
       "zone": "Zone",
       "zone-unselected": "--Select a zone--",
       "name": "Name",

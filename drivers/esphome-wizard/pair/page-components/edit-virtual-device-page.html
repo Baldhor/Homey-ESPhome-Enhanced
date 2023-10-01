@@ -14,6 +14,8 @@
           <input ref='name' v-model='name' @input='checkValidity' type='text' required minlength=3 maxlength=30
             pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$' style='text-align: left; margin-left: 0;'>
           <span></span>
+          <span class='edit' v-if='_editVirtualDevice !== null' @click='confirmDelete()'>{{
+            Homey.__('wizard2.edit-virtual-device.delete') }}</span>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
@@ -65,7 +67,8 @@
                 In read only mode, the capability can only be 'deleted'
               -->
           <li style='align-items: left;'>
-            <span>{{ capability.options.title !== null && capability.options.title !== '' ? capability.options.title : capability.capabilityId }}</span>
+            <span>{{ capability.options.title !== null && capability.options.title !== '' ? capability.options.title :
+              capability.capabilityId }}</span>
             <span></span>
             <span class='edit'
               @click='switchPage("edit-capability-page", { virtualDeviceId: _editVirtualDevice.virtualDeviceId, capabilityId: capability.capabilityId })'>{{

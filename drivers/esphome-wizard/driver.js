@@ -708,31 +708,37 @@ class Driver extends Homey.Driver {
             }
         });
 
-        session.setHandler('apply-virtual-device', async (data) => {
-            this.log('apply-virtual-device:', data);
+        session.setHandler('update-virtual-device', async (data) => {
+            this.log('update-virtual-device:', data);
 
             let virtualDevice = data.virtualDevice;
-            let action = data.action;
 
             try {
-                if (action !== "edit") {
-                    await this.createDevice(virtualDevice.virtualDeviceId, {
-                        name: virtualDevice.name,
-                        zoneId: virtualDevice.zoneId,
-                        classId: virtualDevice.classId
-                    });
-                } else {
-                    await this.updateDevice(virtualDevice.virtualDeviceId, {
-                        name: virtualDevice.name,
-                        zoneId: virtualDevice.zoneId,
-                        classId: virtualDevice.classId
-                    });
-                }
+                await this.updateDevice(virtualDevice.virtualDeviceId, {
+                    name: virtualDevice.name,
+                    zoneId: virtualDevice.zoneId,
+                    classId: virtualDevice.classId
+                });
             } catch (e) {
                 this.error(e);
                 throw e;
             } finally {
-                this.log('apply-virtual-device finished');
+                this.log('update-virtual-device finished');
+            }
+        });
+
+        session.setHandler('delete-virtual-device', async (data) => {
+            this.log('delete-virtual-device:', data);
+
+            let virtualDeviceId = data.virtualDeviceId;
+
+            try {
+                await this.deleteDevice(virtualDeviceId);
+            } catch (e) {
+                this.error(e);
+                throw e;
+            } finally {
+                this.log('delete-virtual-device finished');
             }
         });
 
@@ -938,26 +944,6 @@ class Driver extends Homey.Driver {
         }
     }
 
-    async createDevice(data) {
-        this.log('createDevice:', ...arguments);
-
-        try {
-            // TODO: Works or not?
-            let result = await this.homeyApi.drivers.createPairSessionDevice({
-                id: this.homeyApi.drivers.getPairSession().id,
-                device: {
-                    name: data.name,
-                    zone: data.zoneId,
-                    class: data.classId
-                }
-            });
-
-            this.log('createDevice result:', result);
-        } catch (e) {
-            throw e;
-        }
-    }
-
     async updateDevice(virtualDeviceId, data) {
         this.log('updateDevice:', ...arguments);
 
@@ -968,7 +954,7 @@ class Driver extends Homey.Driver {
                 throw new Error('Could not find the device to delete:', virtualDeviceId);
             }
 
-            if (data.name !== realDevice.getName() || data.zoneId !== realDevice.getZone()) {
+            if (data.name !== realDevice.getName() || data.zoneId !== getDeviceZone(realDevice)) {
                 await this.homeyApi.devices.updateDevice({
                     id: realDevice.getId(),
                     device: {

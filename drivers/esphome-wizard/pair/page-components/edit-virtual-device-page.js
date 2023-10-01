@@ -130,7 +130,7 @@ const EditVirtualDevicePage = function () {
 
       await Homey.createDevice(tmpVirtualDevice)
         .catch(e => { throw e; });
-      
+
       // Refresh configuration and refresh the page
       await configuration.load();
 
@@ -152,14 +152,42 @@ const EditVirtualDevicePage = function () {
         classId: this.classId
       };
 
-      await Homey.emit('apply-virtual-device', {
-        virtualDevice: tmpVirtualDevice,
-        action: 'edit'
+      await Homey.emit('update-virtual-device', {
+        virtualDevice: tmpVirtualDevice
       }).catch(e => { throw e; });
 
       // Refresh configuration and refresh the page
       await configuration.load();
       pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: tmpVirtualDevice.virtualDeviceId });
+    },
+    async confirmDelete() {
+      wizardlog('[' + this.componentName + '] ' + 'confirmDelete');
+
+      if (!await confirm(Homey.__("wizard2.edit-virtual-device.loseModification", "warning"))) {
+        return;
+      }
+
+      await this._delete();
+    },
+    async _delete() {
+      wizardlog('[' + this.componentName + '] ' + '_delete');
+
+      Homey.showLoadingOverlay();
+
+      try {
+        await Homey.emit('delete-virtual-device', {
+          virtualDeviceId: this._editVirtualDevice.virtualDeviceId
+        }).catch(e => { throw e; });
+
+        // Refresh configuration and go to previous page
+        await configuration.load();
+        pageHandler.setPage('list-virtual-devices-page');
+      } catch (e) {
+        wizardlog(e.stack);
+
+        Homey.hideLoadingOverlay();
+        alert(Homey.__("wizard2.edit-virtual-device.fatal-error", "error"));
+      }
     },
     async switchPage(newPage, data) {
       wizardlog('[' + this.componentName + '] ' + 'switchPage:', ...arguments);
