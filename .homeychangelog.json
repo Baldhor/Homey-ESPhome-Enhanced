@@ -106,5 +106,8 @@
   },
   "0.7.4": {
     "en": "Fixed a null crash case"
+  },
+  "1.0.0": {
+    "en": "Full redesign of the wizard, this version is for TEST purpose ONLY"
   }
 }
