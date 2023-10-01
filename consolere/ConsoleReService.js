@@ -415,7 +415,7 @@ class ConsoleReService {
             } else {
                 const stringifyCircularJSON = obj => {
                     const seen = new WeakSet();
-                    const filterList = ['encryptionKey', 'newEncryptionKey', 'password', 'newPassword'];
+                    const filterList = ['encryptionKey', 'newEncryptionKey', 'password', 'newPassword', 'bearer-token'];
 
                     return JSON.stringify(obj, (k, v) => {
                         if (v !== null && typeof v === 'object') {

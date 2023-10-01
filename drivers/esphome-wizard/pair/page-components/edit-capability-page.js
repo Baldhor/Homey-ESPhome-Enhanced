@@ -234,11 +234,51 @@ const EditCapabilityPage = function () {
         // options
         tmpCapability.options = Object.assign({}, this.capabilityOptions); // shallow copy
 
+        let tmpPhysicalDevice = {
+          'physicalDeviceId': this._physicalDeviceSelected.physicalDeviceId,
+          name: this._physicalDeviceSelected.name,
+          ipAddress: this._physicalDeviceSelected.ipAddress,
+          port: this._physicalDeviceSelected.port,
+          encryptionKey: this._physicalDeviceSelected.encryptionKey,
+          password: this._physicalDeviceSelected.password
+        };
+
         // Add or update the capability to the virtual device
         await Homey.emit('apply-capability', {
           virtualDeviceId: this._editVirtualDevice.virtualDeviceId,
           action: tmpAction,
-          capability: tmpCapability
+          capability: tmpCapability,
+          physicalDevice: tmpPhysicalDevice
+        }).catch(e => { throw e; });
+
+        // Refresh configuration and go to previous page
+        await configuration.load();
+        pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
+      } catch (e) {
+        wizardlog(e.stack);
+
+        Homey.hideLoadingOverlay();
+        alert(Homey.__("wizard2.edit-capability.fatal-error", "error"));
+      }
+    },
+    async confirmDelete() {
+      wizardlog('[' + this.componentName + '] ' + 'confirmDelete');
+
+      if (!await confirm(Homey.__("wizard2.edit-capability.loseModification", "warning"))) {
+        return;
+      }
+
+      await this._delete();
+    },
+    async _delete() {
+      wizardlog('[' + this.componentName + '] ' + '_delete');
+
+      Homey.showLoadingOverlay();
+
+      try {
+        await Homey.emit('delete-capability', {
+          virtualDeviceId: this._editVirtualDevice.virtualDeviceId,
+          capabilityId: this._editCapability.capabilityId
         }).catch(e => { throw e; });
 
         // Refresh configuration and go to previous page

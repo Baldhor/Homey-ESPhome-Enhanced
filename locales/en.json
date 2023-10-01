@@ -186,7 +186,14 @@
       "list-virtual-devices": "Manage your virtual devices",
       "shortcuts": "Choose a shortcut",
       "new-physical-device": "Add a new physical device",
-      "new-virtual-device": "Add a new virtual device"
+      "new-virtual-device": "Add a new virtual device",
+      "bearer-token-title": "Input your bearer token",
+      "bearer-token": "Bearer token",
+      "done": "apply",
+      "error-bearer-token": "Bearer token must match expected format",
+      "error-bearer-token-invalid": "Your bearer token has been refused",
+      "bearer-token-valid": "Your bearer token seems valid",
+      "help-bearer-token": "Without a valid bearer token, some functionnalities will be disabled"
     },
     "list-virtual-devices": {
       "back": "back",
@@ -298,6 +305,8 @@
       "done": "done",
       "title-new": "New capability",
       "title-edit": "Edit capability",
+      "delete": "Delete",
+      "warning-delete": "The capability will be deleted, it could damage your existing flows!",
       "native-capability": {
         "title": "Choose a native capability",
         "physical-device": "Physical device",

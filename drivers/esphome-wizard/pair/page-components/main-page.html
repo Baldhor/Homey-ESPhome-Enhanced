@@ -34,5 +34,26 @@
         </li>
       </ul>
     </div>
+
+    <div class='list'>
+      <p data-i18n='wizard2.main.bearer-token-title'></p>
+
+      <ul>
+        <li>
+          <span data-i18n='wizard2.main.bearer-token'></span>
+          <input ref='bearerToken' v-model='bearerToken' @input='checkValidity' type='text' minlength=114 maxlength=114
+          pattern='^[0-9a-f]{8,8}-[0-9a-f]{4,4}-[0-9a-f]{4,4}-[0-9a-f]{4,4}-[0-9a-f]{12,12}:[0-9a-f]{8,8}-[0-9a-f]{4,4}-[0-9a-f]{4,4}-[0-9a-f]{4,4}-[0-9a-f]{12,12}:[0-9a-f]{40,40}$' style='text-align: left; margin-left: 0;'>
+        </li>
+        <li v-show="bearerToken !== '' && errorAndWarningList.errors.length === 0">
+          <span></span>
+          <span class='done' id='done' @click='apply()' data-i18n='wizard2.main.done'
+          :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
+        </li>
+      </ul>
+
+      <p data-i18n='wizard2.main.help-bearer-token'></p>
+    </div>
+
+    <section v-scope="ErrorAndWarningList()"></section>
   </div>
 </template>

@@ -1,10 +1,14 @@
 const configuration = PetiteVue.reactive({
   componentName: 'configuration',
-  initialVirtualDevices: null,
-  currentVirtualDevices: null,
+
+  locked: true,
+
+  virtualDevices: null,
   physicalDevices: null,
   zones: null,
+
   newPhysicalDevices: [],
+
   async load() {
     wizardlog('[' + this.componentName + '] ' + 'load');
 

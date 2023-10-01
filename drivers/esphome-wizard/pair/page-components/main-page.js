@@ -3,6 +3,8 @@ const MainPage = function () {
     componentName: "main-page",
     $template: "#template-main-page",
 
+    bearerToken: null,
+
     _initValues: null,
     _modified: null,
 
@@ -16,6 +18,8 @@ const MainPage = function () {
 
       this._initValues = {};
 
+      this.bearerToken = this._initValues.bearerToken = "";
+
       await configuration.load();
 
       await PetiteVue.nextTick();
@@ -27,7 +31,16 @@ const MainPage = function () {
       // Reset error and warning messsages
       errorAndWarningList.reset();
 
-      // do nothing
+      // Retrieve elements from refs
+      const bearerTokenElt = this.$refs.bearerToken;
+
+      // Reset custom validity
+      bearerTokenElt.setCustomValidity('');
+
+      // Name format
+      if (!bearerTokenElt.validity.valid) {
+        errorAndWarningList.addError("wizard2.main.error-bearer-token");
+      }
 
       this.checkModified();
     },
@@ -35,6 +48,29 @@ const MainPage = function () {
       wizardlog('[' + this.componentName + '] ' + 'checkModified');
 
       this._modified = Object.keys(this._initValues).find(key => this._initValues[key] !== this[key]) !== undefined;
+    },
+    async apply() {
+      wizardlog('[' + this.componentName + '] ' + 'apply');
+
+      Homey.showLoadingOverlay();
+
+      try {
+        await Homey.emit('set-bearer-token', {
+          bearerToken: this.bearerToken
+        }).catch(e => { throw e; });
+
+        configuration.locked = false;
+
+        Homey.hideLoadingOverlay();
+        confirm(Homey.__("wizard2.main.bearer-token-valid", "info"));
+      } catch (e) {
+        wizardlog(e.stack);
+
+        this.bearerToken = "";
+
+        Homey.hideLoadingOverlay();
+        alert(Homey.__("wizard2.main.error-bearer-token-invalid", "error"));
+      }
     }
   };
 };

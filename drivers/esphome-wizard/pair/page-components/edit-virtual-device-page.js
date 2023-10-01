@@ -125,18 +125,34 @@ const EditVirtualDevicePage = function () {
         class: this.classId,
         data: {
           id: 'Wizard' + Date.now()
-        }
+        },
+        'capabilities': []
       };
 
       await Homey.createDevice(tmpVirtualDevice)
         .catch(e => { throw e; });
 
-      // Refresh configuration and refresh the page
+      // Refresh configuration to retrieve the virtual device id
+      // FIXME: find a more efficient way to do so
       await configuration.load();
 
       // Find our new virtual device
       let virtualDevice = configuration.virtualDevices.find(virtualDevice => virtualDevice.internalDeviceId === tmpVirtualDevice.data.id);
       if (virtualDevice !== undefined) {
+        // Need to modify the zone ... Yes, homey ignored it ...
+        tmpVirtualDevice = {
+          virtualDeviceId: virtualDevice.virtualDeviceId,
+          name: this.name,
+          zoneId: this.zoneId,
+          classId: this.classId
+        };
+  
+        await Homey.emit('update-virtual-device', {
+          virtualDevice: tmpVirtualDevice
+        }).catch(e => { throw e; });
+  
+        // Refresh configuration and refresh the page
+        await configuration.load();
         pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: virtualDevice.virtualDeviceId });
       } else {
         throw new Error('Virtual device creation failed, cannot find it using internalDeviceId');

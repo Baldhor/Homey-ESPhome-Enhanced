@@ -189,6 +189,16 @@
           </select>
         </li>
         <li v-show='capabilityType !== "unselected"'>
+          <!-- title - text -->
+          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.title') }}</span>
+          <input ref='capabilityTitle' v-model='capabilityOptions.title' @input='checkValidity' type='text' minlength=3
+            maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'
+            style='text-align: left; margin-left: 0;'
+            :placeholder='Homey.__("wizard2.edit-capability.capability.title-default")'>
+          <span class='edit' v-show='_editCapability !== null' @click='confirmDelete()' style='position: initial;'>{{
+            Homey.__('wizard2.edit-capability.delete') }}</span>
+        </li>
+        <li v-show='capabilityType !== "unselected"'>
           <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options-title') }}</span>
           <span></span>
         </li>
@@ -199,15 +209,6 @@
           <input ref='capabilityIndex' v-model='capabilityOptions.index' @input='checkValidity' type='text' minlength=3
             maxlength=30 pattern='^[a-z][a-z\.]{1,28}[a-z]{1,1}$' style='text-align: left; margin-left: 0;'
             :placeholder='Homey.__("wizard2.edit-capability.capability.index-default")'>
-        </li>
-        <li class='sub' v-show='capabilityType !== "unselected"'>
-          <!-- title - text -->
-          <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.title') }}</span>
-          <span></span>
-          <input ref='capabilityTitle' v-model='capabilityOptions.title' @input='checkValidity' type='text' minlength=3
-            maxlength=30 pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$'
-            style='text-align: left; margin-left: 0;'
-            :placeholder='Homey.__("wizard2.edit-capability.capability.title-default")'>
         </li>
         <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.zoneActivity !== undefined'>
           <!-- zoneActivity - boolean -->
