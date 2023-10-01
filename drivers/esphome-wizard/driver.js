@@ -636,10 +636,7 @@ class Driver extends Homey.Driver {
                 throw new Error('Could not find the device to delete:', virtualDeviceId);
             }
 
-            // Build up opts
-            let opts = {};
-            
-            if (data.name !== realDevice.getName() || data.zoneId !== await this.getDeviceZone(session, realDevice)) {
+            if (data.name !== undefined && (data.name !== realDevice.getName() || data.zoneId !== await this.getDeviceZone(session, realDevice))) {
                 await session.authentifiedHomeyApi.devices.updateDevice({
                     id: realDevice.getId(),
                     device: {

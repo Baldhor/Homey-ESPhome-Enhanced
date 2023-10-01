@@ -17,7 +17,7 @@
           <span class='edit' v-if='_editVirtualDevice !== null && !configuration.locked' @click='confirmDelete()'>{{
             Homey.__('wizard2.edit-virtual-device.delete') }}</span>
         </li>
-        <li v-show='_editVirtualDevice !== null && !configuration.locked'>
+        <li v-show='!configuration.locked'>
           <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
           <span></span>
           <select ref='zoneId' v-model='zoneId' @change='checkValidity'>
@@ -31,7 +31,7 @@
             </option>
           </select>
         </li>
-        <li v-show='_editVirtualDevice !== null'>
+        <li v-show='configuration.locked && _editVirtualDevice !== null'>
           <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
           <span v-show='zone.zoneId === zoneId' v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='"a" + zone.zoneId'>
             {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}

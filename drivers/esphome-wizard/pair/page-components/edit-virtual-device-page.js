@@ -72,7 +72,7 @@ const EditVirtualDevicePage = function () {
       }
 
       // Zone unselected
-      if (this.zoneId === 'unselected') {
+      if (this.zoneId === 'unselected' && !configuration.locked) {
         zoneIdElt.setCustomValidity(false);
         errorAndWarningList.addError("wizard2.edit-virtual-device.error-zone");
       }
@@ -121,13 +121,16 @@ const EditVirtualDevicePage = function () {
 
       let tmpVirtualDevice = {
         name: this.name,
-        zone: this.zoneId,
         class: this.classId,
         data: {
           id: 'Wizard' + Date.now()
         },
         'capabilities': []
       };
+
+      if (!configuration.locked) {
+        tmpVirtualDevice.zone = this.zoneId;
+      }
 
       await Homey.createDevice(tmpVirtualDevice)
         .catch(e => { throw e; });
@@ -143,9 +146,12 @@ const EditVirtualDevicePage = function () {
         tmpVirtualDevice = {
           virtualDeviceId: virtualDevice.virtualDeviceId,
           name: this.name,
-          zoneId: this.zoneId,
           classId: this.classId
         };
+  
+        if (!configuration.locked) {
+          tmpVirtualDevice.zoneId = this.zoneId;
+        }
   
         await Homey.emit('update-virtual-device', {
           virtualDevice: tmpVirtualDevice
@@ -163,10 +169,13 @@ const EditVirtualDevicePage = function () {
 
       let tmpVirtualDevice = {
         virtualDeviceId: this._editVirtualDevice.virtualDeviceId,
-        name: this.name,
-        zoneId: this.zoneId,
         classId: this.classId
       };
+
+      if (!configuration.locked) {
+        tmpVirtualDevice.name = this.name,
+        tmpVirtualDevice.zoneId = this.zoneId;
+      }
 
       await Homey.emit('update-virtual-device', {
         virtualDevice: tmpVirtualDevice
