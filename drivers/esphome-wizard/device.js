@@ -96,7 +96,7 @@ class VirtualDevice extends Device {
             let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
 
             // Remove the listeners
-            this._unregisterListener(physicalDevice);
+            this._unregisterListeners(physicalDevice);
         }
     }
 
@@ -268,22 +268,6 @@ class VirtualDevice extends Device {
         // No need to remove anything (refer to _addCapabilityListener)
     }
 
-    _forceDisconnect() {
-        this.log('_forceDisconnect');
-
-        this._unregisterListeners();
-
-        let listPhysicalDeviceIds = [];
-        let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
-        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
-            let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
-            if (!listPhysicalDeviceIds.includes(capabilityValueV2.physicalDeviceId)) {
-                listPhysicalDeviceIds.push(capabilityValueV2.physicalDeviceId);
-                PhysicalDeviceManager.checkDelete(this, PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId));
-            }
-        });
-    }
-
     _registerListener(obj, event, callback) {
         this.log('_registerListeners:', obj, event); // FIXMEIf callback is logged, I get a u error from JSON parser
 
@@ -294,24 +278,31 @@ class VirtualDevice extends Device {
         });
     }
 
-    _unregisterListener(obj) {
-        this.listeners.filter(listener => listener.obj === obj).forEach(listener => {
-            listener.obj.off(listener.event, listener.callback);
-        })
+    _unregisterListeners(obj) {
+        this.log('_unregisterAllListeners:', ...arguments);
+
+        for(let i = this.listeners.length - 1; i >= 0; --i) {
+            let listener = this.listeners[i];
+            if (listener.obj === obj) {
+                listener.obj.off(listener.event, listener.callback);
+                this.listeners.splice(i, 1);
+            }
+        }
     }
 
-    _unregisterListeners() {
-        this.log('_unregisterListeners');
+    _unregisterAllListeners() {
+        this.log('_unregisterAllListeners');
 
         this.listeners.forEach(listener => {
             listener.obj.off(listener.event, listener.callback);
         });
+        this.listeners = [];
     }
 
     async onUninit() {
         this.log('onUnit');
 
-        this._forceDisconnect();
+        this._unregisterAllListeners();
     }
 
     async onDeleted() {

@@ -11,7 +11,8 @@
     <div class='list'>
       <ul>
         <li>
-          <input v-show="_editVirtualDevice === null || !configuration.locked" ref='name' v-model='name' @input='checkValidity' type='text' required minlength=3 maxlength=30
+          <input v-show="_editVirtualDevice === null || !configuration.locked" ref='name' v-model='name'
+            @input='checkValidity' type='text' required minlength=3 maxlength=30
             pattern='^[A-Za-z0-9][A-Za-z0-9\-_ ]{1,28}[A-Za-z0-9]{1,1}$' style='text-align: left; margin-left: 0;'>
           <span v-show="_editVirtualDevice !== null && configuration.locked">{{ name }}</span>
           <span class='edit' v-if='_editVirtualDevice !== null && !configuration.locked' @click='confirmDelete()'>{{
@@ -33,9 +34,14 @@
         </li>
         <li v-show='configuration.locked && _editVirtualDevice !== null'>
           <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
-          <span v-show='zone.zoneId === zoneId' v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='"a" + zone.zoneId'>
+          <span v-show='zone.zoneId === zoneId'
+            v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='"a" + zone.zoneId'>
             {{ (zone.zoneDepth > 0 ? "-".repeat(zone.zoneDepth) : "") + " " + zone.name }}
           </span>
+        </li>
+        <li v-show='configuration.locked && _editVirtualDevice === null'>
+          <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.zone') }}</span>
+          <span>{{ Homey.__('wizard2.edit-virtual-device.current-zone') }}</span>
         </li>
         <li>
           <span class='pre'>{{ Homey.__('wizard2.edit-virtual-device.class') }}</span>

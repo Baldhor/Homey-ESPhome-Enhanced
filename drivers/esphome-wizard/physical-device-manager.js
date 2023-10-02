@@ -96,32 +96,6 @@ class PhysicalDeviceManager extends EventEmitter {
     }
 
     /**
-     * Need to trigger this function when all virtual devices linked to a physical device are deleted
-     * 
-     * A deleted virtual device need to send an event to capture (existing?)
-     * Then we need to check if any remaining virtual device is using this ipAddress/port
-     * 
-     * @param {*} physicalDevice The physical device currently used by the virtual device
-     */
-    static checkDelete(virtualDevice, physicalDevice) {
-        this.log('Checking if still usefull:', physicalDevice.id);
-        let result = false;
-        this.getInstance().driver.getDevices().forEach(device => {
-            if (virtualDevice !== device && device.physicalDeviceId === physicalDevice.id) {
-                result = true;
-                return; // Still usefull
-            }
-        });
-
-        if (!result) {
-            this.log('Physical device became useless');
-            PhysicalDeviceManager._delete(physicalDevice);
-        } else {
-            this.log('Physical device is usefull');
-        }
-    }
-
-    /**
      * For internal use only!
      * 
      * Unmap the physical device and disconnect/destroy it

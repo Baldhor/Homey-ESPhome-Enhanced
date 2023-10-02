@@ -250,7 +250,9 @@ const EditPhysicalDevicePage = function () {
     async _applyEditDone() {
       wizardlog('[' + this.componentName + '] ' + '_applyEditDone');
 
-      pageHandler.setMainPage();
+      // Refresh configuration and refresh the page
+      await configuration.load();
+      pageHandler.setPage('list-physical-devices-page');
     }
   };
 };

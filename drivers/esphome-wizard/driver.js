@@ -13,7 +13,7 @@ class Driver extends Homey.Driver {
         this.checkMigration();
         this.initConf();
 
-        this.cleanUpConf();
+        await this.cleanUpConf();
 
         PhysicalDeviceManager.init(this);
 
@@ -26,7 +26,7 @@ class Driver extends Homey.Driver {
         this.log('ESPhomeWizard initialized');
     }
 
-    cleanUpConf() {
+    async cleanUpConf() {
         this.log('cleanUpConf');
 
         // Go through all the virtual devices, to build up the list of usefull physical device ids
@@ -49,20 +49,18 @@ class Driver extends Homey.Driver {
         });
 
         let conf = this.getConf();
-        conf.forEach(physicalDevice => {
-            if (!listPhysicalDeviceIds.includes(physicalDevice.physicalDeviceId)) {
+        for (let i = conf.length - 1; i >= 0; --i) {
+            if (!listPhysicalDeviceIds.includes(conf[i].physicalDeviceId)) {
                 // We can remove it
-                this.log("Removing a physical device from conf (useless): ", physicalDevice.physicalDeviceId);
-                conf.splice(conf.indexOf(physicalDevice), 1);
+                this.log("Removing a physical device from conf (useless): ", conf[i].physicalDeviceId);
+                let physicalDevice = PhysicalDeviceManager.getById(conf[i].physicalDeviceId);
+                if (physicalDevice !== undefined) {
+                    PhysicalDeviceManager._delete(conf[i].physicalDeviceId);
+                }
+                conf.splice(i, 1);
             }
-        });
+        }
         this.setConf(conf);
-    }
-
-    cleanUpPhysicalDevices() {
-        this.cleanUpConf();
-
-        // TODO: clean physical devices from the manager
     }
 
     async onPair(session) {
@@ -224,27 +222,22 @@ class Driver extends Homey.Driver {
             }
         });
 
-        session.setHandler('connect-new-device', (data) => {
+        session.setHandler('connect-new-device', async (data) => {
             this.log('connect-new-device:', data);
 
             try {
+                // Why? PairSession can end without notice, and so the physicalDevice created previosuly may not be cleaned up
+                await this.cleanUpConf();
+
                 // Check if physical device already exist
                 let existingPhysicalDevice = PhysicalDeviceManager.get(data.ipAddress, data.port);
                 if (existingPhysicalDevice) {
-                    // Maybe it's a physical device without virtual device linked? In such case we can clean up
-                    // Why? PairSession can end without notice, and so the physicalDevice created previosuly may not be cleaned up
-                    PhysicalDeviceManager.checkDelete(null, existingPhysicalDevice);
-                    existingPhysicalDevice = null;
-
-                    // Let's check again
-                    if (PhysicalDeviceManager.get(data.ipAddress, data.port)) {
-                        session.emit('new-device-failed', 'A physical device already exist')
-                            .catch(e => {
-                                // Session expired, just ignore it
-                                this.error('Failed to connect with device before pair session expired:', data);
-                            });
-                        return;
-                    }
+                    session.emit('new-device-failed', 'A physical device already exist')
+                        .catch(e => {
+                            // Session expired, just ignore it
+                            this.error('Failed to connect with device before pair session expired:', data);
+                        });
+                    return;
                 }
 
                 // Create a new physical device and add listeners
@@ -297,7 +290,7 @@ class Driver extends Homey.Driver {
                                 // Session expired, cleaning up
                                 this.error('Connected to device, but the pair session expired:', data);
                             });
-                        PhysicalDeviceManager.checkDelete(null, realPhysicalDevice);
+                        PhysicalDeviceManager._delete(realPhysicalDevice);
                     }, 5000);
                 });
 
@@ -310,7 +303,7 @@ class Driver extends Homey.Driver {
                     }).catch(e => {
                         // Session expired, just ignore it
                     });
-                    PhysicalDeviceManager.checkDelete(null, PhysicalDeviceManager.getById(data.physicalDeviceId));
+                    PhysicalDeviceManager._delete(null, PhysicalDeviceManager.getById(data.physicalDeviceId));
                 });
             } catch (e) {
                 this.error(e);
@@ -346,6 +339,9 @@ class Driver extends Homey.Driver {
 
             try {
                 await this.deleteDevice(session, virtualDeviceId);
+
+                // Just in case a physical device became useless
+                await this.cleanUpConf();
             } catch (e) {
                 this.error(e);
                 throw e;
@@ -392,7 +388,7 @@ class Driver extends Homey.Driver {
                     virtualDevice._setupCapability(capability.capabilityId);
 
                     // Just in case a physical device became useless
-                    this.cleanUpPhysicalDevices();
+                    await this.cleanUpConf();
                 } else {
                     // Remove the old capability
                     if (action === "edit") {
@@ -461,7 +457,7 @@ class Driver extends Homey.Driver {
                 virtualDevice.removeCapability(capabilityId);
 
                 // Just in case a physical device became useless
-                this.cleanUpPhysicalDevices();
+                await this.cleanUpConf();
             } catch (e) {
                 this.error(e);
                 throw e;
@@ -664,7 +660,7 @@ class Driver extends Homey.Driver {
                 throw new Error('Could not find the device to delete:', virtualDeviceId);
             }
 
-            await session.homeyApi.devices.deleteDevice({
+            await session.authentifiedHomeyApi.devices.deleteDevice({
                 id: realDevice.getId()
             });
         } catch (e) {

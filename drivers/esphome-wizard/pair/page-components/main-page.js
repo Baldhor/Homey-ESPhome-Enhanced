@@ -3,6 +3,7 @@ const MainPage = function () {
     componentName: "main-page",
     $template: "#template-main-page",
 
+    showAdvices: false,
     bearerToken: null,
 
     _initValues: null,
@@ -21,6 +22,8 @@ const MainPage = function () {
       this.bearerToken = this._initValues.bearerToken = "";
 
       await configuration.load();
+
+      this.showAdvices = configuration?.physicalDevices?.find(e => e.name.startsWith("migrated")) !== undefined;
 
       await PetiteVue.nextTick();
       this.checkValidity();

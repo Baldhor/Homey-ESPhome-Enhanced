@@ -181,6 +181,10 @@
   "wizard2": {
     "main": {
       "title": "Main menu",
+      "advice-migration1": "Welcome to the new Wizard",
+      "advice-migration2": "Its interface has been upgraded and its power enhanced",
+      "advice-migration3": "You should go through 'Manage your physical devices' first to rename them",
+      "wiki-link": "Link to the app wiki",
       "menu": "Choose a functionnality",
       "list-physical-devices": "Manage your physical devices",
       "list-virtual-devices": "Manage your virtual devices",
@@ -263,6 +267,7 @@
       "warning-delete": "The virtual device will be deleted, it could damage your existing flows!",
       "zone": "Zone",
       "zone-unselected": "--Select a zone--",
+      "current-zone": "Zone from which you opened the Wizard",
       "name": "Name",
       "class": "Class",
       "class-unselected": "--Select a class--",

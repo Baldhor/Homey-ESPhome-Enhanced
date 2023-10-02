@@ -22,10 +22,6 @@
      * Init pages
      ************************ -->
 
-<!-- Welcome page -->
-<script src="page-components/welcome-page.js"></script>
-<div hidden w3-include-html="page-components/welcome-page.html"></div>
-
 <!-- Main page -->
 <script src="page-components/main-page.js"></script>
 <div hidden w3-include-html="page-components/main-page.html"></div>
@@ -64,7 +60,6 @@
      * Init app
      ************************ -->
 <div v-scope :class='{ esphomewizard : true }' id='esphomewizard' hidden @vue:mounted="mounted($el)">
-  <section id="welcome-page" v-scope="WelcomePage()"></section>
   <section id="main-page" v-scope="MainPage()"></section>
   <section id="list-virtual-devices-page" v-scope="ListVirtualDevicesPage()"></section>
   <section id="edit-virtual-device-page" v-scope="EditVirtualDevicePage()"></section>

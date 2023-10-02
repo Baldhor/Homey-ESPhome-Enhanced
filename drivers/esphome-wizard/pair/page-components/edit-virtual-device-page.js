@@ -27,7 +27,7 @@ const EditVirtualDevicePage = function () {
         this._editVirtualDevice = null;
 
         this.name = this._initValues.name = "";
-        this.zoneId = this._initValues.zoneId = "unselected";
+        this.zoneId = this._initValues.zoneId = "unselected"; // Doesn't work, why ? // await Homey.getZone();
         this.classId = this._initValues.classId = "unselected";
       } else {
         // edit mode
@@ -122,15 +122,12 @@ const EditVirtualDevicePage = function () {
       let tmpVirtualDevice = {
         name: this.name,
         class: this.classId,
+        zone: this.zoneId,
         data: {
           id: 'Wizard' + Date.now()
         },
         'capabilities': []
       };
-
-      if (!configuration.locked) {
-        tmpVirtualDevice.zone = this.zoneId;
-      }
 
       await Homey.createDevice(tmpVirtualDevice)
         .catch(e => { throw e; });
@@ -141,28 +138,27 @@ const EditVirtualDevicePage = function () {
 
       // Find our new virtual device
       let virtualDevice = configuration.virtualDevices.find(virtualDevice => virtualDevice.internalDeviceId === tmpVirtualDevice.data.id);
-      if (virtualDevice !== undefined) {
-        // Need to modify the zone ... Yes, homey ignored it ...
+      if (virtualDevice === undefined) {
+        throw new Error('Virtual device creation failed, cannot find it using internalDeviceId');
+      }
+
+      // homey ignored the zone, but if not locked, we can modify the zone through the authentificqted Web API
+      if (!configuration.locked) {
         tmpVirtualDevice = {
           virtualDeviceId: virtualDevice.virtualDeviceId,
           name: this.name,
-          classId: this.classId
+          classId: this.classId,
+          zoneId: this.zoneId
         };
-  
-        if (!configuration.locked) {
-          tmpVirtualDevice.zoneId = this.zoneId;
-        }
-  
+
         await Homey.emit('update-virtual-device', {
           virtualDevice: tmpVirtualDevice
         }).catch(e => { throw e; });
-  
-        // Refresh configuration and refresh the page
-        await configuration.load();
-        pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: virtualDevice.virtualDeviceId });
-      } else {
-        throw new Error('Virtual device creation failed, cannot find it using internalDeviceId');
       }
+
+      // Refresh configuration and refresh the page
+      await configuration.load();
+      pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: virtualDevice.virtualDeviceId });
     },
     async _applyUpdate() {
       wizardlog('[' + this.componentName + '] ' + '_applyUpdate');
@@ -174,7 +170,7 @@ const EditVirtualDevicePage = function () {
 
       if (!configuration.locked) {
         tmpVirtualDevice.name = this.name,
-        tmpVirtualDevice.zoneId = this.zoneId;
+          tmpVirtualDevice.zoneId = this.zoneId;
       }
 
       await Homey.emit('update-virtual-device', {

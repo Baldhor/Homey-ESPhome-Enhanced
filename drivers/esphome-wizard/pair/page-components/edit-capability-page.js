@@ -252,8 +252,11 @@ const EditCapabilityPage = function () {
         }).catch(e => { throw e; });
 
         // Refresh configuration and go to previous page
-        await configuration.load();
-        pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
+        // But in 5 seconds, the time for the new physical device to initialize if needed
+        setTimeout(async () => {
+          await configuration.load();
+          pageHandler.setPage('edit-virtual-device-page', { virtualDeviceId: this._editVirtualDevice.virtualDeviceId });
+        }, 5000);
       } catch (e) {
         wizardlog(e.stack);
 
