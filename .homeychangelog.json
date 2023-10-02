@@ -112,5 +112,8 @@
   },
   "1.0.1": {
     "en": "Corrected a few bugs related to bearer token for new virtual device"
+  },
+  "1.0.2": {
+    "en": "Several fix, and added advices for migrated users"
   }
 }
