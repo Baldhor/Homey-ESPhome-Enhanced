@@ -118,5 +118,8 @@
   },
   "1.0.3": {
     "en": "Fixed #47 memory leak when reconnection occur (hopefully)"
+  },
+  "1.0.4": {
+    "en": "Fixed #50 and corrected back page of edit physiucal device"
   }
 }
