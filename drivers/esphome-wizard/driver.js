@@ -55,7 +55,7 @@ class Driver extends Homey.Driver {
                 this.log("Removing a physical device from conf (useless): ", conf[i].physicalDeviceId);
                 let physicalDevice = PhysicalDeviceManager.getById(conf[i].physicalDeviceId);
                 if (physicalDevice !== undefined) {
-                    PhysicalDeviceManager._delete(conf[i].physicalDeviceId);
+                    PhysicalDeviceManager._delete(PhysicalDeviceManager.getById(conf[i].physicalDeviceId));
                 }
                 conf.splice(i, 1);
             }
@@ -303,7 +303,7 @@ class Driver extends Homey.Driver {
                     }).catch(e => {
                         // Session expired, just ignore it
                     });
-                    PhysicalDeviceManager._delete(null, PhysicalDeviceManager.getById(data.physicalDeviceId));
+                    PhysicalDeviceManager._delete(PhysicalDeviceManager.getById(data.physicalDeviceId));
                 });
             } catch (e) {
                 this.error(e);
