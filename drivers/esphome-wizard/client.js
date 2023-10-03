@@ -1,7 +1,5 @@
 'use strict';
 
-// Completion: 80% but untested, missing getConfig function
-
 /**
  * This class handle the connectivity through the native api between a physical device and the remote device.
  * 
@@ -134,12 +132,11 @@ class Client extends EventEmitter {
      * - newEntity(entity)
      */
     startRemoteListener() {
-        this.nativeApiClient
-            .on('initialized', () => this.initializedListener(), { signal: this.abortController.signal })
-            .on('disconnected', () => this.disconnectedListener(), { signal: this.abortController.signal })
-            .on('error', (error) => this.errorListener(error), { signal: this.abortController.signal })
-            .on('logs', (message) => this.logsListener(message), { signal: this.abortController.signal })
-            .on('newEntity', (entity) => this.newEntityListener(entity), { signal: this.abortController.signal });
+        this.nativeApiClient.on('initialized', () => this.initializedListener(), { signal: this.abortController.signal });
+        this.nativeApiClient.on('disconnected', () => this.disconnectedListener(), { signal: this.abortController.signal });
+        this.nativeApiClient.on('error', (error) => this.errorListener(error), { signal: this.abortController.signal });
+        this.nativeApiClient.on('logs', (message) => this.logsListener(message), { signal: this.abortController.signal });
+        this.nativeApiClient.on('newEntity', (entity) => this.newEntityListener(entity), { signal: this.abortController.signal });
     }
 
     /**
@@ -291,38 +288,6 @@ class Client extends EventEmitter {
         this.log('Command sent to remote for entity', entityId, 'and attribut', attribut, '==>', newValue);
     }
 
-    /**
-     * Return the configuration of the remove device as known from the native api client
-     * 
-     * Build list of entities, including:
-     * - id
-     * - name
-     * - type
-     * - options
-     * - state
-     */
-    getConfig() {
-        this.log('Build config');
-
-        let config = [];
-
-        this.nativeApiClient.entities.forEach(element => {
-            let entity = {};
-
-            entity.id = element.id;
-            entity.name = element.name;
-            entity.type = element.type;
-            entity.options = {};
-            entity.state = state;
-
-            config.push(entity);
-        });
-
-        this.log('Built config:', config);
-
-        return config;
-    }
-
     log(...args) {
         this.physicalDevice.log('[Client]', ...args);
     }
@@ -347,8 +312,11 @@ class Client extends EventEmitter {
 
         if (this.nativeApiClient !== null) {
             this.abortController.abort();
-            this.nativeApiClient.disconnect();
+            let nativeApiClient = this.nativeApiClient;
             this.nativeApiClient = null;
+            nativeApiClient.removeAllListeners();
+            Object.keys(nativeApiClient.entities).forEach(entityId => { nativeApiClient.entities[entityId].removeAllListeners(); });
+            nativeApiClient.disconnect();
         }
     }
 
