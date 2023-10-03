@@ -137,7 +137,15 @@ const EditPhysicalDevicePage = function () {
     async back() {
       wizardlog('[' + this.componentName + '] ' + 'back');
 
-      this._modified ? (await confirm(Homey.__("wizard2.edit-physical-device.loseModification", "warning")) ? pageHandler.setPage('list-physical-devices-page') : true) : pageHandler.setPage('list-physical-devices-page');
+      let nextPage = null;
+      if (!this._editPhysicalDevice) {
+        // new mode
+        nextPage = 'list-virtual-devices-page';
+      } else {
+        // edit mode
+        nextPage = 'list-physical-devices-page';
+      }
+      this._modified ? (await confirm(Homey.__("wizard2.edit-physical-device.loseModification", "warning")) ? pageHandler.setPage(nextPage) : true) : pageHandler.setPage(nextPage);
     },
     async apply() {
       wizardlog('[' + this.componentName + '] ' + 'apply');
