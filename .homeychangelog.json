@@ -115,5 +115,8 @@
   },
   "1.0.2": {
     "en": "Several fix, and added advices for migrated users"
+  },
+  "1.0.3": {
+    "en": "Fixed #47 memory leak when reconnection occur (hopefully)"
   }
 }
