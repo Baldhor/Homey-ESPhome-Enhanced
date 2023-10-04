@@ -124,5 +124,8 @@
   },
   "1.0.5": {
     "en": "Fixed #48: removing text capability support, I will add new custom capabilities later"
+  },
+  "1.1.0": {
+    "en": "Implemented #42: Added support for Climate and Select entities! UNTESTED!"
   }
 }
