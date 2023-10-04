@@ -349,8 +349,8 @@ class ConsoleReService {
         // Check size of the queue
         if (!instance.queue) {
             return;
-        } else if (level === 'debug' && instance.queue.size >= QUEUE_MAX_SIZE) {
-            // Queue is full, if log is debug level, just skip
+        } else if (level === 'debug' && instance.queue.size >= (QUEUE_MAX_SIZE - 20)) {
+            // Queue is almost full, if log is debug level, just skip
             instance.tooManyLogs();
             return;
         }
@@ -367,6 +367,11 @@ class ConsoleReService {
             return;
         }
         
+        if (instance.queue.size >= QUEUE_MAX_SIZE) {
+            // definitively skip it
+            return;
+        }
+
         // Get homey handle
         let app = this.getApp();
         let homey = app.homey;
