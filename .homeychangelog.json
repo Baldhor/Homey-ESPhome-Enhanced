@@ -136,5 +136,8 @@
   },
   "1.1.3": {
     "en": "publish failed, trying again"
+  },
+  "1.1.4": {
+    "en": "corrected source link in app.json and enhanced console.re max queue handling"
   }
 }
