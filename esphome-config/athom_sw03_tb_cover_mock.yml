@@ -34,11 +34,11 @@
 # FLAG None
 
 esphome:
-  name: athom_sw03_tb_cover
+  name: athom_sw03_tb_cover_mock
   name_add_mac_suffix: true
-  friendly_name: Athom SW03 Time Based Cover
+  friendly_name: Athom SW03 Time Based Cover Mock
   project:
-    name: "baldhor.athom_sw03_time_based_cover"
+    name: "baldhor.athom_sw03_time_based_cover_mock"
     version: "1.0.0"
 
 esp8266:
@@ -113,12 +113,12 @@ sensor:
     update_interval: 60s
   
   - platform: template
-    name: "Random temperature"
-    id: random_temperature
+    name: "Random temperature1"
+    id: random_temperature1
     unit_of_measurement: "°c"
     lambda: |-
       return (rand() % 2000) / 100.00 + 5;
-    update_interval: 60s
+    update_interval: 10s
     
   - platform: template
     name: "Random temperature2"
@@ -126,7 +126,151 @@ sensor:
     unit_of_measurement: "°c"
     lambda: |-
       return (rand() % 2000) / 100.00 + 5;
-    update_interval: 60s
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature3"
+    id: random_temperature3
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature4"
+    id: random_temperature4
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature5"
+    id: random_temperature5
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature6"
+    id: random_temperature6
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature7"
+    id: random_temperature7
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature8"
+    id: random_temperature8
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature9"
+    id: random_temperature9
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature10"
+    id: random_temperature10
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature11"
+    id: random_temperature11
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature12"
+    id: random_temperature12
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature13"
+    id: random_temperature13
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature14"
+    id: random_temperature14
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature15"
+    id: random_temperature15
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature16"
+    id: random_temperature16
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature17"
+    id: random_temperature17
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature18"
+    id: random_temperature18
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature19"
+    id: random_temperature19
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
+    
+  - platform: template
+    name: "Random temperature20"
+    id: random_temperature20
+    unit_of_measurement: "°c"
+    lambda: |-
+      return (rand() % 2000) / 100.00 + 5;
+    update_interval: 10s
     
   - platform: template
     name: "Random humidity"

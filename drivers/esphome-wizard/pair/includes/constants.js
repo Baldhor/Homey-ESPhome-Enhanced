@@ -3,7 +3,7 @@
 // I skiped some of them (lazy / cannot test them)
 // Added 2 customs : number and text
 CAPABILITY_CONFIGURATION = [
-  {
+/*  {
     type: 'text',
     valueType: 'string',
     getable: true,
@@ -15,6 +15,7 @@ CAPABILITY_CONFIGURATION = [
     specialCaseSupported: [],
     options: ['index', 'title', 'preventInsights', 'preventTag', 'decimals']
   },
+*/
   {
     type: 'onoff',
     valueType: 'boolean',

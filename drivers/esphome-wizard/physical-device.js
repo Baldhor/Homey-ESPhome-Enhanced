@@ -408,11 +408,11 @@ class PhysicalDevice extends EventEmitter {
     }
 
     log(...args) {
-        this.driver.log('[PhysicalDevice:' + this.id + ']', ...args);
+        this.driver.log('[PhysicalDevice:' + this.name + ']', ...args);
     }
 
     error(...args) {
-        this.driver.error('[PhysicalDevice:' + this.id + ']', ...args);
+        this.driver.error('[PhysicalDevice:' + this.name + ']', ...args);
     }
 }
 

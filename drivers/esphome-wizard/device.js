@@ -64,6 +64,16 @@ class VirtualDevice extends Device {
             return;
         }
 
+        // Clean up text capability
+        let modified = false;
+        Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
+            if (capabilityKeyV2 === 'text' || capabilityKeyV2.startsWith('text.')) {
+                delete capabilityKeysV2[capabilityKeyV2];
+                modified = true;
+            }
+        })
+        this.setStoreValue('capabilityKeysV2', capabilityKeysV2);
+
         Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
             this._setupCapability(capabilityKeyV2);
         });
