@@ -127,5 +127,8 @@
   },
   "1.1.0": {
     "en": "Implemented #42: Added support for Climate and Select entities! UNTESTED!"
+  },
+  "1.1.1": {
+    "en": "Added missing zoneActivity option for alarm_motion and alarm_contact capabilities + fixed a tiny bug related to esphome_enum capability"
   }
 }
