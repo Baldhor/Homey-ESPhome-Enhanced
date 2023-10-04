@@ -98,6 +98,30 @@ text_sensor:
       name: "IP Address"
       disabled_by_default: true
 
+select:
+  - platform: template
+    name: "Random select"
+    id: random_select
+    set_action:
+      - lambda: |-
+          auto call = id(random_select).make_call();
+          call.set_option(x);
+          call.perform();
+    options:
+      - "one"
+      - "two"
+      - "three"
+    lambda: |-
+      switch (rand() % 3){
+            case 0:
+              return "one";
+            case 1:
+              return "two";
+            case 2:
+              return "three";
+      }
+    update_interval: 10s
+
 # Announce uptime every minute
 sensor:
   - platform: uptime

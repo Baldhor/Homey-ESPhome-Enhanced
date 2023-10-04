@@ -226,6 +226,7 @@
           "getable": "Getable only",
           "approximated": "Approimated",
           "decimals": "Precision",
+          "zoneActivity": "Trigger zone activity",
           "min": "Min",
           "max": "Max",
           "step": "Step",

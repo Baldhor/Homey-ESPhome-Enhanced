@@ -406,6 +406,7 @@ const EditCapabilityPage = function () {
           case 'preventTag':
           case 'getable':
           case 'approximated':
+          case 'zoneActivity':
             // 1- From the current value (bounded if needed)
             optionValue = this.capabilityOptions[optionKey];
             if (optionValue === undefined || typeof optionValue !== 'boolean') {
@@ -425,7 +426,11 @@ const EditCapabilityPage = function () {
 
             // 4- Arbitrary
             if (optionValue === null) {
-              optionValue = false;
+              if (optionKey === 'zoneActivity' && ['alarm_contact', 'alarm_motion'].includes(this.capabilityType)) {
+                optionValue = true;
+              } else {
+                optionValue = false;
+              }
             }
 
             // 5- Enforced
@@ -653,7 +658,7 @@ const EditCapabilityPage = function () {
             break;
 
           default:
-            throw new Error('Unknown optionKey, please fix the code:', optionKey);
+            throw new Error('Unknown optionKey, please fix the code: ' + optionKey);
         }
       });
 
