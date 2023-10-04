@@ -363,6 +363,10 @@ class ConsoleReService {
         // Get instance handle
         let instance = this.getInstance();
 
+        if (!instance.consolereEnabled) {
+            return;
+        }
+        
         // Get homey handle
         let app = this.getApp();
         let homey = app.homey;
