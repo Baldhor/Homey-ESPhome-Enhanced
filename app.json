@@ -241,6 +241,7 @@
         "lan"
       ],
       "capabilities": [
+        "esphome_enum",
         "onoff",
         "dim",
         "target_temperature",
@@ -311,6 +312,18 @@
     }
   ],
   "capabilities": {
+    "esphome_enum": {
+      "type": "enum",
+      "title": {
+        "en": "select"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "insights": true,
+      "icon": "/assets/images/esphome_enum.svg",
+      "values": []
+    },
     "esphome_number": {
       "type": "number",
       "title": {

@@ -3,19 +3,31 @@
 // I skiped some of them (lazy / cannot test them)
 // Added 2 customs : number and text
 CAPABILITY_CONFIGURATION = [
-/*  {
-    type: 'text',
-    valueType: 'string',
+  /*  {
+      type: 'text',
+      valueType: 'string',
+      getable: true,
+      setable: false,
+      quickaction: false,
+      uielement: 'media',
+      nativeCapabilitySupported: null,
+      nativeCapabilityUnsupported: null,
+      specialCaseSupported: [],
+      options: ['index', 'title', 'preventInsights', 'preventTag', 'decimals']
+    },
+  */
+  {
+    type: 'esphome_enum',
+    valueType: 'enum',
     getable: true,
-    setable: false,
+    setable: true,
     quickaction: false,
-    uielement: 'media',
-    nativeCapabilitySupported: null,
+    uielement: 'picker',
+    nativeCapabilitySupported: ['Select.state', 'Climate.mode', 'Climate.swingMode', 'Climate.fanMode', 'Climate.customFanMode', 'Climate.preset', 'Climate.customPreset'],
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['index', 'title', 'preventInsights', 'preventTag', 'decimals']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'values']
   },
-*/
   {
     type: 'onoff',
     valueType: 'boolean',

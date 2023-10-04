@@ -163,6 +163,13 @@
             <span></span>
             <span class='pre'>{{ _nativeCapabilitySelected?.constraints.step }}</span>
           </li>
+          <li class="subsub"
+            v-show='_nativeCapabilitySelected !== null && _nativeCapabilitySelected.constraints.values !== undefined && !_hideConstraints'>
+            <!-- constraints.step -->
+            <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints.values') }}</span>
+            <span></span>
+            <span class='pre'>{{ _nativeCapabilitySelected?.constraints.values.toString() }}</span>
+          </li>
         </template>
       </ul>
     </div>

@@ -207,7 +207,8 @@
             "box": "Box",
             "slidder": "Slidder"
           },
-          "step": "Step"
+          "step": "Step",
+          "values": "Values"
         },
         "hide": "hide",
         "show": "show"

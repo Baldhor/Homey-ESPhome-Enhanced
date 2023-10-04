@@ -633,6 +633,25 @@ const EditCapabilityPage = function () {
             this.capabilityOptions[optionKey] = optionValue;
             break;
 
+          case 'values':
+            // 1- From the current value (bounded if needed)
+            // do nothing
+
+            // 2- From the initial value (bounded if needed)
+            // do nothing
+
+            // 3- From the native capability
+            optionValue = [...this._nativeCapabilitySelected.constraints.values];
+
+            // 4- Arbitrary
+            // do nothing
+
+            // 5- Enforced
+            // do nothing
+
+            this.capabilityOptions[optionKey] = optionValue;
+            break;
+
           default:
             throw new Error('Unknown optionKey, please fix the code:', optionKey);
         }

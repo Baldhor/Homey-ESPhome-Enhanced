@@ -140,7 +140,7 @@ class PhysicalDevice extends EventEmitter {
             configs['unit'] = entity.config.unitOfMeasurement;
         }
     }
-    
+
     computeConfigPrecision(entity, configs) {
         let precision = 0;
         try {
@@ -154,7 +154,7 @@ class PhysicalDevice extends EventEmitter {
         }
         configs['precision'] = precision;
     }
-    
+
     computeConstraintMode(entity, constraints) {
         let mode = 'box';
         if (entity.config.mode !== null && entity.config.mode === 2) {
@@ -303,7 +303,7 @@ class PhysicalDevice extends EventEmitter {
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
-            
+
                 case 'Sensor':
                     // Has a state, but cannot be modified
                     // Has a unit and precision
@@ -316,7 +316,7 @@ class PhysicalDevice extends EventEmitter {
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
-                
+
                 case 'Switch':
                     // Has a state and can be modified
                     this.computeConfigShowUI(entity, configs);
@@ -325,7 +325,7 @@ class PhysicalDevice extends EventEmitter {
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
-                
+
                 case 'TextSensor':
                     // Has a state, but cannot be modified
                     this.computeConfigShowUI(entity, configs);
@@ -335,7 +335,89 @@ class PhysicalDevice extends EventEmitter {
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
-                
+
+                case 'Select':
+                    this.computeConfigShowUI(entity, configs);
+                    this.computeConfigDeviceClass(entity, configs);
+                    this.computeConfigUsage(entity, configs);
+                    constraints.values = [...entity.config.optionsList];
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    break;
+
+                case 'Climate':
+                    this.computeConfigShowUI(entity, configs);
+                    this.computeConfigDeviceClass(entity, configs);
+                    this.computeConfigUsage(entity, configs);
+
+                    // There are many native capabilities
+
+                    // currentTemperature
+                    let currentTemperatureConfigs = Object.assign({}, configs);
+                    this.computeConfigPrecision(entity, currentTemperatureConfigs);
+                    this.computeConfigReadOnly(entity, currentTemperatureConfigs);
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'currentTemperature', currentTemperatureConfigs, constraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    // common targetTemperature, targetTemperatureLow and targetTemperatureHigh constraints
+                    let targetTemperatureConstraints = Object.assign({}, constraints);
+                    targetTemperatureConstraints['min'] = entity.config.target_temperature_low;
+                    targetTemperatureConstraints['max'] = entity.config.target_temperature_high;
+                    targetTemperatureConstraints['step'] = entity.config.visualTargetTemperatureStep;
+
+                    // targetTemperature
+                    if (!entity.config.supportsTwoPointTargetTemperature) {
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperature', configs, targetTemperatureConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
+
+                    // targetTemperatureLow and targetTemperatureHigh
+                    if (entity.config.supportsTwoPointTargetTemperature) {
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperatureLow', configs, targetTemperatureConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperatureHigh', configs, targetTemperatureConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
+
+                    // mode
+                    let modeConstraints = Object.assign({}, constraints);
+                    modeConstraints.values = [...entity.config.supportedModesList];
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'mode', configs, modeConstraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    // swingMode
+                    let swingModeConstraints = Object.assign({}, constraints);
+                    swingModeConstraints.values = [...entity.config.supportedSwingModesList];
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'swingMode', configs, swingModeConstraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    // fanMode
+                    let fanModeConstraints = Object.assign({}, constraints);
+                    fanModeConstraints.values = [...entity.config.supportedFanModesList];
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'fanMode', configs, fanModeConstraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    // customFanMode
+                    let customFanModeConstraints = Object.assign({}, constraints);
+                    customFanModeConstraints.values = [...entity.config.supportedCustomFanModesList];
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customFanMode', configs, customFanModeConstraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    // preset
+                    let presetConstraints = Object.assign({}, constraints);
+                    presetConstraints.values = [...entity.config.supportedModesList];
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'preset', configs, presetConstraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    // customPreset
+                    let customPresetConstraints = Object.assign({}, constraints);
+                    customPresetConstraints.values = [...entity.config.supportedModesList];
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customPreset', configs, customPresetConstraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    break;
+
                 default:
                     // Unhandled entity type
                     this.error('Found unhandled entity type:', entity);

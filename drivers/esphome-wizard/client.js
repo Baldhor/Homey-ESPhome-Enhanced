@@ -262,10 +262,19 @@ class Client extends EventEmitter {
 
         switch (entityType) {
             case 'Cover':
-                if (attribut === 'position')
-                    this.nativeApiClient.connection.coverCommandService({ key: entityId, position: newValue });
-                else if (attribut === 'tilt')
-                    this.nativeApiClient.connection.coverCommandService({ key: entityId, tilt: newValue });
+                switch (attribut) {
+                    case 'position':
+                        this.nativeApiClient.connection.coverCommandService({ key: entityId, position: newValue });
+                        break;
+
+                    case 'tilt':
+                        this.nativeApiClient.connection.coverCommandService({ key: entityId, tilt: newValue });
+                        break;
+
+                    default:
+                        // do nothing
+                        break;
+                }
                 break;
 
             case 'Switch':
@@ -277,7 +286,55 @@ class Client extends EventEmitter {
                 break;
 
             case 'Number':
-                this.nativeApiClient.connection.buttonCommandService({ key: entityId, state: newValue });
+                this.nativeApiClient.connection.numberCommandService({ key: entityId, state: newValue });
+                break;
+
+            case 'Select':
+                this.nativeApiClient.connection.selectCommandService({ key: entityId, state: newValue });
+                break;
+
+            case 'Climate':
+                switch (attribut) {
+                    case 'mode':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, mode: newValue });
+                        break;
+
+                    case 'targetTemperature':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, targetTemperature: newValue });
+                        break;
+
+                    case 'targetTemperatureLow':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, targetTemperatureLow: newValue });
+                        break;
+
+                    case 'targetTemperatureHigh':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, targetTemperatureHigh: newValue });
+                        break;
+
+                    case 'fanMode':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, fanMode: newValue });
+                        break;
+
+                    case 'swingMode':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, swingMode: newValue });
+                        break;
+
+                    case 'customFanMode':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, customFanMode: newValue });
+                        break;
+
+                    case 'preset':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, preset: newValue });
+                        break;
+
+                    case 'customPreset':
+                        this.nativeApiClient.connection.climateCommandService({ key: entityId, customPreset: newValue });
+                        break;
+
+                    default:
+                        // do nothing
+                        break
+                }
                 break;
 
             default:
