@@ -121,5 +121,8 @@
   },
   "1.0.4": {
     "en": "Fixed #50 and corrected back page of edit physiucal device"
+  },
+  "1.0.5": {
+    "en": "Fixed #48: removing text capability support, I will add new custom capabilities later"
   }
 }
