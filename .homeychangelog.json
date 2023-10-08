@@ -139,5 +139,8 @@
   },
   "1.1.4": {
     "en": "corrected source link in app.json and enhanced console.re max queue handling"
+  },
+  "1.1.5": {
+    "en": "Added esphome_text and esphome_select custom capabilities for #42"
   }
 }
