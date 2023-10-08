@@ -142,5 +142,8 @@
   },
   "1.1.5": {
     "en": "Added esphome_text and esphome_select custom capabilities for #42"
+  },
+  "1.1.6": {
+    "en": "Added esphome_select_setvalue action card for #42"
   }
 }
