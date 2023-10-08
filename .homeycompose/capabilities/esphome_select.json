@@ -1,10 +1,10 @@
 {
     "type": "string",
     "title": { 
-        "en": "text" 
+        "en": "select" 
     },
     "uiComponent": "sensor",
     "getable": true,
-    "setable": false,
-    "icon": "/assets/images/esphome_text.svg"
+    "setable": true,
+    "icon": "/assets/images/esphome_select.svg"
   }

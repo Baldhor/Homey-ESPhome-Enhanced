@@ -245,6 +245,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigReadOnly(entity, configs);
+                    constraints.type = 'boolean';
                     nativeCapability = new NativeCapability(entityId, entity.config.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
@@ -255,6 +256,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigWriteOnly(entity, configs);
+                    constraints.type = 'boolean';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
@@ -267,6 +269,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigShowUI(entity, configs);
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
+                    constraints.type = 'number';
                     // Add of a unit config is useless and confusing, it's float between 0 (closed) and 1 (open)
                     // In the UI, it is shown as a %
                     if (entity.config.supportsPosition) {
@@ -294,6 +297,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigUnit(entity, configs);
                     this.computeConstraintMode(entity, constraints);
+                    constraints.type = 'number';
                     if (!this.computeConstraintMinMaxStep(entity, constraints)) {
                         this.error('MinMaxStep missing for Number entity!');
                         break;
@@ -313,6 +317,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigReadOnly(entity, configs);
                     this.computeConfigUnit(entity, configs);
                     this.computeConfigPrecision(entity, configs);
+                    constraints.type = 'number';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
@@ -322,6 +327,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigShowUI(entity, configs);
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
+                    constraints.type = 'boolean';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
@@ -332,6 +338,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
                     this.computeConfigReadOnly(entity, configs);
+                    constraints.type = 'string';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
@@ -340,6 +347,7 @@ class PhysicalDevice extends EventEmitter {
                     this.computeConfigShowUI(entity, configs);
                     this.computeConfigDeviceClass(entity, configs);
                     this.computeConfigUsage(entity, configs);
+                    constraints.type = 'string';
                     constraints.values = [...entity.config.optionsList];
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
@@ -356,7 +364,9 @@ class PhysicalDevice extends EventEmitter {
                     let currentTemperatureConfigs = Object.assign({}, configs);
                     this.computeConfigPrecision(entity, currentTemperatureConfigs);
                     this.computeConfigReadOnly(entity, currentTemperatureConfigs);
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'currentTemperature', currentTemperatureConfigs, constraints, null);
+                    let currentTemperatureConstraints = Object.assign({}, constraints);
+                    currentTemperatureConstraints.type = 'number';
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'currentTemperature', currentTemperatureConfigs, currentTemperatureConstraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 
                     // common targetTemperature, targetTemperatureLow and targetTemperatureHigh constraints
@@ -364,6 +374,7 @@ class PhysicalDevice extends EventEmitter {
                     targetTemperatureConstraints['min'] = entity.config.target_temperature_low;
                     targetTemperatureConstraints['max'] = entity.config.target_temperature_high;
                     targetTemperatureConstraints['step'] = entity.config.visualTargetTemperatureStep;
+                    targetTemperatureConstraints.type = 'number';
 
                     // targetTemperature
                     if (!entity.config.supportsTwoPointTargetTemperature) {
@@ -383,36 +394,42 @@ class PhysicalDevice extends EventEmitter {
                     // mode
                     let modeConstraints = Object.assign({}, constraints);
                     modeConstraints.values = [...entity.config.supportedModesList];
+                    modeConstraints.type = 'string';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'mode', configs, modeConstraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 
                     // swingMode
                     let swingModeConstraints = Object.assign({}, constraints);
                     swingModeConstraints.values = [...entity.config.supportedSwingModesList];
+                    swingModeConstraints.type = 'string';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'swingMode', configs, swingModeConstraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 
                     // fanMode
                     let fanModeConstraints = Object.assign({}, constraints);
                     fanModeConstraints.values = [...entity.config.supportedFanModesList];
+                    fanModeConstraints.type = 'string';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'fanMode', configs, fanModeConstraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 
                     // customFanMode
                     let customFanModeConstraints = Object.assign({}, constraints);
                     customFanModeConstraints.values = [...entity.config.supportedCustomFanModesList];
+                    customFanModeConstraints.type = 'string';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customFanMode', configs, customFanModeConstraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 
                     // preset
                     let presetConstraints = Object.assign({}, constraints);
                     presetConstraints.values = [...entity.config.supportedModesList];
+                    presetConstraints.type = 'string';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'preset', configs, presetConstraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 
                     // customPreset
                     let customPresetConstraints = Object.assign({}, constraints);
                     customPresetConstraints.values = [...entity.config.supportedModesList];
+                    customPresetConstraints.type = 'string';
                     nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customPreset', configs, customPresetConstraints, null);
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 

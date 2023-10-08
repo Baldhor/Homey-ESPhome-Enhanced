@@ -346,9 +346,13 @@
     }
   },
   "capabilityType": {
-    "text": {
-      "label": "text",
+    "esphome_text": {
+      "label": "esphome_text",
       "description": "text"
+    },
+    "esphome_select": {
+      "label": "esphome_select",
+      "description": "select"
     },
     "onoff": {
       "label": "onoff",

@@ -89,6 +89,224 @@
             "filter": "driver_id=esphome-device&capabilities=esphome_number"
           }
         ]
+      },
+      {
+        "id": "esphome_text_changed",
+        "title": {
+          "en": "Value of ... changed"
+        },
+        "titleFormatted": {
+          "en": "Value of [[capability_name]] changed"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-wizard"
+          },
+          {
+            "name": "capability_name",
+            "type": "autocomplete",
+            "title": {
+              "en": "capability"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "value",
+            "type": "string",
+            "title": {
+              "en": "value"
+            }
+          }
+        ]
+      },
+      {
+        "id": "esphome_text_changed_to",
+        "title": {
+          "en": "Value of ... changed to ..."
+        },
+        "titleFormatted": {
+          "en": "Value of [[capability_name]] changed to [[value]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-wizard"
+          },
+          {
+            "name": "capability_name",
+            "type": "autocomplete",
+            "title": {
+              "en": "capability"
+            }
+          },
+          {
+            "name": "value",
+            "type": "text",
+            "title": {
+              "en": "value"
+            }
+          }
+        ]
+      },
+      {
+        "id": "esphome_select_changed",
+        "title": {
+          "en": "Selected value of ... changed"
+        },
+        "titleFormatted": {
+          "en": "Selected value of [[capability_name]] changed"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-wizard"
+          },
+          {
+            "name": "capability_name",
+            "type": "autocomplete",
+            "title": {
+              "en": "capability"
+            }
+          }
+        ],
+        "tokens": [
+          {
+            "name": "value",
+            "type": "string",
+            "title": {
+              "en": "value"
+            }
+          }
+        ]
+      },
+      {
+        "id": "esphome_select_changed_to",
+        "title": {
+          "en": "Selected value of ... changed to ..."
+        },
+        "titleFormatted": {
+          "en": "Selected value of [[capability_name]] changed to [[value]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-wizard"
+          },
+          {
+            "name": "capability_name",
+            "type": "autocomplete",
+            "title": {
+              "en": "capability"
+            }
+          },
+          {
+            "name": "value",
+            "type": "autocomplete",
+            "title": {
+              "en": "value"
+            }
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "esphome_text_condition",
+        "title": {
+          "en": "Value of ... !{{is|isn't}} ..."
+        },
+        "titleFormatted": {
+          "en": "Value of [[capability_name]] !{{is|isn't}} [[value]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-wizard"
+          },
+          {
+            "name": "capability_name",
+            "type": "autocomplete",
+            "title": {
+              "en": "capability"
+            }
+          },
+          {
+            "name": "value",
+            "type": "text",
+            "title": {
+              "en": "value"
+            }
+          }
+        ]
+      },
+      {
+        "id": "esphome_select_condition",
+        "title": {
+          "en": "Selected value of ... !{{is|isn't}} ..."
+        },
+        "titleFormatted": {
+          "en": "Selected value of [[capability_name]] !{{is|isn't}} [[value]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-wizard"
+          },
+          {
+            "name": "capability_name",
+            "type": "autocomplete",
+            "title": {
+              "en": "capability"
+            }
+          },
+          {
+            "name": "value",
+            "type": "autocomplete",
+            "title": {
+              "en": "value"
+            }
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "esphome_select_setvalue",
+        "title": {
+          "en": "Set selected value of ... to ..."
+        },
+        "titleFormatted": {
+          "en": "Set selected value of [[capability_name]] to [[value]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=esphome-wizard"
+          },
+          {
+            "name": "capability_name",
+            "type": "autocomplete",
+            "title": {
+              "en": "capability"
+            }
+          },
+          {
+            "name": "value",
+            "type": "autocomplete",
+            "title": {
+              "en": "value"
+            }
+          }
+        ]
       }
     ]
   },
@@ -241,7 +459,7 @@
         "lan"
       ],
       "capabilities": [
-        "esphome_enum",
+        "esphome_text",
         "onoff",
         "dim",
         "target_temperature",
@@ -312,18 +530,6 @@
     }
   ],
   "capabilities": {
-    "esphome_enum": {
-      "type": "enum",
-      "title": {
-        "en": "select"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "insights": true,
-      "icon": "/assets/images/esphome_enum.svg",
-      "values": []
-    },
     "esphome_number": {
       "type": "number",
       "title": {
@@ -332,9 +538,17 @@
       "uiComponent": "sensor",
       "getable": true,
       "setable": false,
-      "insights": true,
-      "decimals": 2,
       "icon": "/assets/images/esphome_number.svg"
+    },
+    "esphome_select": {
+      "type": "string",
+      "title": {
+        "en": "select"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": true,
+      "icon": "/assets/images/esphome_select.svg"
     },
     "esphome_text": {
       "type": "string",
@@ -344,7 +558,6 @@
       "uiComponent": "sensor",
       "getable": true,
       "setable": false,
-      "insights": false,
       "icon": "/assets/images/esphome_text.svg"
     }
   }

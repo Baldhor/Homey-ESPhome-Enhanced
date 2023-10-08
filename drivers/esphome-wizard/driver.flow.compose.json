@@ -1,0 +1,187 @@
+{
+  "triggers": [
+    {
+      "id": "esphome_text_changed",
+      "title": {
+        "en": "Value of ... changed"
+      },
+      "titleFormatted": {
+        "en": "Value of [[capability_name]] changed"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        }
+      ],
+      "tokens": [
+        {
+          "name": "value",
+          "type": "string",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    },
+    {
+      "id": "esphome_text_changed_to",
+      "title": {
+        "en": "Value of ... changed to ..."
+      },
+      "titleFormatted": {
+        "en": "Value of [[capability_name]] changed to [[value]]"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        },
+        {
+          "name": "value",
+          "type": "text",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    },
+    {
+      "id": "esphome_select_changed",
+      "title": {
+        "en": "Selected value of ... changed"
+      },
+      "titleFormatted": {
+        "en": "Selected value of [[capability_name]] changed"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        }
+      ],
+      "tokens": [
+        {
+          "name": "value",
+          "type": "string",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    },
+    {
+      "id": "esphome_select_changed_to",
+      "title": {
+        "en": "Selected value of ... changed to ..."
+      },
+      "titleFormatted": {
+        "en": "Selected value of [[capability_name]] changed to [[value]]"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        },
+        {
+          "name": "value",
+          "type": "autocomplete",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "esphome_text_condition",
+      "title": {
+        "en": "Value of ... !{{is|isn't}} ..."
+      },
+      "titleFormatted": {
+        "en": "Value of [[capability_name]] !{{is|isn't}} [[value]]"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        },
+        {
+          "name": "value",
+          "type": "text",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    },
+    {
+      "id": "esphome_select_condition",
+      "title": {
+        "en": "Selected value of ... !{{is|isn't}} ..."
+      },
+      "titleFormatted": {
+        "en": "Selected value of [[capability_name]] !{{is|isn't}} [[value]]"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        },
+        {
+          "name": "value",
+          "type": "autocomplete",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "esphome_select_setvalue",
+      "title": {
+        "en": "Set selected value of ... to ..."
+      },
+      "titleFormatted": {
+        "en": "Set selected value of [[capability_name]] to [[value]]"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        },
+        {
+          "name": "value",
+          "type": "autocomplete",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    }
+  ]
+}

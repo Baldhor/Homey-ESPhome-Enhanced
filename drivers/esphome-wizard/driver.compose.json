@@ -6,7 +6,7 @@
   "platforms": ["local"],
   "connectivity": ["lan"],
   "capabilities": [
-    "esphome_enum",
+    "esphome_text",
     "onoff",
     "dim",
     "target_temperature",

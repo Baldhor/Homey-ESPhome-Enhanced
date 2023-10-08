@@ -392,7 +392,7 @@ class Driver extends Homey.Driver {
                 } else {
                     // Remove the old capability
                     if (action === "edit") {
-                        virtualDevice._unsetupCapability(capability.capabilityId);
+                        virtualDevice._unsetupCapability(capability.initialCapabilityId);
 
                         // Remove capabilityKeys
                         let capabilityKeysV2 = virtualDevice.getStoreValue('capabilityKeysV2');

@@ -6,7 +6,5 @@
     "uiComponent": "sensor",
     "getable": true,
     "setable": false,
-    "insights": true,
-    "decimals": 2,
     "icon": "/assets/images/esphome_number.svg"
   }

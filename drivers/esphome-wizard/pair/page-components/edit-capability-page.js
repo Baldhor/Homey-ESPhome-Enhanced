@@ -312,23 +312,7 @@ const EditCapabilityPage = function () {
       let specialCaseCriterea = null;
 
       // Compute type
-      switch (this._nativeCapabilitySelected.type) {
-        case 'BinarySensor':
-        case 'Button':
-        case 'Switch':
-          valueTypeCriterea = 'boolean';
-          break;
-
-        case 'Cover':
-        case 'Number':
-        case 'Sensor':
-          valueTypeCriterea = 'number';
-          break;
-
-        case 'TextSensor':
-          valueTypeCriterea = 'string';
-          break;
-      }
+      valueTypeCriterea = this._nativeCapabilitySelected.constraints.type;
 
       // Compute getable/setable
       if (this._nativeCapabilitySelected.configs['readOnly']) {
