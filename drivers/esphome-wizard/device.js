@@ -215,7 +215,43 @@ class VirtualDevice extends Device {
       // action card esphome_select_setvalue
       //   args: capability_name, value
       //   tokens: none
+      myCard = this.homey.flow.getActionCard('esphome_select_setvalue');
 
+      myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
+        this.log('registerArgumentAutocompleteListener:', 'esphome_select_setvalue', 'capability_name', query, args);
+
+        // Returns the compatible capabilities
+        return this._getAutocompleteCapabilityNames('esphome_select').filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+      });
+      myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
+        this.log('registerArgumentAutocompleteListener:', 'esphome_select_setvalue', 'value', query, args);
+
+        // Build values list
+        let results = [];
+        if (args.capability_name !== 'undefined') {
+          let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
+          let capabilityValueV2 = capabilityKeysV2[args.capability_name.capabilityId];
+          let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
+          let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
+
+          nativeCapability.getConstraint('values').forEach(value => {
+            results.push({
+              name: value
+            });
+          });
+        }
+
+        // Returns the compatible capabilities
+        return results.filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+      });
+      myCard.registerRunListener(async (args, state) => {
+        this.log('registerRunListener:', 'esphome_select_setvalue', args, state);
+
+        // Apply the modification
+        this.capabilityListener(args.capability_name.capabilityId, args.value.name);
+
+        return true;
+      });
     }
   }
 
