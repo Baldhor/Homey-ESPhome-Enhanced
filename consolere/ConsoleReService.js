@@ -8,6 +8,7 @@ const QUEUE_INTERVAL = 1000;
 const QUEUE_MAX_SIZE = 400;
 const TOO_MANY_LOGS_DELAY = 6000; // Must be superior to: QUEUE_MAX_SIZE * (QUEUE_INTERVAL / QUEUE_INTERVAL_CAP)
 const AUTO_DISABLE_DELAY = 2 * 24 * 60 * 60; // In seconds! => 2 days!
+const RECONNECT_DELAY = 30; // In seconds
 
 class ConsoleReService {
 
@@ -265,10 +266,14 @@ class ConsoleReService {
         instance.socket.on("disconnect", () => {
             if (!instance.disconnecting) {
                 this.log('Disconnected from ConsoleRe, reconnecting');
-                instance.socket.connect();
+                app.homey.setTimeout(() => {
+                    if(consolereEnabled && !instance.disconnecting) {
+                        homeyinstance.socket.connect();
+                    }
+                }, RECONNECT_DELAY * 1000);
             } else {
                 // We should stop the queue
-                instance.queue && instance.queue.pause();
+                instance.queue && instance.queue.pause() && instance.queue.clear();
             }
         });
     }
@@ -411,7 +416,7 @@ class ConsoleReService {
                         }
                     });
                 } catch (e) {
-                    // This is causing an infinite loop ...
+                    // This is causing an infinite loop ???
                     // this.error('ConsoleRe emit error:', e);
                 }
             });

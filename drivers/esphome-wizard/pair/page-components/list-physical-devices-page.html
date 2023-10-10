@@ -44,7 +44,7 @@
       <p v-if='physicalDevice.status === "new"'>{{ Homey.__('wizard2.list-physical-devices.cannot-modify') }}</p>
     </div>
 
-    <div v-show='_clipboard !== null'>
+    <div v-show='_clipboard !== null' class='list'>
       <p>
         <span>{{ Homey.__('wizard2.list-physical-devices.clipboard-title') }}</span>
       </p>

@@ -392,46 +392,58 @@ class PhysicalDevice extends EventEmitter {
                     }
 
                     // mode
-                    let modeConstraints = Object.assign({}, constraints);
-                    modeConstraints.values = [...entity.config.supportedModesList];
-                    modeConstraints.type = 'string';
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'mode', configs, modeConstraints, null);
-                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    if (entity.config.supportedModesList.length > 0 && this._checkAllValuesAreString(entity.config.supportedModesList)) {
+                        let modeConstraints = Object.assign({}, constraints);
+                        modeConstraints.values = [...entity.config.supportedModesList];
+                        modeConstraints.type = 'string';
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'mode', configs, modeConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
 
                     // swingMode
-                    let swingModeConstraints = Object.assign({}, constraints);
-                    swingModeConstraints.values = [...entity.config.supportedSwingModesList];
-                    swingModeConstraints.type = 'string';
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'swingMode', configs, swingModeConstraints, null);
-                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    if (entity.config.supportedSwingModesList.length > 0 && this._checkAllValuesAreString(entity.config.supportedSwingModesList)) {
+                        let swingModeConstraints = Object.assign({}, constraints);
+                        swingModeConstraints.values = [...entity.config.supportedSwingModesList];
+                        swingModeConstraints.type = 'string';
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'swingMode', configs, swingModeConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
 
                     // fanMode
-                    let fanModeConstraints = Object.assign({}, constraints);
-                    fanModeConstraints.values = [...entity.config.supportedFanModesList];
-                    fanModeConstraints.type = 'string';
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'fanMode', configs, fanModeConstraints, null);
-                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    if (entity.config.supportedFanModesList.length > 0 && this._checkAllValuesAreString(entity.config.supportedFanModesList)) {
+                        let fanModeConstraints = Object.assign({}, constraints);
+                        fanModeConstraints.values = [...entity.config.supportedFanModesList];
+                        fanModeConstraints.type = 'string';
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'fanMode', configs, fanModeConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
 
                     // customFanMode
-                    let customFanModeConstraints = Object.assign({}, constraints);
-                    customFanModeConstraints.values = [...entity.config.supportedCustomFanModesList];
-                    customFanModeConstraints.type = 'string';
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customFanMode', configs, customFanModeConstraints, null);
-                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    if (entity.config.supportedCustomFanModesList.length > 0 && this._checkAllValuesAreString(entity.config.supportedCustomFanModesList)) {
+                        let customFanModeConstraints = Object.assign({}, constraints);
+                        customFanModeConstraints.values = [...entity.config.supportedCustomFanModesList];
+                        customFanModeConstraints.type = 'string';
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customFanMode', configs, customFanModeConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
 
                     // preset
-                    let presetConstraints = Object.assign({}, constraints);
-                    presetConstraints.values = [...entity.config.supportedModesList];
-                    presetConstraints.type = 'string';
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'preset', configs, presetConstraints, null);
-                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    if (entity.config.supportedPresetsList.length > 0 && this._checkAllValuesAreString(entity.config.supportedPresetsList)) {
+                        let presetConstraints = Object.assign({}, constraints);
+                        presetConstraints.values = [...entity.config.supportedPresetsList];
+                        presetConstraints.type = 'string';
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'preset', configs, presetConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
 
                     // customPreset
-                    let customPresetConstraints = Object.assign({}, constraints);
-                    customPresetConstraints.values = [...entity.config.supportedModesList];
-                    customPresetConstraints.type = 'string';
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customPreset', configs, customPresetConstraints, null);
-                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    if (entity.config.supportedCustomPresetsList.length > 0 && this._checkAllValuesAreString(entity.config.supportedCustomPresetsList)) {
+                        let customPresetConstraints = Object.assign({}, constraints);
+                        customPresetConstraints.values = [...entity.config.supportedCustomPresetsList];
+                        customPresetConstraints.type = 'string';
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'customPreset', configs, customPresetConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
 
                     break;
 
@@ -442,6 +454,10 @@ class PhysicalDevice extends EventEmitter {
         });
 
         this.log('Native capabilities computed:', this.nativeCapabilities);
+    }
+
+    _checkAllValuesAreString(values) {
+        return values.find(e => typeof e !== "string") !== undefined;
     }
 
     disconnectedListener() {
