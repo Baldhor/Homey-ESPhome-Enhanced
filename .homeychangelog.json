@@ -145,5 +145,8 @@
   },
   "1.1.6": {
     "en": "Added esphome_select_setvalue action card for #42"
+  },
+  "1.1.7": {
+    "en": "Fixed #54 and #44: Now, you can collect debug logs directly from the page Manage your physical devices"
   }
 }
