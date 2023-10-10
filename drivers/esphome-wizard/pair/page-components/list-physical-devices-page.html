@@ -12,6 +12,9 @@
       :key='physicalDevice.physicalDeviceId' class='list'>
       <p>
         <span>{{ physicalDevice.name }}</span>
+        <span class='edit' style="position: initial;" @click='copyToClipboard(physicalDevice.physicalDeviceId)'>{{
+          Homey.__('wizard2.list-physical-devices.copyToClipboard') }}</span>
+        <span></span>
         <span class='edit' v-if='physicalDevice.status !== "new"'
           @click='pageHandler.setPage("edit-physical-device-page", { physicalDeviceId: physicalDevice.physicalDeviceId })'>{{
           Homey.__('wizard2.list-physical-devices.edit') }}</span>
@@ -39,6 +42,18 @@
       </ul>
 
       <p v-if='physicalDevice.status === "new"'>{{ Homey.__('wizard2.list-physical-devices.cannot-modify') }}</p>
+    </div>
+
+    <div v-show='_clipboard !== null'>
+      <p>
+        <span>{{ Homey.__('wizard2.list-physical-devices.clipboard-title') }}</span>
+      </p>
+
+      <ul>
+        <li>
+          <textarea readonly wrap="off" rows="5" cols="33">{{ _clipboard }}</textarea>
+        </li>
+      </ul>
     </div>
   </div>
 </template>

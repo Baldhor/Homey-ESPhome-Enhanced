@@ -151,7 +151,8 @@ class Driver extends Homey.Driver {
                         port: physicalDevice.port,
                         encryptionKey: physicalDevice.encryptionKey,
                         password: physicalDevice.password,
-                        nativeCapabilities: []
+                        nativeCapabilities: [],
+                        rawData: realPhysicalDevice.getRawData()
                     };
 
                     Object.values(realPhysicalDevice.nativeCapabilities).forEach(nativeCapability => {
@@ -259,7 +260,8 @@ class Driver extends Homey.Driver {
                             port: data.port,
                             encryptionKey: data.encryptionKey,
                             password: data.password,
-                            nativeCapabilities: []
+                            nativeCapabilities: [],
+                            rawData: realPhysicalDevice.getRawData()
                         };
 
                         Object.values(realPhysicalDevice.nativeCapabilities).forEach(nativeCapability => {

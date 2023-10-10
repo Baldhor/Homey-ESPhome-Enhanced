@@ -88,6 +88,8 @@
       "back": "back",
       "title": "Manage your physical devices",
       "edit": "edit",
+      "copyToClipboard": "collect debug info",
+      "clipboard-title": "Collected debug info",
       "status": "Status",
       "used": "Used",
       "ipAddress": "IP Address",

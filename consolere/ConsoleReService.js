@@ -277,8 +277,8 @@ class ConsoleReService {
         // Get instance handle
         let instance = this.getInstance();
 
-        // We should stop the queue
-        instance.queue && instance.queue.pause();
+        // We should stop and clear the queue
+        instance.queue && instance.queue.pause() && instance.queue.clear();
 
         instance.disconnecting = true;
         if (instance.socket == null)
@@ -385,6 +385,11 @@ class ConsoleReService {
 
         (async () => {
             instance.queue.add(() => {
+                // console.re may have been disabled in the meantime
+                if (!instance.consolereEnabled) {
+                    return;
+                }
+
                 try {
                     this.socket.emit("toServerRe", {
                         // command: null,
@@ -406,7 +411,8 @@ class ConsoleReService {
                         }
                     });
                 } catch (e) {
-                    this.error('ConsoleRe emit error:', e);
+                    // This is causing an infinite loop ...
+                    // this.error('ConsoleRe emit error:', e);
                 }
             });
         })();

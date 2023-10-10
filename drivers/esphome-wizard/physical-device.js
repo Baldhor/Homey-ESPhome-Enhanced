@@ -506,6 +506,25 @@ class PhysicalDevice extends EventEmitter {
         this.client.sendCommand(nativeCapability.entityId, nativeCapability.attribut, newValue);
     }
 
+    getRawData() {
+        this.log('getRawData');
+
+        let result = [];
+
+        Object.keys(this.client.nativeApiClient.entities).forEach(entityId => {
+            let tmpRawData = {
+                id: this.client.nativeApiClient.entities[entityId].id,
+                type: this.client.nativeApiClient.entities[entityId].type,
+                name: this.client.nativeApiClient.entities[entityId].name,
+                config: this.client.nativeApiClient.entities[entityId].config
+            };
+
+            result.push(tmpRawData);
+        });
+
+        return result;
+    }
+
     log(...args) {
         this.driver.log('[PhysicalDevice:' + this.name + ']', ...args);
     }
