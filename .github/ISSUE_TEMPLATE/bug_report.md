@@ -36,3 +36,4 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+You can use the "collect debug info" feature to attach relevant data to the issue: https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki/User-Guide#manage-your-physical-devices-page

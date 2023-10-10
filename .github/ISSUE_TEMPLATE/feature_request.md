@@ -18,3 +18,4 @@ A clear and concise description of any alternative solutions or features you've 
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
+You can use the "collect debug info" feature to attach relevant data to the issue: https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki/User-Guide#manage-your-physical-devices-page
