@@ -40,6 +40,8 @@
       }
     }
   },
+  "homepage": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki",
+  "support": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki/User-Guide",
   "source": "https://github.com/Baldhor/Homey-ESPhome-Enhanced",
   "bugs": {
     "url": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/issues"
