@@ -154,5 +154,8 @@
   },
   "1.1.9": {
     "en": "Updated readme files"
+  },
+  "1.1.10": {
+    "en": " Updated readme files .. forbidden to write url in the readme, using app.json instead"
   }
 }
