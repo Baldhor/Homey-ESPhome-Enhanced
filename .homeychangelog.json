@@ -157,5 +157,8 @@
   },
   "1.1.10": {
     "en": " Updated readme files .. forbidden to write url in the readme, using app.json instead"
+  },
+  "1.1.11": {
+    "en": "Small fix in console.re to avoid an undefined exception when I added the reconnection delay"
   }
 }
