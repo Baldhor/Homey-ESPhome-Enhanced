@@ -266,7 +266,7 @@ class ConsoleReService {
         instance.socket.on("disconnect", () => {
             if (!instance.disconnecting) {
                 this.log('Disconnected from ConsoleRe, reconnecting');
-                app.homey.setTimeout(() => {
+                instance.getApp().homey.setTimeout(() => {
                     if(consolereEnabled && !instance.disconnecting) {
                         homeyinstance.socket.connect();
                     }
