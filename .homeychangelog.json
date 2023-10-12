@@ -160,5 +160,8 @@
   },
   "1.1.11": {
     "en": "Small fix in console.re to avoid an undefined exception when I added the reconnection delay"
+  },
+  "1.1.12": {
+    "en": "Moved console.re to the Wizard, there are no more App settings! (issue #15)"
   }
 }
