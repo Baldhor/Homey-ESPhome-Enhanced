@@ -7,7 +7,7 @@ const QUEUE_INTERVAL_CAP = 50;
 const QUEUE_INTERVAL = 1000;
 const QUEUE_MAX_SIZE = 400;
 const TOO_MANY_LOGS_DELAY = 6000; // Must be superior to: QUEUE_MAX_SIZE * (QUEUE_INTERVAL / QUEUE_INTERVAL_CAP)
-const AUTO_DISABLE_DELAY = 2 * 24 * 60 * 60; // In seconds! => 2 days!
+const AUTO_DISABLE_DELAY = 6 * 60 * 60; // In seconds! => 6 hours!
 const RECONNECT_DELAY = 30; // In seconds
 
 class ConsoleReService {

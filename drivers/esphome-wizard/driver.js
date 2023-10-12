@@ -195,6 +195,42 @@ class Driver extends Homey.Driver {
             return result;
         });
 
+        session.setHandler('get-console-re', () => {
+            this.log('get-console-re');
+
+            let result = undefined;
+            try {
+                let channel = this.homey.settings.get('consolere.channel');
+                let enabled = this.homey.settings.get('consolere.enabled');
+
+                if (channel !== undefined && enabled !== undefined) {
+                    result = {
+                        'channel': channel,
+                        'enabled': enabled
+                    }
+                }
+            } catch (e) {
+                this.log(e);
+                throw e;
+            }
+
+            this.log('result:', result);
+
+            return result;
+        });
+
+        session.setHandler('set-console-re', (data) => {
+            this.log('set-console-re:', data);
+
+            try {
+                this.homey.settings.set('consolere.channel', data.channel);
+                this.homey.settings.set('consolere.enabled', data.enabled);
+            } catch (e) {
+                this.log(e);
+                throw e;
+            }
+        });
+
         session.setHandler('modify-physical-device', (data) => {
             this.log('modify-physical-device:', data);
 

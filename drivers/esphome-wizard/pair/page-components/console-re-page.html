@@ -1,0 +1,54 @@
+<template id="template-console-re-page">
+  <div :class='{ active: pageHandler.currentPage === "console-re-page", page : true }'
+    @vue:mounted='mounted'>
+    <header>
+      <span class='back' @click='back()' data-i18n='wizard2.console-re.back'></span>
+      <span data-i18n='wizard2.console-re.title'></span>
+      <span class='done' @click='apply()' data-i18n='wizard2.console-re.done'
+        :hidden='errorAndWarningList.errors.length !== 0 || !_modified'></span>
+    </header>
+
+    <div class='list'>
+      <p>
+        <span>{{ Homey.__('wizard2.console-re.advice') }}</span>
+      </p>
+
+      <ul>
+        <li>
+          <span>{{ Homey.__('wizard2.console-re.channel') }}</span>
+          <span></span>
+          <input ref='channel' v-model='channel' @input='checkValidity' type='text' minlength=5 maxlength=20
+            pattern='^[A-Za-z0-9]{5,20}$' style='text-align: left; margin-left: 0;'>
+        </li>
+        <li>
+          <span>{{ Homey.__('wizard2.console-re.enabled') }}</span>
+          <span></span>
+          <i class='switch'>
+            <label class="form-switch"><input type="checkbox" ref='enabled' v-model='enabled'
+                @change='checkValidity'><i></i></label>
+          </i>
+        </li>
+        <li v-show='enabled && channel !== "" && errorAndWarningList.errors.length === 0'>
+          <span><a :href='"https://console.re/" + channel' target="_blank">{{
+              Homey.__('wizard2.console-re.console-re-link') }}</a></span>
+        </li>
+      </ul>
+
+      <p>
+        <span>{{ Homey.__('wizard2.console-re.auto-disable') }}</span>
+      </p>
+    </div>
+
+    <div class='list'>
+      <ul>
+        <li>
+          <span><a href="https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki/User-Guide#console-re-page" target="_blank">{{
+              Homey.__('wizard2.console-re.wiki-link') }}</a></span>
+          <span></span>
+        </li>
+      </ul>
+    </div>
+
+    <section v-scope="ErrorAndWarningList()"></section>
+  </div>
+</template>

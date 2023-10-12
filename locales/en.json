@@ -52,6 +52,8 @@
       "shortcuts": "Choose a shortcut",
       "new-physical-device": "Add a new physical device",
       "new-virtual-device": "Add a new virtual device",
+      "settings": "Application settings",
+      "console-re": "Console Re",
       "bearer-token-title": "Input your bearer token",
       "bearer-token": "Bearer token",
       "done": "apply",
@@ -242,6 +244,20 @@
       "error-capability-type": "A capability type must be selected",
       "error-capability-index": "Capability index must be pretty (only lowercase and dot)",
       "error-capability-title": "Capability title must be pretty",
+      "fatal-error": "Something went wrong!"
+    },
+    "console-re": {
+      "back": "back",
+      "loseModification": "Your modification(s) will be lost. Are you sure?",
+      "done": "done",
+      "title": "Console Re",
+      "advice": "",
+      "channel": "Channel",
+      "enabled": "Activate for 6 hours",
+      "console-re-link": "Open my channel",
+      "auto-disable": "This functionnality will be disabled automatically after a continious delay of 6 hours",
+      "wiki-link": "Open the User Guide",
+      "error-channel-required": "A valid channel is required",
       "fatal-error": "Something went wrong!"
     }
   },

@@ -59,6 +59,10 @@ const pageHandler = PetiteVue.reactive({
           }
           break;
 
+        case 'console-re-page':
+          await this._registeredComponents[newPage].init();
+          break;
+
         default:
           wizarderror(new Error('Unknown page:', this.currentPage));
       }
