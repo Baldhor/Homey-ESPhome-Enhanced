@@ -169,5 +169,8 @@
   },
   "1.1.14": {
     "en": "Added custom enum for horizontale swing mode (#42), flow card of esphome_select can be used"
+  },
+  "1.1.15": {
+    "en": "Implementation of Climate.mode: added convert functions from numeric to string and back (#42)"
   }
 }
