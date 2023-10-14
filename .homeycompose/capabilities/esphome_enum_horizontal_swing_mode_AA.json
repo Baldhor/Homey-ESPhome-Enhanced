@@ -1,0 +1,48 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Horizontal Swing Mode"
+    },
+    "uiComponent": "picker",
+    "getable": true,
+    "setable": true,
+    "values": [
+        {
+            "id": "auto",
+            "title": {
+                "en": "Auto"
+            }
+        },
+        {
+            "id": "left",
+            "title": {
+                "en": "Left"
+            }
+        },
+        {
+            "id": "left_center",
+            "title": {
+                "en": "Left Center"
+            }
+        },
+        {
+            "id": "center",
+            "title": {
+                "en": "Center"
+            }
+        },
+        {
+            "id": "right_center",
+            "title": {
+                "en": "Right Center"
+            }
+        },
+        {
+            "id": "right",
+            "title": {
+                "en": "Right"
+            }
+        }
+    ],
+    "icon": "/assets/images/esphome_enum.svg"
+}

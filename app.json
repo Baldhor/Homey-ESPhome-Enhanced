@@ -461,6 +461,9 @@
         "lan"
       ],
       "capabilities": [
+        "esphome_enum_test_AA",
+        "esphome_enum_horizontal_swing_mode_AA",
+        "esphome_select",
         "esphome_text",
         "onoff",
         "dim",
@@ -532,6 +535,84 @@
     }
   ],
   "capabilities": {
+    "esphome_enum_horizontal_swing_mode_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Horizontal Swing Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "Auto"
+          }
+        },
+        {
+          "id": "left",
+          "title": {
+            "en": "Left"
+          }
+        },
+        {
+          "id": "left_center",
+          "title": {
+            "en": "Left Center"
+          }
+        },
+        {
+          "id": "center",
+          "title": {
+            "en": "Center"
+          }
+        },
+        {
+          "id": "right_center",
+          "title": {
+            "en": "Right Center"
+          }
+        },
+        {
+          "id": "right",
+          "title": {
+            "en": "Right"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
+    "esphome_enum_test_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Test Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "one",
+          "title": {
+            "en": "One"
+          }
+        },
+        {
+          "id": "two",
+          "title": {
+            "en": "Two"
+          }
+        },
+        {
+          "id": "three",
+          "title": {
+            "en": "Three"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
     "esphome_number": {
       "type": "number",
       "title": {

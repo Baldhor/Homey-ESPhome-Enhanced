@@ -120,6 +120,7 @@ const EditCapabilityPage = function () {
       physicalDeviceIdElt.setCustomValidity('');
       nativeCapabilityIdElt.setCustomValidity('');
       capabilityTypeElt.setCustomValidity('');
+      capabilityTitleElt.setCustomValidity('');
 
       if (this.physicalDeviceId === "unselected") {
         physicalDeviceIdElt.setCustomValidity(false);
@@ -147,8 +148,13 @@ const EditCapabilityPage = function () {
 
       // TODO: Index should be unique or empty for default behaviour
 
-      if (capabilityTitleElt !== undefined && !capabilityTitleElt.validity.valid) {
-        errorAndWarningList.addError("wizard2.edit-capability.error-capability-title");
+      if (capabilityTitleElt !== undefined) {
+        if (!capabilityTitleElt.validity.valid) {
+          errorAndWarningList.addError("wizard2.edit-capability.error-capability-title");
+        } else if (this.capabilityType.startsWith("esphome_") && this.capabilityOptions.title === "") {
+          capabilityTitleElt.setCustomValidity(false);
+          errorAndWarningList.addError("wizard2.edit-capability.error-capability-title-required");
+        }
       }
 
       // TODO: remove this log
@@ -310,6 +316,7 @@ const EditCapabilityPage = function () {
       let setableCriterea = null; // boolean
       let nativeCapabilityCriterea = null // format: nativeCapability.type + '.' nativeCapability.attribut
       let specialCaseCriterea = null;
+      let valuesCriterea = null;
 
       // Compute type
       valueTypeCriterea = this._nativeCapabilitySelected.constraints.type;
@@ -328,6 +335,12 @@ const EditCapabilityPage = function () {
 
       // Compute special case criterea
       specialCaseCriterea = this._nativeCapabilitySelected.specialCase;
+
+      // Compute values criterea
+      if (this._nativeCapabilitySelected.constraints.values) {
+        valuesCriterea = [...this._nativeCapabilitySelected.constraints.values];
+        valuesCriterea.sort();
+      }
 
       // Apply critera
       // A null criterea means don't apply it
@@ -348,12 +361,33 @@ const EditCapabilityPage = function () {
       } else {
         capabilityList = capabilityList.filter(capabilityConf => capabilityConf.specialCaseSupported === null || capabilityConf.specialCaseSupported.length === 0);
       }
+      if (valuesCriterea) {
+        capabilityList = capabilityList.filter(capabilityConf => capabilityConf.valuesSupported === undefined || this._compareArray(valuesCriterea, capabilityConf.valuesSupported));
+      }
 
       // Extract capabilities
       let compatibleCapabilityTypes = [];
       capabilityList.forEach(capability => compatibleCapabilityTypes.push(capability.type));
 
       this._compatibleTypes = compatibleCapabilityTypes;
+    },
+    _compareArray(a, b) {
+      var isEqual = false;
+      if (Array.isArray(a) && Array.isArray(b) && a.length == b.length) {
+        a.sort();
+        b.sort();
+        var i;
+        for (i = 0; i < a.length; i++) {
+          if (a[i] === b[i]) {
+            isEqual = true;
+          } else {
+            isEqual = false;
+            break;
+          }
+        }
+
+      }
+      return isEqual;
     },
     _updateCapabilityOptions() {
       wizardlog('[' + this.componentName + '] ' + '_updateCapabilityOptions');

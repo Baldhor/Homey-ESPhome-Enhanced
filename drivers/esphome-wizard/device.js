@@ -261,7 +261,7 @@ class VirtualDevice extends Device {
     this.getCapabilities().forEach(capabilityId => {
       let capabilityType = capabilityId.split(".")[0];
 
-      if (capabilityType === filterCapabilityType) {
+      if (capabilityType === filterCapabilityType || (filterCapabilityType === "esphome_select" && capabilityType.startsWith("esphome_enum_"))) {
         let capabilityOptions = this.getCapabilityOptions(capabilityId);
         results.push({
           name: capabilityOptions.title ?? capabilityId,

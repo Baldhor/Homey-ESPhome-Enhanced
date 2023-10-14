@@ -1,0 +1,30 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Test Mode"
+    },
+    "uiComponent": "picker",
+    "getable": true,
+    "setable": true,
+    "values": [
+        {
+            "id": "one",
+            "title": {
+                "en": "One"
+            }
+        },
+        {
+            "id": "two",
+            "title": {
+                "en": "Two"
+            }
+        },
+        {
+            "id": "three",
+            "title": {
+                "en": "Three"
+            }
+        }
+    ],
+    "icon": "/assets/images/esphome_enum.svg"
+}

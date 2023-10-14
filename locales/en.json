@@ -244,6 +244,7 @@
       "error-capability-type": "A capability type must be selected",
       "error-capability-index": "Capability index must be pretty (only lowercase and dot)",
       "error-capability-title": "Capability title must be pretty",
+      "error-capability-title-required": "Capability title is required for custom capabilities",
       "fatal-error": "Something went wrong!"
     },
     "console-re": {
@@ -364,12 +365,20 @@
     }
   },
   "capabilityType": {
+    "esphome_enum_test_AA": {
+      "label": "ESPhome Custom Enum",
+      "description": "Custom enum"
+    },
+    "esphome_enum_horizontal_swing_mode_AA": {
+      "label": "ESPhome Custom Enum",
+      "description": "Custom enum"
+    },
     "esphome_text": {
-      "label": "esphome_text",
+      "label": "ESPhome Text",
       "description": "text"
     },
     "esphome_select": {
-      "label": "esphome_select",
+      "label": "ESPhome Select",
       "description": "select"
     },
     "onoff": {

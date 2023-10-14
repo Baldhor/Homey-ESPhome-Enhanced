@@ -1,10 +1,10 @@
 {
     "type": "number",
-    "title": { 
-        "en": "number" 
+    "title": {
+        "en": "number"
     },
     "uiComponent": "sensor",
     "getable": true,
     "setable": false,
     "icon": "/assets/images/esphome_number.svg"
-  }
+}

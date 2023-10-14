@@ -6,6 +6,9 @@
   "platforms": ["local"],
   "connectivity": ["lan"],
   "capabilities": [
+    "esphome_enum_test_AA",
+    "esphome_enum_horizontal_swing_mode_AA",
+    "esphome_select",
     "esphome_text",
     "onoff",
     "dim",

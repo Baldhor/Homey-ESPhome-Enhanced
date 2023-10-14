@@ -4,6 +4,32 @@
 // Added 2 customs : number and text
 CAPABILITY_CONFIGURATION = [
   {
+    type: 'esphome_enum_test_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["one", "two", "three"]
+  },
+  {
+    type: 'esphome_enum_horizontal_swing_mode_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["auto", "left", "left_center", "center", "right_center", "right"]
+  },
+  {
     type: 'esphome_text',
     valueType: 'string',
     getable: true,
