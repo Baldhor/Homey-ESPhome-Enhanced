@@ -163,5 +163,8 @@
   },
   "1.1.12": {
     "en": "Moved console.re to the Wizard, there are no more App settings! (issue #15)"
+  },
+  "1.1.13": {
+    "en": "Fixed a tiny bug for #42"
   }
 }
