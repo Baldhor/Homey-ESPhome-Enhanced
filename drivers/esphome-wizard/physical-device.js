@@ -344,13 +344,15 @@ class PhysicalDevice extends EventEmitter {
                     break;
 
                 case 'Select':
-                    this.computeConfigShowUI(entity, configs);
-                    this.computeConfigDeviceClass(entity, configs);
-                    this.computeConfigUsage(entity, configs);
-                    constraints.type = 'string';
-                    constraints.values = [...entity.config.optionsList];
-                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
-                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    if (entity.config.optionsList.length > 0 && this._checkAllValuesAreString(entity.config.optionsList)) {
+                        this.computeConfigShowUI(entity, configs);
+                        this.computeConfigDeviceClass(entity, configs);
+                        this.computeConfigUsage(entity, configs);
+                        constraints.type = 'string';
+                        constraints.values = [...entity.config.optionsList];
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, constraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
                     break;
 
                 case 'Climate':
@@ -457,7 +459,7 @@ class PhysicalDevice extends EventEmitter {
     }
 
     _checkAllValuesAreString(values) {
-        return values.find(e => typeof e !== "string") !== undefined;
+        return values.find(e => typeof e !== "string") === undefined;
     }
 
     disconnectedListener() {
