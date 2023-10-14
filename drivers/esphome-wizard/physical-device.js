@@ -493,7 +493,7 @@ class PhysicalDevice extends EventEmitter {
         // Convert if needed
         if (nativeCapability.type === "Climate" && nativeCapability.attribut === "mode") {
             value = ['off', "heat_cool", "cool", "heat", "fan_only", "dry", "auto"][value];
-            if (newValue === undefined) {
+            if (value === undefined) {
                 this.error('Received an incompatible value for a native capability:', ...arguments);
                 return;
             }
