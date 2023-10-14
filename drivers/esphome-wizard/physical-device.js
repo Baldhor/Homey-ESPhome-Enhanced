@@ -394,9 +394,11 @@ class PhysicalDevice extends EventEmitter {
                     }
 
                     // mode
-                    if (entity.config.supportedModesList.length > 0 && this._checkAllValuesAreString(entity.config.supportedModesList)) {
+                    if (entity.config.supportedModesList.length > 0) {
                         let modeConstraints = Object.assign({}, constraints);
-                        modeConstraints.values = [...entity.config.supportedModesList];
+                        modeConstraints.values = [];
+                        // Need to convert the numerical values to string
+                        entity.config.supportedModesList.forEach(e => modeConstraints.values.push(['off', "heat_cool", "cool", "heat", "fan_only", "dry", "auto"][e]));
                         modeConstraints.type = 'string';
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'mode', configs, modeConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
@@ -485,6 +487,16 @@ class PhysicalDevice extends EventEmitter {
         // Check if writeOnly (just to detect unexpected issues)
         if (nativeCapability.getConfig('writeOnly')) {
             this.error('Received an unexpected stateChanged event for a writeOnly native capability:', ...arguments);
+            return;
+        }
+
+        // Convert if needed
+        if (nativeCapability.type === "Climate" && nativeCapability.attribut === "mode") {
+            value = ['off', "heat_cool", "cool", "heat", "fan_only", "dry", "auto"][value];
+            if (newValue === undefined) {
+                this.error('Received an incompatible value for a native capability:', ...arguments);
+                return;
+            }
         }
 
         // Save new value
@@ -516,9 +528,13 @@ class PhysicalDevice extends EventEmitter {
             return;
         }
 
-        // TODO:
-        // We do not modify the native capability value, we should receive a stateChanged event soon enough
-        // Maybe later, we will support optimistic mode
+        if (nativeCapability.type === "Climate" && nativeCapability.attribut === "mode") {
+            newValue = ['off', "heat_cool", "cool", "heat", "fan_only", "dry", "auto"].indexOf(newValue);
+            if (newValue === -1) {
+                this.error('Received a command with an incompatible value for a native capability:', ...arguments);
+                return;
+            }
+        }
 
         // Sending ...
         this.client.sendCommand(nativeCapability.entityId, nativeCapability.attribut, newValue);
