@@ -172,5 +172,8 @@
   },
   "1.1.15": {
     "en": "Implementation of Climate.mode: added convert functions from numeric to string and back (#42)"
+  },
+  "1.1.16": {
+    "en": "Small fix for #42"
   }
 }
