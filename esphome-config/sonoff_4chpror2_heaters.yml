@@ -1,7 +1,7 @@
 # ---------------------------------------------
 # Owner: Baldhor
 # Code status: completed
-# Compile status: UNCOMPILED !
+# Compile status: completed
 # Test status: UNTESTED !
 # ---------------------------------------------
 
@@ -337,10 +337,10 @@ switch:
     pin: GPIO12
     disabled_by_default: true
     restore_mode: ALWAYS_ON
-    turn_on_action:
+    on_turn_on:
       then:
         - script.stop: max_heating_delay_1
-    turn_off_action:
+    on_turn_off:
       then:
         - script.execute: max_heating_delay_1
 
@@ -350,10 +350,10 @@ switch:
     pin: GPIO5
     disabled_by_default: true
     restore_mode: ALWAYS_ON
-    turn_on_action:
+    on_turn_on:
       then:
         - script.stop: max_heating_delay_2
-    turn_off_action:
+    on_turn_off:
       then:
         - script.execute: max_heating_delay_2
 
@@ -363,10 +363,10 @@ switch:
     pin: GPIO4
     disabled_by_default: true
     restore_mode: ALWAYS_ON
-    turn_on_action:
+    on_turn_on:
       then:
         - script.stop: max_heating_delay_3
-    turn_off_action:
+    on_turn_off:
       then:
         - script.execute: max_heating_delay_3
 
@@ -376,10 +376,10 @@ switch:
     pin: GPIO15
     disabled_by_default: true
     restore_mode: ALWAYS_ON
-    turn_on_action:
+    on_turn_on:
       then:
         - script.stop: max_heating_delay_3
-    turn_off_action:
+    on_turn_off:
       then:
         - script.execute: max_heating_delay_3
 

@@ -63,7 +63,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilitySupported: null,
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
-    options: ['index', 'title', 'preventInsights', 'preventTag', 'decimals', 'min', 'max', 'step', 'getable']
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'getable']
   },
   {
     type: 'dim',

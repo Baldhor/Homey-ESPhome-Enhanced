@@ -437,6 +437,7 @@ switch:
   # Relays
   - id: relay1
     platform: gpio
+    name: relay1
     disabled_by_default: true
     pin:
       number: GPIO13
@@ -468,6 +469,7 @@ switch:
 
   - id: relay3
     platform: gpio
+    name: relay3
     disabled_by_default: true
     pin:
       number: GPIO15
