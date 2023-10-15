@@ -223,6 +223,10 @@ class VirtualDevice extends Device {
 
           // triger custom cards is needed
           let capabilityType = capabilityKeyV2.split(".")[0];
+          if (capabilityType.startsWith('esphome_enum_')) {
+            // Behave as esphome_select
+            capabilityType = 'esphome_select';
+          }
           switch (capabilityType) {
             case 'esphome_text':
               this.homey.flow.getDeviceTriggerCard("esphome_text_changed").trigger(
