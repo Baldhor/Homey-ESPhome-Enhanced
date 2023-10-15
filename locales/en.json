@@ -227,7 +227,7 @@
           "title": "Title",
           "preventInsights": "Prevent insights",
           "preventTag": "Prevent tag",
-          "getable": "Getable only",
+          "getable": "Getable (can be read)",
           "approximated": "Approimated",
           "decimals": "Precision",
           "zoneActivity": "Trigger zone activity",

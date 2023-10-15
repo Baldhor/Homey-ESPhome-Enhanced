@@ -444,17 +444,21 @@ const EditCapabilityPage = function () {
 
             // 4- Arbitrary
             if (optionValue === null) {
-              if (optionKey === 'zoneActivity' && ['alarm_contact', 'alarm_motion'].includes(this.capabilityType)) {
+              if (optionKey === 'zoneActivity') {
+                if (['alarm_contact', 'alarm_motion'].includes(this.capabilityType)) {
+                  optionValue = true;
+                } else {
+                  optionValue = false;
+                }
+              } else if (optionKey === 'getable') {
                 optionValue = true;
-              } else {
-                optionValue = false;
               }
             }
 
             // 5- Enforced
-            // getable should be true by default if the option is readOnly!
-            if (optionKey === 'getable' && optionValue === false && this._nativeCapabilitySelected.configs.readOnly === true) {
-              optionValue = true;
+            // getable should be false if the option is writeOnly!
+            if (optionKey === 'getable' && this._nativeCapabilitySelected.configs.writeOnly === true) {
+              optionValue = false;
             }
 
             this.capabilityOptions[optionKey] = optionValue;

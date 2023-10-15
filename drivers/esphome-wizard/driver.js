@@ -466,6 +466,9 @@ class Driver extends Homey.Driver {
 
                     virtualDevice._setupCapability(capability.capabilityId);
                 }
+
+                // Update virtualDevice availability
+                await virtualDevice._checkAvailability().catch(this.error);
             } catch (e) {
                 this.error(e);
                 throw e;
@@ -496,6 +499,9 @@ class Driver extends Homey.Driver {
 
                 // Just in case a physical device became useless
                 await this.cleanUpConf();
+
+                // Update virtualDevice availability
+                await virtualDevice._checkAvailability().catch(this.error);
             } catch (e) {
                 this.error(e);
                 throw e;

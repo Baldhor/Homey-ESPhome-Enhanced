@@ -2,7 +2,7 @@
 # Owner: Baldhor
 # Code status: completed
 # Compile status: completed
-# Test status: UNTESTED !
+# Test status: completed - status led doesn't work as expected (but I don't care)
 # ---------------------------------------------
 
 # ---------------------------------------------
@@ -132,6 +132,12 @@ sensor:
     name: "Uptime"
     disabled_by_default: true
 
+button:
+  - id: Restart
+    platform: restart
+    name: Simple restart
+    disabled_by_default: true
+
 number:
   - id: apply_delay
     platform: template
@@ -167,7 +173,6 @@ binary_sensor:
 
   - id: toggle_1
     platform: gpio
-    name: "Toggle heater 1"
     pin:
       number: GPIO0
       mode: INPUT_PULLUP
@@ -177,7 +182,6 @@ binary_sensor:
 
   - id: toggle_2
     platform: gpio
-    name: "Toggle heater 2"
     pin:
       number: GPIO9
       mode: INPUT_PULLUP
@@ -187,7 +191,6 @@ binary_sensor:
 
   - id: toggle_3
     platform: gpio
-    name: "Toggle heater 3"
     pin:
       number: GPIO10
       mode: INPUT_PULLUP
@@ -197,7 +200,6 @@ binary_sensor:
 
   - id: toggle_4
     platform: gpio
-    name: "Toggle heater 4"
     pin:
       number: GPIO14
       mode: INPUT_PULLUP
@@ -211,66 +213,82 @@ script:
     then:
       - delay: !lambda return id(apply_delay).state * 1000;
       - lambda: !lambda |-
-          id(relay_1).publish_state(id(heater_1).state);
+          if (!id(heater_1).state) {
+            id(relay_1).turn_on();
+          } else {
+            id(relay_1).turn_off();
+          }
       
   - id: apply_delay_2
     mode: single
     then:
       - delay: !lambda return id(apply_delay).state * 1000;
       - lambda: !lambda |-
-          id(relay_2).publish_state(!id(heater_2).state);
+          if (!id(heater_2).state) {
+            id(relay_2).turn_on();
+          } else {
+            id(relay_2).turn_off();
+          }
       
   - id: apply_delay_3
     mode: single
     then:
       - delay: !lambda return id(apply_delay).state * 1000;
       - lambda: !lambda |-
-          id(relay_3).publish_state(!id(heater_3).state);
+          if (!id(heater_3).state) {
+            id(relay_3).turn_on();
+          } else {
+            id(relay_3).turn_off();
+          }
       
   - id: apply_delay_4
     mode: single
     then:
       - delay: !lambda return id(apply_delay).state * 1000;
       - lambda: !lambda |-
-          id(relay_4).publish_state(!id(heater_4).state);
+          if (!id(heater_4).state) {
+            id(relay_4).turn_on();
+          } else {
+            id(relay_4).turn_off();
+          }
       
   - id: max_heating_delay_1
     mode: single
     then:
       - delay: !lambda return id(max_heating_delay).state * 60000;
-      - switch.turn_on: relay_4
+      - switch.turn_off: heater_1
 
   - id: max_heating_delay_2
     mode: single
     then:
       - delay: !lambda return id(max_heating_delay).state * 60000;
-      - switch.turn_on: relay_4
+      - switch.turn_off: heater_2
 
   - id: max_heating_delay_3
     mode: single
     then:
       - delay: !lambda return id(max_heating_delay).state * 60000;
-      - switch.turn_on: relay_4
+      - switch.turn_off: heater_3
 
   - id: max_heating_delay_4
     mode: single
     then:
       - delay: !lambda return id(max_heating_delay).state * 60000;
-      - switch.turn_on: relay_4
+      - switch.turn_off: heater_4
 
 switch:
   - id: heater_1
     platform: template
-    name: "Template Switch"
+    name: "Heater 1"
     optimistic: true
     restore_mode: ALWAYS_OFF
-    turn_on_action:
+    on_turn_on:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_1).is_running()) {
             id(apply_delay_1).execute();
           }
-    turn_off_action:
+    on_turn_off:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_1).is_running()) {
@@ -279,16 +297,16 @@ switch:
 
   - id: heater_2
     platform: template
-    name: "Template Switch"
+    name: "Heater 2"
     optimistic: true
     restore_mode: ALWAYS_OFF
-    turn_on_action:
+    on_turn_on:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_2).is_running()) {
             id(apply_delay_2).execute();
           }
-    turn_off_action:
+    on_turn_off:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_2).is_running()) {
@@ -297,16 +315,16 @@ switch:
 
   - id: heater_3
     platform: template
-    name: "Template Switch"
+    name: "Heater 3"
     optimistic: true
     restore_mode: ALWAYS_OFF
-    turn_on_action:
+    on_turn_on:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_3).is_running()) {
             id(apply_delay_3).execute();
           }
-    turn_off_action:
+    on_turn_off:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_3).is_running()) {
@@ -315,16 +333,16 @@ switch:
 
   - id: heater_4
     platform: template
-    name: "Template Switch"
+    name: "Heater 4"
     optimistic: true
     restore_mode: ALWAYS_OFF
-    turn_on_action:
+    on_turn_on:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_4).is_running()) {
             id(apply_delay_4).execute();
           }
-    turn_off_action:
+    on_turn_off:
       then:
         lambda: !lambda |-
           if (!id(apply_delay_4).is_running()) {
@@ -333,7 +351,6 @@ switch:
 
   - id: relay_1
     platform: gpio
-    name: "Relay 1"
     pin: GPIO12
     disabled_by_default: true
     restore_mode: ALWAYS_ON
@@ -346,7 +363,6 @@ switch:
 
   - id: relay_2
     platform: gpio
-    name: "Relay 2"
     pin: GPIO5
     disabled_by_default: true
     restore_mode: ALWAYS_ON
@@ -359,7 +375,6 @@ switch:
 
   - id: relay_3
     platform: gpio
-    name: "Relay 3"
     pin: GPIO4
     disabled_by_default: true
     restore_mode: ALWAYS_ON
@@ -372,16 +387,15 @@ switch:
 
   - id: relay_4
     platform: gpio
-    name: "Relay 4"
     pin: GPIO15
     disabled_by_default: true
     restore_mode: ALWAYS_ON
     on_turn_on:
       then:
-        - script.stop: max_heating_delay_3
+        - script.stop: max_heating_delay_4
     on_turn_off:
       then:
-        - script.execute: max_heating_delay_3
+        - script.execute: max_heating_delay_4
 
 light:
   - id: status_led1

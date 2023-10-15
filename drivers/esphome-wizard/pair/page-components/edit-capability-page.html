@@ -127,7 +127,7 @@
 
           <!-- Constraints -->
           <li class="sub"
-            v-show='_nativeCapabilitySelected !== null && Object.keys(_nativeCapabilitySelected.constraints).length > 0'>
+            v-show='_nativeCapabilitySelected !== null && Object.keys(_nativeCapabilitySelected.constraints).filter(e => e !== "type").length > 0'>
             <span class='pre'>{{ Homey.__('wizard2.edit-capability.native-capability.constraints-title') }}</span>
             <span></span>
             <span class='edit' @click='_hideConstraints = !_hideConstraints'>{{
