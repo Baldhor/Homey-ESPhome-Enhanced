@@ -181,5 +181,8 @@
   },
   "1.1.18": {
     "en": "One more fix to #42: flowCard need retrieve the concerned device from the args, and cards should be setup in the driver, not the device"
+  },
+  "1.1.19": {
+    "en": "And yet another #42 fix: esphome_enum_ should trigger card the same way as esphome_select does"
   }
 }
