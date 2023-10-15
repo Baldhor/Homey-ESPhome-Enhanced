@@ -178,5 +178,8 @@
   },
   "1.1.17": {
     "en": "several fixes: 1/ Addition, modification and deletion of capabilities were not updating correctly a virtual device availability. 2/ getable option was not initialized correctly (getable mean: can be read and not 'write only' :p) 3/ ESPhome sameple config for wired heater is fully tested and functionnal (I moved all my heaters to ESPhome) -> Bye bye Tasmota and MQTT"
+  },
+  "1.1.18": {
+    "en": "One more fix to #42: flowCard need retrieve the concerned device from the args, and cards should be setup in the driver, not the device"
   }
 }
