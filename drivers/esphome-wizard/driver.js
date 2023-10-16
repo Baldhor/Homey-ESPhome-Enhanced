@@ -224,7 +224,7 @@ class Driver extends Homey.Driver {
                 this.log('registerRunListener:', 'esphome_select_condition', args, state);
 
                 // Make sure the selected capability current value match the condition
-                return this.getCapabilityValue(args.capability_name.capabilityId) === args.value;
+                return args.device.getCapabilityValue(args.capability_name.capabilityId) === args.value;
             });
 
             // action card esphome_select_setvalue
@@ -264,7 +264,7 @@ class Driver extends Homey.Driver {
                 this.log('registerRunListener:', 'esphome_select_setvalue', args, state);
 
                 // Apply the modification
-                this.capabilityListener(args.capability_name.capabilityId, args.value.name);
+                args.device.capabilityListener(args.capability_name.capabilityId, args.value.name);
 
                 return true;
             });
