@@ -187,5 +187,8 @@
   },
   "1.1.20": {
     "en": "Fixed getCapabilityValue and capabilityListener issues for the esphome_* cards"
+  },
+  "1.1.21": {
+    "en": "Added warning and notification for legacy driver/device => I will remove support/code soon"
   }
 }
