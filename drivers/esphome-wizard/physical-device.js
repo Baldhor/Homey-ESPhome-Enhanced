@@ -398,7 +398,7 @@ class PhysicalDevice extends EventEmitter {
                         let modeConstraints = Object.assign({}, constraints);
                         modeConstraints.values = [];
                         // Need to convert the numerical values to string
-                        entity.config.supportedModesList.forEach(e => modeConstraints.values.push(['off', "heat_cool", "cool", "heat", "fan_only", "dry", "auto"][e]));
+                        entity.config.supportedModesList.forEach(e => modeConstraints.values.push(["off", "heat_cool", "cool", "heat", "fan_only", "dry", "auto"][e]));
                         modeConstraints.type = 'string';
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'mode', configs, modeConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
@@ -492,7 +492,7 @@ class PhysicalDevice extends EventEmitter {
 
         // Convert if needed
         if (nativeCapability.type === "Climate" && nativeCapability.attribut === "mode") {
-            value = ['off', "heat_cool", "cool", "heat", "fan_only", "dry", "auto"][value];
+            value = ["off", "heat_cool", "cool", "heat", "fan_only", "dry", "auto"][value];
             if (value === undefined) {
                 this.error('Received an incompatible value for a native capability:', ...arguments);
                 return;
@@ -529,7 +529,7 @@ class PhysicalDevice extends EventEmitter {
         }
 
         if (nativeCapability.type === "Climate" && nativeCapability.attribut === "mode") {
-            newValue = ['off', "heat_cool", "cool", "heat", "fan_only", "dry", "auto"].indexOf(newValue);
+            newValue = ["off", "heat_cool", "cool", "heat", "fan_only", "dry", "auto"].indexOf(newValue);
             if (newValue === -1) {
                 this.error('Received a command with an incompatible value for a native capability:', ...arguments);
                 return;

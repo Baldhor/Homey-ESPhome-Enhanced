@@ -24,22 +24,22 @@
       "button_save": "Save"
     }
   },
-  "settings": {
-    "port_number_incorrect": "Port number should be between 1 and 65535",
-    "ip_address_incorrect": "Please enter an valid IP address",
-    "title": "Application settings",
-    "log.subtitle": "Log configuration",
-    "consolere.subtitle": "Console.re configuration"
-  },
   "app": {
     "error": {
       "connection_failed": "Failed connecting to device: ",
       "connection_disconnected": "Disconnected from the device",
       "connection_error": "Connection error: "
     },
-    "initializing": "Initializing device, please wait..."
+    "initializing": "Initializing device, please wait...",
+    "deprecated_notice": "You are using deprecated devices, please use the new Wizard! It will be unsupported soon",
+    "deprecated_device": "This device is deprecated, please use the new Wizard! It will be unsupported soon"
   },
   "wizard2": {
+    "device": {
+      "initializing": "Initializing device, please wait...",
+      "no_capability_assigned": "No capability assigned",
+      "physical_device_unavailable": "Physical device __physicalDeviceName__ is unavailable"
+    },
     "main": {
       "title": "Main menu",
       "advice-migration1": "Welcome to the new Wizard",

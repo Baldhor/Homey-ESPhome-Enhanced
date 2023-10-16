@@ -9,13 +9,16 @@ class ESPhomeDevice extends Device {
     this.log(this.getName(), 'has been inited');
 
     this.setUnavailable(this.homey.__('app.initializing'))
-    .catch(this.error);
+      .catch(this.error);
 
     await this.getDeviceDetails();
     await this.connectToDevice();
     await this.startDeviceListeners();
     await this.registerCapabilityListeners();
     await this.registerHomeyTriggerCards();
+
+    await this.setWarning(this.homey.__("app.deprecated_device"));
+    await this.homey.notifications.createNotification({ excerpt: this.homey.__("app.deprecated_notice") }).catch(error => { this.error('Error sending notification: ' + error.message) });
   }
 
   async getDeviceDetails() {
@@ -58,7 +61,7 @@ class ESPhomeDevice extends Device {
     this.client.on('deviceInfo', deviceInfo => {
 
       this.log(`Received deviceInfo`);
-      
+
       this.deviceInfo = deviceInfo;
       this.deviceInfo.ip = deviceIP;
       this.deviceInfo.port = port;
@@ -68,10 +71,10 @@ class ESPhomeDevice extends Device {
       const model = deviceInfo.model;
       const macAddress = deviceInfo.macAddress;
 
-      this.setSettings({esphome_version: version});
-      this.setSettings({esphome_compilationTime: compilationTime});
-      this.setSettings({esphome_model: model});
-      this.setSettings({esphome_macaddress: macAddress});
+      this.setSettings({ esphome_version: version });
+      this.setSettings({ esphome_compilationTime: compilationTime });
+      this.setSettings({ esphome_model: model });
+      this.setSettings({ esphome_macaddress: macAddress });
       this.settings = this.getSettings();
     });
   }
@@ -84,9 +87,9 @@ class ESPhomeDevice extends Device {
     this.client.on('newEntity', entity => {
 
       this.deviceInfo[entity.id] = {
-        config : entity.config,
-        name : entity.name,
-        type : entity.type,
+        config: entity.config,
+        name: entity.name,
+        type: entity.type,
         unit: entity.config.unitOfMeasurement !== undefined ? entity.config.unitOfMeasurement || '' : ''
       };
 
@@ -100,7 +103,7 @@ class ESPhomeDevice extends Device {
       });
 
       entity.on(`error`, async (name) => {
-        
+
       });
     });
 
@@ -112,7 +115,7 @@ class ESPhomeDevice extends Device {
       else message = error.data;
 
       this.setUnavailable(this.homey.__('app.error.connection_failed') + message)
-      .catch(this.error);
+        .catch(this.error);
     });
 
     this.client.on('initialized', () => {
@@ -122,7 +125,7 @@ class ESPhomeDevice extends Device {
 
     this.client.on('disconnected', () => {
       this.setUnavailable(this.homey.__('app.error.connection_disconnected'))
-      .catch(this.error);
+        .catch(this.error);
 
       this.log(`Device ${this.deviceInfo.name} disconnected`);
     });
@@ -143,7 +146,7 @@ class ESPhomeDevice extends Device {
           this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
-              await this.client.connection.switchCommandService({key: cap_key, state: value});
+              await this.client.connection.switchCommandService({ key: cap_key, state: value });
             }
           });
         }
@@ -153,7 +156,7 @@ class ESPhomeDevice extends Device {
           this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
-              await this.client.connection.buttonCommandService({key: cap_key, state: value});
+              await this.client.connection.buttonCommandService({ key: cap_key, state: value });
             }
           });
         }
@@ -163,7 +166,7 @@ class ESPhomeDevice extends Device {
           this.log('Adding ' + capability + ' listener for key: ' + cap_key);
           this.registerCapabilityListener(capability, async (value) => {
             if (this.client.connection) {
-              await this.client.connection.coverCommandService({key: cap_key, position: value});
+              await this.client.connection.coverCommandService({ key: cap_key, position: value });
             }
           });
         }
@@ -203,7 +206,7 @@ class ESPhomeDevice extends Device {
     if (!capability) return;
 
     const capabilityType = capability.split(".")[0];
-    
+
     this.log('Received State for ' + capability + ':', state);
 
     switch (capabilityType) {
@@ -213,7 +216,7 @@ class ESPhomeDevice extends Device {
         break;
 
       case 'onoff':
-        if (typeof(state.state) === "boolean") { 
+        if (typeof (state.state) === "boolean") {
           value = state.state;
         } else {
           value = (state.state === 'true') ? true : false;
@@ -224,11 +227,11 @@ class ESPhomeDevice extends Device {
         value = parseFloat(state.state);
         this.triggerEsphome_numberFlowTrigger(entityId, value);
         break;
-    
+
       case 'windowcoverings_set':
         value = parseFloat(state.position);
         break;
-    
+
       default:
         value = parseFloat(state.state);
         break;
@@ -251,7 +254,7 @@ class ESPhomeDevice extends Device {
         this.log('Flow card esphome_number_custom triggered:', entityId, this.deviceInfo[entityId]);
       })
       .catch(error => {
-        this.log ('Failed to trigger esphome_number_custom flow card:', error);
+        this.log('Failed to trigger esphome_number_custom flow card:', error);
       })
   }
 

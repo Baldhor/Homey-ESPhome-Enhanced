@@ -41,7 +41,7 @@ class VirtualDevice extends Device {
   async onInit() {
     this.log('onInit:', this.getName());
 
-    this.setUnavailable(this.homey.__('app.initializing'))
+    this.setUnavailable(this.homey.__('wizard2.device.initializing'))
       .catch(this.error);
 
     this._setupCapabilities();
@@ -123,8 +123,8 @@ class VirtualDevice extends Device {
 
     // Add available event listener if not already registered
     if (!this.listeners.find(listener => listener.obj === physicalDevice && listener.event === 'unavailable')) {
-      let callback = () => {
-        this.setUnavailable().catch(this.error);
+      let callback = async () => {
+        await this._checkAvailability().catch(this.error);
       };
       physicalDevice.on('unavailable', callback);
       this._registerListener(physicalDevice, 'unavailable', callback);
@@ -163,13 +163,15 @@ class VirtualDevice extends Device {
           let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
           if (!PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).available) {
             available = false;
-            message = "Physical device " + physicalDevice.name + " is unavailable";
+            message = Homey.__("wizard2.device.physical_device_unavailable", {
+              physicalDeviceName: physicalDevice.name
+            });
             return;
           }
         }
       });
     } else {
-      message = "No capability assigned";
+      message = Homey.__("wizard2.device.no_capability_assigned");
       available = false;
     }
 
