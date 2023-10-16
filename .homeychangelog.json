@@ -184,5 +184,8 @@
   },
   "1.1.19": {
     "en": "And yet another #42 fix: esphome_enum_ should trigger card the same way as esphome_select does"
+  },
+  "1.1.20": {
+    "en": "Fixed getCapabilityValue and capabilityListener issues for the esphome_* cards"
   }
 }
