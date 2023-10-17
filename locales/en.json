@@ -365,221 +365,217 @@
     }
   },
   "capabilityType": {
-    "esphome_enum_test_AA": {
+    "esphome_enum_all": {
       "label": "ESPhome Custom Enum",
-      "description": "Custom enum"
-    },
-    "esphome_enum_horizontal_swing_mode_AA": {
-      "label": "ESPhome Custom Enum",
-      "description": "Custom enum"
+      "description": "Custom enum capability that appear as a 'picker'"
     },
     "esphome_text": {
       "label": "ESPhome Text",
-      "description": "text"
+      "description": "Custom text capability to report (read only) the text value of a native capability"
     },
     "esphome_select": {
       "label": "ESPhome Select",
-      "description": "select"
+      "description": "Custom enum capability that appear as a text, can only be modified through action card"
     },
     "onoff": {
       "label": "onoff",
-      "description": "onoff"
+      "description": "Turned on/off"
     },
     "dim": {
       "label": "dim",
-      "description": "dim"
+      "description": "Dim level"
     },
     "target_temperature": {
       "label": "target_temperature",
-      "description": "target_temperature"
+      "description": "Target temperature"
     },
     "measure_temperature": {
       "label": "measure_temperature",
-      "description": "measure_temperature"
+      "description": "Measure temperature"
     },
     "measure_co": {
       "label": "measure_co",
-      "description": "measure_co"
+      "description": "Measure CO"
     },
     "measure_co2": {
       "label": "measure_co2",
-      "description": "measure_co2"
+      "description": "Measure CO2"
     },
     "measure_pm25": {
       "label": "measure_pm25",
-      "description": "measure_pm25"
+      "description": "Measure atmospheric particulate matter"
     },
     "measure_humidity": {
       "label": "measure_humidity",
-      "description": "measure_humidity"
+      "description": "Measure humidity"
     },
     "measure_pressure": {
       "label": "measure_pressure",
-      "description": "measure_pressure"
+      "description": "Measure pressure"
     },
     "measure_noise": {
       "label": "measure_noise",
-      "description": "measure_noise"
+      "description": "Measure noise"
     },
     "measure_rain": {
       "label": "measure_rain",
-      "description": "measure_rain"
+      "description": "Measure rain"
     },
     "measure_wind_strength": {
       "label": "measure_wind_strength",
-      "description": "measure_wind_strength"
+      "description": "Measure wind strength"
     },
     "measure_wind_angle": {
       "label": "measure_wind_angle",
-      "description": "measure_wind_angle"
+      "description": "Measure wind angle"
     },
     "measure_gust_strength": {
       "label": "measure_gust_strength",
-      "description": "measure_gust_strength"
+      "description": "Measure gust strength"
     },
     "measure_gust_angle": {
       "label": "measure_gust_angle",
-      "description": "measure_gust_angle"
+      "description": "Measure gust angle"
     },
     "measure_battery": {
       "label": "measure_battery",
-      "description": "measure_battery"
+      "description": "Measure battery"
     },
     "measure_power": {
       "label": "measure_power",
-      "description": "measure_power"
+      "description": "Measure power"
     },
     "measure_voltage": {
       "label": "measure_voltage",
-      "description": "measure_voltage"
+      "description": "Measure voltage"
     },
     "measure_current": {
       "label": "measure_current",
-      "description": "measure_current"
+      "description": "Measure current"
     },
     "measure_luminance": {
       "label": "measure_luminance",
-      "description": "measure_luminance"
+      "description": "Measure luminance"
     },
     "measure_ultraviolet": {
       "label": "measure_ultraviolet",
-      "description": "measure_ultraviolet"
+      "description": "Measure ultraviolet"
     },
     "measure_water": {
       "label": "measure_water",
-      "description": "measure_water"
+      "description": "Measure water"
     },
     "alarm_generic": {
       "label": "alarm_generic",
-      "description": "alarm_generic"
+      "description": "Alarm generic"
     },
     "alarm_motion": {
       "label": "alarm_motion",
-      "description": "alarm_motion"
+      "description": "Alarm motion"
     },
     "alarm_contact": {
       "label": "alarm_contact",
-      "description": "alarm_contact"
+      "description": "Alarm contact"
     },
     "alarm_co": {
       "label": "alarm_co",
-      "description": "alarm_co"
+      "description": "Alarm CO"
     },
     "alarm_co2": {
       "label": "alarm_co2",
-      "description": "alarm_co2"
+      "description": "Alarm CO2"
     },
     "alarm_pm25": {
       "label": "alarm_pm25",
-      "description": "alarm_pm25"
+      "description": "Alarm PM25"
     },
     "alarm_tamper": {
       "label": "alarm_tamper",
-      "description": "alarm_tamper"
+      "description": "Alarm tamper"
     },
     "alarm_smoke": {
       "label": "alarm_smoke",
-      "description": "alarm_smoke"
+      "description": "Alarm smoke"
     },
     "alarm_fire": {
       "label": "alarm_fire",
-      "description": "alarm_fire"
+      "description": "Alarm fire"
     },
     "alarm_heat": {
       "label": "alarm_heat",
-      "description": "alarm_heat"
+      "description": "Alarm heat"
     },
     "alarm_water": {
       "label": "alarm_water",
-      "description": "alarm_water"
+      "description": "Alarm water"
     },
     "alarm_battery": {
       "label": "alarm_battery",
-      "description": "alarm_battery"
+      "description": "Alarm battery"
     },
     "alarm_night": {
       "label": "alarm_night",
-      "description": "alarm_night"
+      "description": "Alarm night"
     },
     "meter_power": {
       "label": "meter_power",
-      "description": "meter_power"
+      "description": "Meter power (quantity)"
     },
     "meter_water": {
       "label": "meter_water",
-      "description": "meter_water"
+      "description": "Meter water (quantity)"
     },
     "meter_gas": {
       "label": "meter_gas",
-      "description": "meter_gas"
+      "description": "meter_gas (quantity)"
     },
     "meter_rain": {
       "label": "meter_rain",
-      "description": "meter_rain"
+      "description": "meter_rain (quantity)"
     },
     "volume_set": {
       "label": "volume_set",
-      "description": "volume_set"
+      "description": "Volume set"
     },
     "volume_up": {
       "label": "volume_up",
-      "description": "volume_up"
+      "description": "Volume up"
     },
     "volume_down": {
       "label": "volume_down",
-      "description": "volume_down"
+      "description": "Volume down"
     },
     "volume_mute": {
       "label": "volume_mute",
-      "description": "volume_mute"
+      "description": "Volume mute"
     },
     "channel_up": {
       "label": "channel_up",
-      "description": "channel_up"
+      "description": "Channel up"
     },
     "channel_down": {
       "label": "channel_down",
-      "description": "channel_down"
+      "description": "Channel down"
     },
     "locked": {
       "label": "locked",
-      "description": "locked"
+      "description": "Locked"
     },
     "windowcoverings_tilt_set": {
       "label": "windowcoverings_tilt_set",
-      "description": "windowcoverings_tilt_set"
+      "description": "Cover tilt set"
     },
     "windowcoverings_closed": {
       "label": "windowcoverings_closed",
-      "description": "windowcoverings_closed"
+      "description": "Cover closed (closed or open)"
     },
     "windowcoverings_set": {
       "label": "windowcoverings_set",
-      "description": "windowcoverings_set"
+      "description": "Cover set (0 closed to 1 open)"
     },
     "button": {
       "label": "button",
-      "description": "button"
+      "description": "Button (pressed yes or no)"
     }
   }
 }

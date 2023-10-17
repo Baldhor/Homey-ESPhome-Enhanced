@@ -188,10 +188,10 @@
             <option v-if='capabilityType === "unselected"' value='unselected' selected disabled :key='"unselected"'>{{
               Homey.__('wizard2.edit-capability.capability.capability-type-unselected') }}
             </option>
-            <option v-for='capabilityConf in CAPABILITY_CONFIGURATION.sort((a, b) => Homey.__("capabilityType." + a.type
-                + ".label").localeCompare(Homey.__("capabilityType." + b.type + ".label")))' :key='capabilityConf.type'
+            <option v-for='capabilityConf in CAPABILITY_CONFIGURATION.sort((a, b) => Homey.__("capabilityType." + (a.type.startsWith("esphome_enum_") ? "esphome_enum_all" : a.type)
+                + ".label").localeCompare(Homey.__("capabilityType." + (b.type.startsWith("esphome_enum_") ? "esphome_enum_all" : b.type) + ".label")))' :key='capabilityConf.type'
               :value='capabilityConf.type' v-show='_compatibleTypes?.includes(capabilityConf.type)'>
-              {{ Homey.__('capabilityType.' + capabilityConf.type + '.label') }}
+              {{ Homey.__('capabilityType.' + (capabilityConf.type.startsWith('esphome_enum_') ? 'esphome_enum_all' : capabilityConf.type) + '.label') }}
             </option>
           </select>
         </li>

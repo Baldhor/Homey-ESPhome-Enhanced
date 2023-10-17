@@ -139,7 +139,7 @@ const EditCapabilityPage = function () {
         }
         this.capabilityTypeDescription = "";
       } else {
-        this.capabilityTypeDescription = Homey.__('capabilityType.' + this.capabilityType + '.description');
+        this.capabilityTypeDescription = Homey.__('capabilityType.' + (this.capabilityType.startsWith("esphome_enum_") ? "esphome_enum_all" : this.capabilityType) + '.description');
       }
 
       if (capabilityIndexElt !== undefined && !capabilityIndexElt.validity.valid) {
