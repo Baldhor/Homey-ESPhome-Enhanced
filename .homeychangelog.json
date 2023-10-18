@@ -196,5 +196,8 @@
   },
   "1.1.23": {
     "en": "Fix #65: added error management to decimals and min/max options"
+  },
+  "1.1.24": {
+    "en": "Implemented zone filter in list virtual devices page (#61)"
   }
 }
