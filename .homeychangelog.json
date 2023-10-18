@@ -193,5 +193,8 @@
   },
   "1.1.22": {
     "en": "Implementation of #66, to be tested by end user"
+  },
+  "1.1.23": {
+    "en": "Fix #65: added error management to decimals and min/max options"
   }
 }
