@@ -190,5 +190,8 @@
   },
   "1.1.21": {
     "en": "Added warning and notification for legacy driver/device => I will remove support/code soon"
+  },
+  "1.1.22": {
+    "en": "Implementation of #66, to be tested by end user"
   }
 }
