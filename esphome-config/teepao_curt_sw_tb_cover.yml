@@ -2,7 +2,7 @@
 # Owner: Baldhor
 # Code status: completed
 # Compile status: completed
-# Test status: test in progress (several issues)
+# Test status: completed
 # ---------------------------------------------
 
 # ---------------------------------------------
@@ -43,16 +43,16 @@
 # Pin definition
 # GPIO# Component
 # GPIO0 LedLinki
-# GPIO1 Led3
+# GPIO1 Led3 => led2
 # GPIO2 Relay3
-# GPIO3 Button2
+# GPIO3 Button2 => button3
 # GPIO4 Relay2
-# GPIO5 Button3
+# GPIO5 Button3 => button2
 # GPIO9 None
 # GPIO10 None
 # GPIO12 Led1
 # GPIO13 Relay1
-# GPIO14 Led2
+# GPIO14 Led2 => led3
 # GPIO15 None
 # GPIO16 Button1
 # FLAG None
@@ -255,7 +255,7 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO3
+      number: GPIO5
       mode:
         input: true
         pullup: true
@@ -301,7 +301,7 @@ binary_sensor:
     disabled_by_default: true
     pin:
       inverted: true
-      number: GPIO5
+      number: GPIO3
       mode:
         input: true
         pullup: true
@@ -395,6 +395,7 @@ script:
 switch:
   # Relays
   - id: relay1
+    name: relay1
     platform: gpio
     disabled_by_default: true
     pin:
@@ -426,10 +427,11 @@ switch:
         }
 
   - id: relay3
+    name: relay3
     platform: gpio
     disabled_by_default: true
     pin:
-      number: GPIO2
+      number: GPIO4
       mode: OUTPUT
     interlock: *interlock_relay
     restore_mode: ALWAYS_OFF
@@ -465,12 +467,12 @@ output:
 
   - id: button_led2
     platform: esp8266_pwm
-    pin: GPIO14
+    pin: GPIO01
     inverted: true
     
   - id: button_led3
     platform: esp8266_pwm
-    pin: GPIO1
+    pin: GPIO14
     inverted: true
 
 light:
