@@ -46,6 +46,16 @@
     <div class='list'>
       <p>
         <span>{{ Homey.__('wizard2.list-virtual-devices.list-virtual-devices.title') }}</span>
+        <span></span>
+        <select ref='_filterZoneId' v-model='_filterZoneId' style='float: right;'>
+          <option value='unselected' :selected='_filterZoneId === "unselected"'>{{
+            Homey.__('wizard2.list-virtual-devices.list-virtual-devices.zone-unselected')
+            }}</option>
+          <option v-for='zone in configuration.zones?.sort((a, b) => a.zoneOrder - b.zoneOrder)' :key='zone.zoneId'
+            :value='zone.zoneId' :selected='_filterZoneId === zone.zoneId'>{{ (zone.zoneDepth > 0 ?
+            "-".repeat(zone.zoneDepth) :
+            "") + " " + zone.name }}</option>
+        </select>
       </p>
 
       <ul>
@@ -68,7 +78,8 @@
                       - actions: edit capability (edit-capability page) or delete capability
                   -->
           <li
-            @click='pageHandler.setPage("edit-virtual-device-page", { virtualDeviceId: virtualDevice.virtualDeviceId })'>
+            @click='pageHandler.setPage("edit-virtual-device-page", { virtualDeviceId: virtualDevice.virtualDeviceId })'
+            v-show='_filterZoneId === "unselected" || _filterZoneId === virtualDevice.current.zoneId'>
             <span
               :class='{ danger: virtualDevice.current.capabilities.filter(capability => capability.status !== "deleted").length === 0 }'>{{
               configuration.zones?.find(zone => zone.zoneId === virtualDevice.current.zoneId).name }}
@@ -77,15 +88,15 @@
             <i class='arrow right'></i>
           </li>
 
-          <li class="sub">
+          <li class="sub" v-show='_filterZoneId === "unselected" || _filterZoneId === virtualDevice.current.zoneId'>
             <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.class') }}</span>
             <span>{{ virtualDevice.current.class }}</span>
           </li>
-          <li class="sub">
+          <li class="sub" v-show='_filterZoneId === "unselected" || _filterZoneId === virtualDevice.current.zoneId'>
             <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.status') }}</span>
             <span>{{ virtualDevice.current.status }}</span>
           </li>
-          <li class="sub">
+          <li class="sub" v-show='_filterZoneId === "unselected" || _filterZoneId === virtualDevice.current.zoneId'>
             <span>{{ Homey.__('wizard2.list-virtual-devices.virtual-device.native-capability-count')
               }}</span>
             <span

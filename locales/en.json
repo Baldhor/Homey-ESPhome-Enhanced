@@ -78,7 +78,8 @@
             },
             "list-virtual-devices": {
                 "title": "List of virtual devices",
-                "new-virtual-device": "New virtual device"
+                "new-virtual-device": "New virtual device",
+                "zone-unselected": "show all"
             },
             "virtual-device": {
                 "edit": "edit",

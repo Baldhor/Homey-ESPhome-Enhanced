@@ -8,6 +8,8 @@ const ListVirtualDevicesPage = function () {
 
     _hideUsedPhysicalDevices: true,
 
+    _filterZoneId: null,
+
     mounted() {
       wizardlog('[' + this.componentName + '] ' + 'mounted');
 
@@ -19,7 +21,8 @@ const ListVirtualDevicesPage = function () {
       this._initValues = {};
 
       this._hideUsedPhysicalDevices = !configuration.physicalDevices.find(e => !e.used) || configuration.physicalDevices.length > 3;
-
+      this._filterZoneId = 'unselected';
+      
       await PetiteVue.nextTick();
       this.checkValidity();
     },
