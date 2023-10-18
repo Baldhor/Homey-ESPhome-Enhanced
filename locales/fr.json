@@ -1,0 +1,112 @@
+{
+    "wizard2": {
+        "main": {
+            "title": "Menu principal"
+        }
+    },
+    "deviceClass": {
+        "amplifier": {
+            "label": "Amplificateur",
+            "description": "Utilisez cette classe d'appareil pour les appareils amplificateurs audio."
+        },
+        "blinds": {
+
+
+        },
+        "button": {
+
+            
+        },
+        "camera": {
+
+            
+        },
+        "coffeemachine": {
+
+            
+        },
+        "curtain": {
+
+            
+        },
+        "doorbell": {
+
+            
+        },
+        "fan": {
+
+            
+        },
+        "garagedoor": {
+
+            
+        },
+        "heater": {
+
+            
+        },
+        "homealarm": {
+
+            
+        },
+        "kettle": {
+
+            
+        },
+        "light": {
+
+            
+        },
+        "lock": {
+
+            
+        },
+        "other": {
+
+            
+        },
+        "remote": {
+
+            
+        },
+        "sensor": {
+
+            
+        },
+        "socket": {
+
+            
+        },
+        "speaker": {
+
+            
+        },
+        "solarpanel": {
+
+            
+        },
+        "sunshade": {
+
+            
+        },
+        "thermostat": {
+
+            
+        },
+        "tv": {
+
+            
+        },
+        "vacuumcleaner": {
+
+            
+        },
+        "windowcoverings": {
+
+            
+        }
+    },
+    "capabilityType": {
+        
+    }
+}

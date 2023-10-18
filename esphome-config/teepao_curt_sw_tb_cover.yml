@@ -1,0 +1,501 @@
+# ---------------------------------------------
+# Owner: Baldhor
+# Code status: completed
+# Compile status: completed
+# Test status: test in progress (several issues)
+# ---------------------------------------------
+
+# ---------------------------------------------
+# ESPHome configuration for Teepao Curtain Switch device in purpose to handle cover without position sensor
+# 
+# DISCLAIMER: Software interlock is used to ensure both relay 1 (up) and 3 (down) are not enabled at the same time.
+#             However, software interlock is unsure, only hardware interlock would be sure and safe.
+#             As such, it could in some weird situation end up damaging your cover engine.
+# 
+# DISCLAIMER: Position may shift over time as real position is assumpted.
+#             You can make open duration and close duration a little higher than needed to compensate.
+#             However, it means that your cover must have built in top and bottom end!
+#             Otherwise, your engine may end up running without moving => leading to engine or cover damage!
+# 
+# Key points:
+#   - Use native api
+#   - Using time based cover as main device
+#   - Relay 2 is unused
+#   - Prefered position and invert functions available
+# 
+# Features:
+#   1- Touch led are on at least 1 second to provide a good user experience
+#   2- If cover is running (not idle), a short press on any button will stop the cover
+#   3- Long press on button 1 (top) for 10 seconds will reset the device
+#   4- Long press on button 2 (middle) will save current prosition as prefered position
+#   5- Short press on button 2 will restore prefered position
+#   6- Prefered position, Open duration and Close duration can be configured through the web server interface and are saved/restored from flash
+#   7- Current position is saved/restored from flash
+#   8- Invert function can be configured though the web server interface and is saved/restored from flash
+# 
+# Usage:
+#   - secrets.yaml file must include:
+#       wifi_ssid: to_be_complated
+#       wifi_password: to_be_complated
+#   - Compile and upload
+# ---------------------------------------------
+
+# Pin definition
+# GPIO# Component
+# GPIO0 LedLinki
+# GPIO1 Led3
+# GPIO2 Relay3
+# GPIO3 Button2
+# GPIO4 Relay2
+# GPIO5 Button3
+# GPIO9 None
+# GPIO10 None
+# GPIO12 Led1
+# GPIO13 Relay1
+# GPIO14 Led2
+# GPIO15 None
+# GPIO16 Button1
+# FLAG None
+
+esphome:
+  name: teepao_curt_sw_tb_cover
+  name_add_mac_suffix: true
+  friendly_name: Teepao Curtain Switch Time Based Cover
+  project:
+    name: "baldhor.teepao_curt_sw_tb_cover"
+    version: "1.0.0"
+
+esp8266:
+  board: esp8285
+  restore_from_flash: true
+
+preferences:
+  flash_write_interval: 1min
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap: {} # This spawns an AP with the device name and mac address with no password.
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+  #password: !secret api_password
+
+#mqtt:
+#  broker: !secret mqtt_broker
+#  port: !secret mqtt_port
+#  username: !secret mqtt_login
+#  password: !secret mqtt_password
+
+ota:
+  password: !secret ota_password
+
+# Enable logging
+logger:
+  baud_rate: 0
+  level: DEBUG #(by default)
+#  level: VERBOSE
+#  level: VERY_VERBOSE
+
+# The mdns component makes the node announce itself on the local network using the multicast DNS (mDNS) protocol.
+# If mDNS is disabled, it will be impossible to automatically find your devices.
+mdns:
+  disabled: true
+
+web_server:
+  port: 80
+
+captive_portal:
+
+# Maintain date/time up to date
+#time:
+#  - platform: sntp
+#    id: my_time
+
+# Announce wifi connexion
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+      disabled_by_default: true
+
+# Announce uptime every minute
+sensor:
+  - platform: uptime
+    name: "Uptime"
+    disabled_by_default: true
+
+number:
+  - id: prefered_position
+    platform: template
+    name: "Prefered position in % (0% is closed, 100% is open)"
+    disabled_by_default: true
+    optimistic: true
+    min_value: 0
+    max_value: 100
+    step: 1
+    restore_value: true
+    initial_value: 50
+    mode: box
+    entity_category: config
+
+  - id: open_duration
+    platform: template
+    name: "Open duration in seconds"
+    disabled_by_default: true
+    optimistic: true
+    min_value: 5
+    max_value: 100
+    step: 0.5
+    restore_value: true
+    initial_value: 5
+    mode: box
+    on_value:
+      then:
+        lambda: !lambda |-
+            id(cover1).set_open_duration(x * 1000);
+    entity_category: config
+
+  - id: close_duration
+    platform: template
+    name: "Close duration in seconds"
+    disabled_by_default: true
+    optimistic: true
+    min_value: 5
+    max_value: 100
+    step: 0.5
+    restore_value: true
+    initial_value: 5
+    mode: box
+    on_value:
+      then:
+        lambda: !lambda |-
+            id(cover1).set_close_duration(x * 1000);
+    entity_category: config
+
+  - id: invert
+    platform: template
+    name: "Invert relay 1 and 3"
+    disabled_by_default: true
+    optimistic: true
+    min_value: 0
+    max_value: 1
+    step: 1
+    restore_value: true
+    initial_value: 0
+    mode: slider
+    entity_category: config
+
+# Enable factory reset function
+# Button 1 is configured to triger it if pressed 10 seconds
+button:
+  - id: Reset
+    platform: factory_reset
+    name: Restart with Factory Default Settings
+    disabled_by_default: true
+
+  - id: Restart
+    platform: restart
+    name: Simple restart
+    disabled_by_default: true
+
+binary_sensor:
+  - id: Status
+    platform: status
+    name: "Status"
+    disabled_by_default: true
+
+  # Touch Buttons
+  - id: button1
+    platform: gpio
+    disabled_by_default: true
+    pin:
+      inverted: true
+      number: GPIO16
+      mode:
+        input: true
+        #pullup: true
+    filters:
+      - delayed_on: 10ms
+    on_press:
+      then:
+        - script.execute: led1_blink
+    on_release:
+      then:
+        lambda: !lambda |-
+          if (id(cover1).current_operation == COVER_OPERATION_IDLE && !id(led1_blink).is_running()) {
+            auto call = id(led1).turn_off();
+            call.perform();
+          }
+    on_multi_click:
+      - timing:
+          - ON for at most 0.5s
+          - OFF for at least 0.2s
+        then:
+          lambda: !lambda |-
+            if (id(cover1).current_operation != COVER_OPERATION_IDLE) {
+              auto call = id(cover1).make_call();
+              call.set_command_stop();
+              call.perform();
+            } else {
+              auto call = id(cover1).make_call();
+              call.set_command_open();
+              call.perform();
+            }
+      - timing:
+          - ON for at least 10s
+        then:
+          - button.press: Reset
+
+  - id: button2
+    platform: gpio
+    disabled_by_default: true
+    pin:
+      inverted: true
+      number: GPIO3
+      mode:
+        input: true
+        pullup: true
+    filters:
+      - delayed_on: 10ms
+    on_press:
+      then:
+        - script.execute: led2_blink
+    on_release:
+      then:
+        lambda: !lambda |-
+          if (!id(led2_blink).is_running()) {
+            auto call = id(led2).turn_off();
+            call.perform();
+          }
+    on_multi_click:
+      - timing:
+          - ON for at most 0.5s
+          - OFF for at least 0.2s
+        then:
+          lambda: !lambda |-
+            if (id(cover1).current_operation != COVER_OPERATION_IDLE) {
+              auto call = id(cover1).make_call();
+              call.set_command_stop();
+              call.perform();
+            } else {
+              auto call = id(cover1).make_call();
+              call.set_position(id(prefered_position).state / 100.0);
+              call.perform();
+            }
+      - timing:
+          - ON for at least 4s
+        then:
+          lambda: !lambda |-
+            if (id(cover1).current_operation == COVER_OPERATION_IDLE) {
+              auto call = id(prefered_position).make_call();
+              call.set_value(int(id(cover1).position * 100));
+              call.perform();
+            }
+
+  - id: button3
+    platform: gpio
+    disabled_by_default: true
+    pin:
+      inverted: true
+      number: GPIO5
+      mode:
+        input: true
+        pullup: true
+    filters:
+      - delayed_on: 10ms
+    on_press:
+      then:
+        - script.execute: led3_blink
+    on_release:
+      then:
+        lambda: !lambda |-
+          if (id(cover1).current_operation == COVER_OPERATION_IDLE && !id(led3_blink).is_running()) {
+            auto call = id(led3).turn_off();
+            call.perform();
+          }
+    on_click:
+      max_length: 0.5s
+      then:
+        lambda: !lambda |-
+          if (id(cover1).current_operation != COVER_OPERATION_IDLE) {
+            auto call = id(cover1).make_call();
+            call.set_command_stop();
+            call.perform();
+          } else {
+            auto call = id(cover1).make_call();
+            call.set_command_close();
+            call.perform();
+          }
+
+cover:
+  - id: cover1
+    platform: time_based
+    name: Cover
+
+    open_action:
+      - lambda: !lambda |-
+          if (id(invert).state == 0) {
+            id(relay1).turn_on();
+          } else {
+            id(relay3).turn_on();
+          }
+    open_duration: 5s
+
+    close_action:
+      - lambda: !lambda |-
+          if (id(invert).state == 0) {
+            id(relay3).turn_on();
+          } else {
+            id(relay1).turn_on();
+          }
+    close_duration: 5s
+
+    stop_action:
+      - switch.turn_off: relay1
+      - switch.turn_off: relay3
+
+script:
+  - id: led1_blink
+    mode: single
+    then:
+      - light.turn_on: led1
+      - delay: 1000ms
+      - lambda: !lambda |-
+          if ((id(cover1).current_operation == COVER_OPERATION_IDLE) && (!id(button1).state)) {
+            auto call = id(led1).turn_off();
+            call.perform();
+          }
+
+  - id: led2_blink
+    mode: single
+    then:
+      - light.turn_on: led2
+      - delay: 1000ms
+      - lambda: !lambda |-
+          if (!id(button2).state) {
+            auto call = id(led2).turn_off();
+            call.perform();
+          }
+
+  - id: led3_blink
+    mode: single
+    then:
+      - light.turn_on: led3
+      - delay: 1000ms
+      - lambda: !lambda |-
+          if (id(cover1).current_operation == COVER_OPERATION_IDLE && !id(button3).state) {
+            auto call = id(led3).turn_off();
+            call.perform();
+          }
+
+switch:
+  # Relays
+  - id: relay1
+    platform: gpio
+    disabled_by_default: true
+    pin:
+      number: GPIO13
+      mode: OUTPUT
+    interlock: &interlock_relay [relay1, relay3]
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      lambda: !lambda |-
+        if (id(invert).state == 0) {
+          auto call = id(led1).turn_on();
+          call.perform();
+        } else {
+          auto call = id(led3).turn_on();
+          call.perform();
+        }
+    on_turn_off:
+      lambda: !lambda |-
+        if (id(invert).state == 0) {
+          if (!id(button1).state && !id(led1_blink).is_running()) {
+            auto call = id(led1).turn_off();
+            call.perform();
+          }
+        } else {
+          if (!id(button3).state && !id(led3_blink).is_running()) {
+            auto call = id(led3).turn_off();
+            call.perform();
+          }
+        }
+
+  - id: relay3
+    platform: gpio
+    disabled_by_default: true
+    pin:
+      number: GPIO2
+      mode: OUTPUT
+    interlock: *interlock_relay
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      lambda: !lambda |-
+        if (id(invert).state == 0) {
+          auto call = id(led3).turn_on();
+          call.perform();
+        } else {
+          auto call = id(led1).turn_on();
+          call.perform();
+        }
+    on_turn_off:
+      lambda: !lambda |-
+        if (id(invert).state == 0) {
+          if (!id(button3).state && !id(led3_blink).is_running()) {
+            auto call = id(led3).turn_off();
+            call.perform();
+          }
+        } else {
+          if (!id(button1).state && !id(led1_blink).is_running()) {
+            auto call = id(led1).turn_off();
+            call.perform();
+          }
+        }
+
+output:
+  # Button LEDs (1.0 = Blue / 0.0 = Red)
+  - id: button_led1
+    platform: esp8266_pwm
+    pin: GPIO12
+    inverted: true
+
+  - id: button_led2
+    platform: esp8266_pwm
+    pin: GPIO14
+    inverted: true
+    
+  - id: button_led3
+    platform: esp8266_pwm
+    pin: GPIO1
+    inverted: true
+
+light:
+  - id: status_led1
+    platform: status_led
+    disabled_by_default: true
+    pin:
+      number: GPIO0
+      inverted: true
+
+  # Button LEDs
+  - id: led1
+    platform: monochromatic
+    disabled_by_default: true
+    output: button_led1
+    default_transition_length: 500ms
+
+  - id: led2
+    platform: monochromatic
+    disabled_by_default: true
+    output: button_led2
+    default_transition_length: 500ms
+
+  - id: led3
+    platform: monochromatic
+    disabled_by_default: true
+    output: button_led3
+    default_transition_length: 500ms
