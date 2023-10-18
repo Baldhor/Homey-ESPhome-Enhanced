@@ -115,12 +115,18 @@ const EditCapabilityPage = function () {
       const capabilityTypeElt = this.$refs.capabilityType;
       const capabilityIndexElt = this.$refs.capabilityIndex;
       const capabilityTitleElt = this.$refs.capabilityTitle;
+      const capabilityStepElt = this.$refs.capabilityStep;
+      const capabilityMinElt = this.$refs.capabilityMin;
+      const capabilityMaxElt = this.$refs.capabilityMax;
 
       // Reset custom validity
       physicalDeviceIdElt.setCustomValidity('');
       nativeCapabilityIdElt.setCustomValidity('');
       capabilityTypeElt.setCustomValidity('');
       capabilityTitleElt.setCustomValidity('');
+      capabilityStepElt.setCustomValidity('');
+      capabilityMinElt.setCustomValidity('');
+      capabilityMaxElt.setCustomValidity('');
 
       if (this.physicalDeviceId === "unselected") {
         physicalDeviceIdElt.setCustomValidity(false);
@@ -157,10 +163,52 @@ const EditCapabilityPage = function () {
         }
       }
 
+      // Decimals and Step should be consistent with each others
+      // - Step cannot have a highter precision than Decimals
+      if (this.capabilityOptions['step'] <= 0) {
+        capabilityStepElt.setCustomValidity(false);
+        errorAndWarningList.addError("wizard2.edit-capability.error-capability-step");
+      } else if (this.computePrecisionFromStep(this.capabilityOptions['step']) > this.capabilityOptions['decimals']) {
+        capabilityStepElt.setCustomValidity(false);
+        errorAndWarningList.addError("wizard2.edit-capability.error-capability-step");
+      }
+
+      // Min>Max
+      if (this.capabilityOptions['min'] >= this.capabilityOptions['max']) {
+        capabilityMinElt.setCustomValidity(false);
+        capabilityMaxElt.setCustomValidity(false);
+        errorAndWarningList.addError("wizard2.edit-capability.error-capability-min");
+      }
+
       // TODO: remove this log
       wizardlog('capabilityOptions:', this.capabilityOptions);
 
       this.checkModified();
+    },
+    computePrecisionFromStep(step) {
+      wizardlog('[' + this.componentName + '] ' + 'computePrecisionFromStep:', ...arguments);
+
+      // little stupid way to find it, but I don't know better one :)
+      // Assuming step is a float (even if it is actually an integer)
+      for (let i = 0; i <= 10; i++) {
+        let stepMultiplied = step * i * 10;
+
+        // For precision 0, we just use initial step value, not 0 :)
+        if (i === 0) {
+          stepMultiplied = step;
+        }
+
+        // Now we compare using double convert trick
+        if (parseFloat(parseInt(stepMultiplied)) == stepMultiplied) {
+          // Same result, it means the precision is correct!
+          wizardlog('[' + this.componentName + '] ' + 'Found precision', i, 'for step', step);
+          return i;
+        }
+      }
+
+      // We didn't find it, but it's not an error
+      wizardlog('[' + this.componentName + '] ' + "Couldn't find precision for step:", step);
+      return 0;
     },
     checkModified() {
       wizardlog('[' + this.componentName + '] ' + 'checkModified');

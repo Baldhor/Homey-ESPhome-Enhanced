@@ -255,10 +255,11 @@
             style='text-align: left; margin-left: 0;'>
         </li>
         <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.step !== undefined'>
-          <!-- step - positive float - cannot be more precise than decimals -->
+          <!-- step - positive float - cannot be more precise than decimals - cannot be zero -->
           <span class='pre'>{{ Homey.__('wizard2.edit-capability.capability.options.step') }}</span>
           <span></span>
           <input ref='capabilityStep' v-model='capabilityOptions.step' @input='checkValidity' type='number'
+          :step='capabilityOptions.decimals === 0 ? 1 : 1 / (Math.pow(10, capabilityOptions.decimals))'
             style='text-align: left; margin-left: 0;'>
         </li>
         <li class="sub" v-show='capabilityType !== "unselected" && capabilityOptions?.getable !== undefined'>

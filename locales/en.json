@@ -245,6 +245,8 @@
             "error-capability-index": "Capability index must be pretty (only lowercase and dot)",
             "error-capability-title": "Capability title must be pretty",
             "error-capability-title-required": "Capability title is required for custom capabilities",
+            "error-capability-step": "Step must be consistant with Decimals; Step cannot be zero",
+            "error-capability-min": "Min must be strictly inferior to Max",
             "fatal-error": "Something went wrong!"
         },
         "console-re": {

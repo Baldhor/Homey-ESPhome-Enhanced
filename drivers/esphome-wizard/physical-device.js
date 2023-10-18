@@ -378,18 +378,22 @@ class PhysicalDevice extends EventEmitter {
                     targetTemperatureConstraints['step'] = entity.config.visualTargetTemperatureStep;
                     targetTemperatureConstraints.type = 'number';
 
+                    // common targetTemperature, targetTemperatureLow and targetTemperatureHigh configs
+                    let targetTemperatureConfigs = Object.assign({}, configs);
+                    this.computeConfigPrecisionFromStepConstraint(entity, targetTemperatureConfigs, targetTemperatureConstraints);
+
                     // targetTemperature
                     if (!entity.config.supportsTwoPointTargetTemperature) {
-                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperature', configs, targetTemperatureConstraints, null);
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperature', targetTemperatureConfigs, targetTemperatureConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
 
                     // targetTemperatureLow and targetTemperatureHigh
                     if (entity.config.supportsTwoPointTargetTemperature) {
-                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperatureLow', configs, targetTemperatureConstraints, null);
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperatureLow', targetTemperatureConfigs, targetTemperatureConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
 
-                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperatureHigh', configs, targetTemperatureConstraints, null);
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'targetTemperatureHigh', targetTemperatureConfigs, targetTemperatureConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
 

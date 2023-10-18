@@ -245,7 +245,7 @@ body {
 .esphomewizard .list ul li.center {
   justify-content: center;
 }
-.esphomewizard .list ul li input[type=text] {
+.esphomewizard .list ul li input {
   margin-left: 1em;
   padding: 0;
   outline: none;
@@ -254,7 +254,7 @@ body {
   width: 31ch;
   box-shadow: 0 0 5px 1px grey;
 }
-.esphomewizard .list input[type=text]:invalid {
+.esphomewizard .list input:invalid {
   box-shadow: 0 0 5px 1px red;
 }
 .esphomewizard .list ul li select {

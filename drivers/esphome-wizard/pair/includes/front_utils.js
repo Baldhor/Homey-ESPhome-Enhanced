@@ -1,5 +1,5 @@
 function compareZoneId(a, b) {
-  wizardlog('compareZoneId:', a, b);
+  //wizardlog('compareZoneId:', a, b);
 
   return configuration.zones.find(zone => zone.zoneId === a).zoneOrder - configuration.zones.find(zone => zone.zoneId === b).zoneOrder;
 }
