@@ -6,6 +6,8 @@ const ListVirtualDevicesPage = function () {
     _initValues: null,
     _modified: null,
 
+    _hideUsedPhysicalDevices: true,
+
     mounted() {
       wizardlog('[' + this.componentName + '] ' + 'mounted');
 
@@ -15,6 +17,8 @@ const ListVirtualDevicesPage = function () {
       wizardlog('[' + this.componentName + '] ' + 'init');
 
       this._initValues = {};
+
+      this._hideUsedPhysicalDevices = !configuration.physicalDevices.find(e => !e.used) || configuration.physicalDevices.length > 3;
 
       await PetiteVue.nextTick();
       this.checkValidity();

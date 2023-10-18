@@ -163,7 +163,7 @@ class VirtualDevice extends Device {
           let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
           if (!PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId).available) {
             available = false;
-            message = Homey.__("wizard2.device.physical_device_unavailable", {
+            message = this.homey.__("wizard2.device.physical_device_unavailable", {
               physicalDeviceName: physicalDevice.name
             });
             return;
@@ -171,7 +171,7 @@ class VirtualDevice extends Device {
         }
       });
     } else {
-      message = Homey.__("wizard2.device.no_capability_assigned");
+      message = this.homey.__("wizard2.device.no_capability_assigned");
       available = false;
     }
 

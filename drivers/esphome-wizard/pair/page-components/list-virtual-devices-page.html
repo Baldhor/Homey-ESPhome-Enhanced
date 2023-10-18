@@ -9,6 +9,10 @@
     <div class='list'>
       <p>
         <span>{{ Homey.__('wizard2.list-virtual-devices.list-physical-devices.title') }}</span>
+        <span></span>
+        <span class='edit' @click='_hideUsedPhysicalDevices = !_hideUsedPhysicalDevices'>{{
+          _hideUsedPhysicalDevices ? Homey.__('wizard2.list-virtual-devices.list-physical-devices.show') :
+          Homey.__('wizard2.list-virtual-devices.list-physical-devices.hide') }}</span>
       </p>
 
       <ul>
@@ -23,7 +27,7 @@
         <!-- TO BE COMPLETED: one line per device with name, status and used -->
         <li
           v-for='physicalDevice in configuration.physicalDevices?.sort((a, b) => { return a.name.localeCompare(b.name); })'
-          :key='physicalDevice.physicalDeviceId'>
+          :key='physicalDevice.physicalDeviceId' v-show="!physicalDevice.used || !_hideUsedPhysicalDevices">
           <span :class='{ danger: physicalDevice.status === "unavailable" || !physicalDevice.used }'>{{
             physicalDevice.name }}</span>
           <span :class='{ danger: physicalDevice.status === "unavailable" }'>{{ physicalDevice.status

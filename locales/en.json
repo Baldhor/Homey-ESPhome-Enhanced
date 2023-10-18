@@ -72,7 +72,9 @@
                 "unused": "Unused",
                 "used": "Used",
                 "new-physical-device": "New physical device",
-                "help": "Unused physical devices will be deleted"
+                "help": "Unused physical devices will be deleted",
+                "hide": "hide used",
+                "show": "show used"
             },
             "list-virtual-devices": {
                 "title": "List of virtual devices",
