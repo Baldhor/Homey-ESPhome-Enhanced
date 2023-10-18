@@ -7,7 +7,11 @@
   "connectivity": ["lan"],
   "capabilities": [
     "esphome_enum_test_AA",
+    "esphome_enum_custom_fan_mode_AA",
+    "esphome_enum_custom_preset_AA",
     "esphome_enum_horizontal_swing_mode_AA",
+    "esphome_enum_mode_AA",
+    "esphome_enum_vertical_swing_mode_AA",
     "esphome_select",
     "esphome_text",
     "onoff",

@@ -462,7 +462,11 @@
       ],
       "capabilities": [
         "esphome_enum_test_AA",
+        "esphome_enum_custom_fan_mode_AA",
+        "esphome_enum_custom_preset_AA",
         "esphome_enum_horizontal_swing_mode_AA",
+        "esphome_enum_mode_AA",
+        "esphome_enum_vertical_swing_mode_AA",
         "esphome_select",
         "esphome_text",
         "onoff",
@@ -535,6 +539,84 @@
     }
   ],
   "capabilities": {
+    "esphome_enum_custom_fan_mode_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Horizontal Swing Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "Speed 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Speed 2"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Speed 3"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Speed 4"
+          }
+        },
+        {
+          "id": "5",
+          "title": {
+            "en": "Speed 5"
+          }
+        },
+        {
+          "id": "Automatic",
+          "title": {
+            "en": "Automatic"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
+    "esphome_enum_custom_preset_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Custom Preset Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "Normal",
+          "title": {
+            "en": "Normal"
+          }
+        },
+        {
+          "id": "Powerful",
+          "title": {
+            "en": "Powerful"
+          }
+        },
+        {
+          "id": "Quiet",
+          "title": {
+            "en": "Quiet"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
     "esphome_enum_horizontal_swing_mode_AA": {
       "type": "enum",
       "title": {
@@ -583,6 +665,60 @@
       ],
       "icon": "/assets/images/esphome_enum.svg"
     },
+    "esphome_enum_mode_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "off",
+          "title": {
+            "en": "Off"
+          }
+        },
+        {
+          "id": "heat_cool",
+          "title": {
+            "en": "Heat Cool"
+          }
+        },
+        {
+          "id": "cool",
+          "title": {
+            "en": "Cool"
+          }
+        },
+        {
+          "id": "heat",
+          "title": {
+            "en": "Heat"
+          }
+        },
+        {
+          "id": "fan_only",
+          "title": {
+            "en": "Fan Only"
+          }
+        },
+        {
+          "id": "dry",
+          "title": {
+            "en": "Dry"
+          }
+        },
+        {
+          "id": "auto",
+          "title": {
+            "en": "Auto"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
     "esphome_enum_test_AA": {
       "type": "enum",
       "title": {
@@ -608,6 +744,60 @@
           "id": "three",
           "title": {
             "en": "Three"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
+    "esphome_enum_vertical_swing_mode_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Vertical Swing Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "swing",
+          "title": {
+            "en": "Swing"
+          }
+        },
+        {
+          "id": "auto",
+          "title": {
+            "en": "Auto"
+          }
+        },
+        {
+          "id": "up",
+          "title": {
+            "en": "Up"
+          }
+        },
+        {
+          "id": "up_center",
+          "title": {
+            "en": "Up Center"
+          }
+        },
+        {
+          "id": "center",
+          "title": {
+            "en": "Center"
+          }
+        },
+        {
+          "id": "down_center",
+          "title": {
+            "en": "Down Center"
+          }
+        },
+        {
+          "id": "down",
+          "title": {
+            "en": "Down"
           }
         }
       ],

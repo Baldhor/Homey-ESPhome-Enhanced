@@ -1,0 +1,54 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Mode"
+    },
+    "uiComponent": "picker",
+    "getable": true,
+    "setable": true,
+    "values": [
+        {
+            "id": "off",
+            "title": {
+                "en": "Off"
+            }
+        },
+        {
+            "id": "heat_cool",
+            "title": {
+                "en": "Heat Cool"
+            }
+        },
+        {
+            "id": "cool",
+            "title": {
+                "en": "Cool"
+            }
+        },
+        {
+            "id": "heat",
+            "title": {
+                "en": "Heat"
+            }
+        },
+        {
+            "id": "fan_only",
+            "title": {
+                "en": "Fan Only"
+            }
+        },
+        {
+            "id": "dry",
+            "title": {
+                "en": "Dry"
+            }
+        },
+        {
+            "id": "auto",
+            "title": {
+                "en": "Auto"
+            }
+        }
+    ],
+    "icon": "/assets/images/esphome_enum.svg"
+}

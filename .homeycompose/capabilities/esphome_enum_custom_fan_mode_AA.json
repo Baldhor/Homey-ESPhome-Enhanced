@@ -1,0 +1,48 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Horizontal Swing Mode"
+    },
+    "uiComponent": "picker",
+    "getable": true,
+    "setable": true,
+    "values": [
+        {
+            "id": "1",
+            "title": {
+                "en": "Speed 1"
+            }
+        },
+        {
+            "id": "2",
+            "title": {
+                "en": "Speed 2"
+            }
+        },
+        {
+            "id": "3",
+            "title": {
+                "en": "Speed 3"
+            }
+        },
+        {
+            "id": "4",
+            "title": {
+                "en": "Speed 4"
+            }
+        },
+        {
+            "id": "5",
+            "title": {
+                "en": "Speed 5"
+            }
+        },
+        {
+            "id": "Automatic",
+            "title": {
+                "en": "Automatic"
+            }
+        }
+    ],
+    "icon": "/assets/images/esphome_enum.svg"
+}

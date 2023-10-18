@@ -1,0 +1,30 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Custom Preset Mode"
+    },
+    "uiComponent": "picker",
+    "getable": true,
+    "setable": true,
+    "values": [
+        {
+            "id": "Normal",
+            "title": {
+                "en": "Normal"
+            }
+        },
+        {
+            "id": "Powerful",
+            "title": {
+                "en": "Powerful"
+            }
+        },
+        {
+            "id": "Quiet",
+            "title": {
+                "en": "Quiet"
+            }
+        }
+   ],
+    "icon": "/assets/images/esphome_enum.svg"
+}

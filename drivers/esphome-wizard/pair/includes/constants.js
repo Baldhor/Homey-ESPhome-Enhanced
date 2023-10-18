@@ -17,6 +17,32 @@ CAPABILITY_CONFIGURATION = [
     valuesSupported: ["one", "two", "three"]
   },
   {
+    type: 'esphome_enum_custom_fan_mode_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["1", "2", "3", "4", "5", "Automatic"]
+  },
+  {
+    type: 'esphome_enum_custom_preset_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["Normal", "Powerful", "Quiet"]
+  },
+  {
     type: 'esphome_enum_horizontal_swing_mode_AA',
     valueType: 'string',
     getable: true,
@@ -28,6 +54,32 @@ CAPABILITY_CONFIGURATION = [
     specialCaseSupported: [],
     options: ['index', 'title', 'preventInsights', 'preventTag'],
     valuesSupported: ["auto", "left", "left_center", "center", "right_center", "right"]
+  },
+  {
+    type: 'esphome_enum_mode_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["off", "heat_cool", "cool", "heat", "fan_only", "dry", "auto"]
+  },
+  {
+    type: 'esphome_enum_vertical_swing_mode_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["swing", "auto", "up", "up_center", "center", "down_center", "down"]
   },
   {
     type: 'esphome_text',
