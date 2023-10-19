@@ -66,7 +66,7 @@ CAPABILITY_CONFIGURATION = [
     nativeCapabilityUnsupported: null,
     specialCaseSupported: [],
     options: ['index', 'title', 'preventInsights', 'preventTag'],
-    valuesSupported: ["off", "heat_cool", "cool", "heat", "fan_only", "dry", "auto"]
+    valuesSupported: ["off", "heat_cool", "cool", "heat", "fan_only", "dry"]
   },
   {
     type: 'esphome_enum_vertical_swing_mode_AA',

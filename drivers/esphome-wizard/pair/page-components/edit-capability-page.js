@@ -433,7 +433,6 @@ const EditCapabilityPage = function () {
             break;
           }
         }
-
       }
       return isEqual;
     },

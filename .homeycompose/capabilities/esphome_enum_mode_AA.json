@@ -42,12 +42,6 @@
             "title": {
                 "en": "Dry"
             }
-        },
-        {
-            "id": "auto",
-            "title": {
-                "en": "Auto"
-            }
         }
     ],
     "icon": "/assets/images/esphome_enum.svg"
