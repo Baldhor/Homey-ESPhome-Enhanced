@@ -424,7 +424,7 @@ class PhysicalDevice extends EventEmitter {
                         let fanModeConstraints = Object.assign({}, constraints);
                         fanModeConstraints.values = [];
                         // Need to convert the numerical values to string
-                        entity.config.supportedFanModesList.forEach(e => fanModeConstraints.values.push(["on", "off", "auto", "low", "medium", "high", "focus", "diffuse", "quiet"][e]));
+                        entity.config.supportedFanModesList.forEach(e => fanModeConstraints.values.push(["on", "off", "auto", "low", "medium", "high", "middle", "focus", "diffuse", "quiet"][e]));
                         fanModeConstraints.type = 'string';
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'fanMode', configs, fanModeConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
