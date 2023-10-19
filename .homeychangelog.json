@@ -205,5 +205,8 @@
   },
   "1.1.26": {
     "en": "Added support for Mitsubishi Heavy Industries (MHI) airco enum (#67)"
+  },
+  "1.1.27": {
+    "en": "Was missing a value in the numeric to string conversion for fanMode (#67)"
   }
 }
