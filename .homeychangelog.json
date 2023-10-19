@@ -202,5 +202,8 @@
   },
   "1.1.25": {
     "en": "Removed auto from available values for esphome_enum_mode_AA (#66)"
+  },
+  "1.1.26": {
+    "en": "Added support for Mitsubishi Heavy Industries (MHI) airco enum (#67)"
   }
 }
