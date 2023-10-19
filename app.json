@@ -464,9 +464,13 @@
         "esphome_enum_test_AA",
         "esphome_enum_custom_fan_mode_AA",
         "esphome_enum_custom_preset_AA",
+        "esphome_enum_fan_mode_AA",
         "esphome_enum_horizontal_swing_mode_AA",
+        "esphome_enum_horizontal_swing_mode_AB",
         "esphome_enum_mode_AA",
+        "esphome_enum_swing_mode_AA",
         "esphome_enum_vertical_swing_mode_AA",
+        "esphome_enum_vertical_swing_mode_AB",
         "esphome_select",
         "esphome_text",
         "onoff",
@@ -542,7 +546,7 @@
     "esphome_enum_custom_fan_mode_AA": {
       "type": "enum",
       "title": {
-        "en": "Horizontal Swing Mode"
+        "en": "Custom Fan Mode"
       },
       "uiComponent": "picker",
       "getable": true,
@@ -617,6 +621,48 @@
       ],
       "icon": "/assets/images/esphome_enum.svg"
     },
+    "esphome_enum_fan_mode_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Fan Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "auto",
+          "title": {
+            "en": "Auto"
+          }
+        },
+        {
+          "id": "low",
+          "title": {
+            "en": "Low"
+          }
+        },
+        {
+          "id": "medium",
+          "title": {
+            "en": "Medium"
+          }
+        },
+        {
+          "id": "high",
+          "title": {
+            "en": "High"
+          }
+        },
+        {
+          "id": "quiet",
+          "title": {
+            "en": "Quiet"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
     "esphome_enum_horizontal_swing_mode_AA": {
       "type": "enum",
       "title": {
@@ -665,6 +711,66 @@
       ],
       "icon": "/assets/images/esphome_enum.svg"
     },
+    "esphome_enum_horizontal_swing_mode_AB": {
+      "type": "enum",
+      "title": {
+        "en": "Horizontal Swing Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "Left",
+          "title": {
+            "en": "Left"
+          }
+        },
+        {
+          "id": "Left/Center",
+          "title": {
+            "en": "Left/Center"
+          }
+        },
+        {
+          "id": "Center",
+          "title": {
+            "en": "Center"
+          }
+        },
+        {
+          "id": "Center/Right",
+          "title": {
+            "en": "Center/Right"
+          }
+        },
+        {
+          "id": "Right",
+          "title": {
+            "en": "Right"
+          }
+        },
+        {
+          "id": "Wide",
+          "title": {
+            "en": "Wide"
+          }
+        },
+        {
+          "id": "Spot",
+          "title": {
+            "en": "Spot"
+          }
+        },
+        {
+          "id": "Swing",
+          "title": {
+            "en": "Swing"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
     "esphome_enum_mode_AA": {
       "type": "enum",
       "title": {
@@ -708,6 +814,42 @@
           "id": "dry",
           "title": {
             "en": "Dry"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
+    "esphome_enum_swing_mode_AA": {
+      "type": "enum",
+      "title": {
+        "en": "Swing Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "off",
+          "title": {
+            "en": "Off"
+          }
+        },
+        {
+          "id": "both",
+          "title": {
+            "en": "Both"
+          }
+        },
+        {
+          "id": "vertical",
+          "title": {
+            "en": "Vertical"
+          }
+        },
+        {
+          "id": "horizontal",
+          "title": {
+            "en": "Horizontal"
           }
         }
       ],
@@ -792,6 +934,48 @@
           "id": "down",
           "title": {
             "en": "Down"
+          }
+        }
+      ],
+      "icon": "/assets/images/esphome_enum.svg"
+    },
+    "esphome_enum_vertical_swing_mode_AB": {
+      "type": "enum",
+      "title": {
+        "en": "Vertical Swing Mode"
+      },
+      "uiComponent": "picker",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "Up",
+          "title": {
+            "en": "Up"
+          }
+        },
+        {
+          "id": "Up/Center",
+          "title": {
+            "en": "Up/Center"
+          }
+        },
+        {
+          "id": "Center/Down",
+          "title": {
+            "en": "Center/Down"
+          }
+        },
+        {
+          "id": "Down",
+          "title": {
+            "en": "Down"
+          }
+        },
+        {
+          "id": "Swing",
+          "title": {
+            "en": "Swing"
           }
         }
       ],

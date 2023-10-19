@@ -2,7 +2,7 @@ env.json
 node_modules/
 .vscode
 .vsc
-build/
 
 # Added by Homey CLI
 /.homeybuild/
+app.json

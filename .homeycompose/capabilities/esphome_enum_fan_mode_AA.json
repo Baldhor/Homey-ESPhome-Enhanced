@@ -1,46 +1,40 @@
 {
     "type": "enum",
     "title": {
-        "en": "Custom Fan Mode"
+        "en": "Fan Mode"
     },
     "uiComponent": "picker",
     "getable": true,
     "setable": true,
     "values": [
         {
-            "id": "1",
+            "id": "auto",
             "title": {
-                "en": "Speed 1"
+                "en": "Auto"
             }
         },
         {
-            "id": "2",
+            "id": "low",
             "title": {
-                "en": "Speed 2"
+                "en": "Low"
             }
         },
         {
-            "id": "3",
+            "id": "medium",
             "title": {
-                "en": "Speed 3"
+                "en": "Medium"
             }
         },
         {
-            "id": "4",
+            "id": "high",
             "title": {
-                "en": "Speed 4"
+                "en": "High"
             }
         },
         {
-            "id": "5",
+            "id": "quiet",
             "title": {
-                "en": "Speed 5"
-            }
-        },
-        {
-            "id": "Automatic",
-            "title": {
-                "en": "Automatic"
+                "en": "Quiet"
             }
         }
     ],

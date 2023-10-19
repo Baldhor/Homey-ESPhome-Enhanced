@@ -43,6 +43,19 @@ CAPABILITY_CONFIGURATION = [
     valuesSupported: ["Normal", "Powerful", "Quiet"]
   },
   {
+    type: 'esphome_enum_fan_mode_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["auto", "low", "medium", "high", "quiet"]
+  },
+  {
     type: 'esphome_enum_horizontal_swing_mode_AA',
     valueType: 'string',
     getable: true,
@@ -54,6 +67,19 @@ CAPABILITY_CONFIGURATION = [
     specialCaseSupported: [],
     options: ['index', 'title', 'preventInsights', 'preventTag'],
     valuesSupported: ["auto", "left", "left_center", "center", "right_center", "right"]
+  },
+  {
+    type: 'esphome_enum_horizontal_swing_mode_AB',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["Left", "Left/Center", "Center", "Center/Right", "Right", "Wide", "Spot", "Swing"]
   },
   {
     type: 'esphome_enum_mode_AA',
@@ -69,6 +95,19 @@ CAPABILITY_CONFIGURATION = [
     valuesSupported: ["off", "heat_cool", "cool", "heat", "fan_only", "dry"]
   },
   {
+    type: 'esphome_enum_swing_mode_AA',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["off", "both", "vertical", "horizontal"]
+  },
+  {
     type: 'esphome_enum_vertical_swing_mode_AA',
     valueType: 'string',
     getable: true,
@@ -80,6 +119,19 @@ CAPABILITY_CONFIGURATION = [
     specialCaseSupported: [],
     options: ['index', 'title', 'preventInsights', 'preventTag'],
     valuesSupported: ["swing", "auto", "up", "up_center", "center", "down_center", "down"]
+  },
+  {
+    type: 'esphome_enum_vertical_swing_mode_AB',
+    valueType: 'string',
+    getable: true,
+    setable: true,
+    quickaction: false,
+    uielement: 'picker',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag'],
+    valuesSupported: ["Up", "Up/Center", "Center/Down", "Down", "Swing"]
   },
   {
     type: 'esphome_text',

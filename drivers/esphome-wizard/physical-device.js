@@ -409,18 +409,22 @@ class PhysicalDevice extends EventEmitter {
                     }
 
                     // swingMode
-                    if (entity.config.supportedSwingModesList.length > 0 && this._checkAllValuesAreString(entity.config.supportedSwingModesList)) {
+                    if (entity.config.supportedSwingModesList.length > 0) {
                         let swingModeConstraints = Object.assign({}, constraints);
-                        swingModeConstraints.values = [...entity.config.supportedSwingModesList];
+                        swingModeConstraints.values = [];
+                        // Need to convert the numerical values to string
+                        entity.config.supportedSwingModesList.forEach(e => swingModeConstraints.values.push(["off", "both", "vertical", "horizontal"][e]));
                         swingModeConstraints.type = 'string';
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'swingMode', configs, swingModeConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     }
 
                     // fanMode
-                    if (entity.config.supportedFanModesList.length > 0 && this._checkAllValuesAreString(entity.config.supportedFanModesList)) {
+                    if (entity.config.supportedFanModesList.length > 0) {
                         let fanModeConstraints = Object.assign({}, constraints);
-                        fanModeConstraints.values = [...entity.config.supportedFanModesList];
+                        fanModeConstraints.values = [];
+                        // Need to convert the numerical values to string
+                        entity.config.supportedFanModesList.forEach(e => fanModeConstraints.values.push(["on", "off", "auto", "low", "medium", "high", "focus", "diffuse", "quiet"][e]));
                         fanModeConstraints.type = 'string';
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'fanMode', configs, fanModeConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
@@ -436,9 +440,11 @@ class PhysicalDevice extends EventEmitter {
                     }
 
                     // preset
-                    if (entity.config.supportedPresetsList.length > 0 && this._checkAllValuesAreString(entity.config.supportedPresetsList)) {
+                    if (entity.config.supportedPresetsList.length > 0) {
                         let presetConstraints = Object.assign({}, constraints);
-                        presetConstraints.values = [...entity.config.supportedPresetsList];
+                        presetConstraints.values = [];
+                        // Need to convert the numerical values to string
+                        entity.config.supportedPresetsList.forEach(e => presetConstraints.values.push(["eco", "away", "boost", "comfort", "home", "sleep", "activity"][e]));
                         presetConstraints.type = 'string';
                         nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'preset', configs, presetConstraints, null);
                         this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
@@ -501,6 +507,24 @@ class PhysicalDevice extends EventEmitter {
                 this.error('Received an incompatible value for a native capability:', ...arguments);
                 return;
             }
+        } else if (nativeCapability.type === "Climate" && nativeCapability.attribut === "preset") {
+            value = ["eco", "away", "boost", "comfort", "home", "sleep", "activity"][value];
+            if (value === undefined) {
+                this.error('Received an incompatible value for a native capability:', ...arguments);
+                return;
+            }
+        } else if (nativeCapability.type === "Climate" && nativeCapability.attribut === "swingMode") {
+            value = ["off", "both", "vertical", "horizontal"][value];
+            if (value === undefined) {
+                this.error('Received an incompatible value for a native capability:', ...arguments);
+                return;
+            }
+        } else if (nativeCapability.type === "Climate" && nativeCapability.attribut === "fanMode") {
+            value = ["on", "off", "auto", "low", "medium", "high", "focus", "diffuse", "quiet"][value];
+            if (value === undefined) {
+                this.error('Received an incompatible value for a native capability:', ...arguments);
+                return;
+            }
         }
 
         // Save new value
@@ -534,6 +558,24 @@ class PhysicalDevice extends EventEmitter {
 
         if (nativeCapability.type === "Climate" && nativeCapability.attribut === "mode") {
             newValue = ["off", "heat_cool", "cool", "heat", "fan_only", "dry", "auto"].indexOf(newValue);
+            if (newValue === -1) {
+                this.error('Received a command with an incompatible value for a native capability:', ...arguments);
+                return;
+            }
+        } else if (nativeCapability.type === "Climate" && nativeCapability.attribut === "preset") {
+            newValue = ["eco", "away", "boost", "comfort", "home", "sleep", "activity"].indexOf(newValue);
+            if (newValue === -1) {
+                this.error('Received a command with an incompatible value for a native capability:', ...arguments);
+                return;
+            }
+        } else if (nativeCapability.type === "Climate" && nativeCapability.attribut === "swingMode") {
+            newValue = ["off", "both", "vertical", "horizontal"].indexOf(newValue);
+            if (newValue === -1) {
+                this.error('Received a command with an incompatible value for a native capability:', ...arguments);
+                return;
+            }
+        } else if (nativeCapability.type === "Climate" && nativeCapability.attribut === "fanMode") {
+            newValue = ["on", "off", "auto", "low", "medium", "high", "focus", "diffuse", "quiet"].indexOf(newValue);
             if (newValue === -1) {
                 this.error('Received a command with an incompatible value for a native capability:', ...arguments);
                 return;

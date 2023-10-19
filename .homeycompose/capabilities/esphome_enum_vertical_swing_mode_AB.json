@@ -1,46 +1,40 @@
 {
     "type": "enum",
     "title": {
-        "en": "Custom Fan Mode"
+        "en": "Vertical Swing Mode"
     },
     "uiComponent": "picker",
     "getable": true,
     "setable": true,
     "values": [
         {
-            "id": "1",
+            "id": "Up",
             "title": {
-                "en": "Speed 1"
+                "en": "Up"
             }
         },
         {
-            "id": "2",
+            "id": "Up/Center",
             "title": {
-                "en": "Speed 2"
+                "en": "Up/Center"
             }
         },
         {
-            "id": "3",
+            "id": "Center/Down",
             "title": {
-                "en": "Speed 3"
+                "en": "Center/Down"
             }
         },
         {
-            "id": "4",
+            "id": "Down",
             "title": {
-                "en": "Speed 4"
+                "en": "Down"
             }
         },
         {
-            "id": "5",
+            "id": "Swing",
             "title": {
-                "en": "Speed 5"
-            }
-        },
-        {
-            "id": "Automatic",
-            "title": {
-                "en": "Automatic"
+                "en": "Swing"
             }
         }
     ],

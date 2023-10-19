@@ -1,0 +1,36 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Swing Mode"
+    },
+    "uiComponent": "picker",
+    "getable": true,
+    "setable": true,
+    "values": [
+        {
+            "id": "off",
+            "title": {
+                "en": "Off"
+            }
+        },
+        {
+            "id": "both",
+            "title": {
+                "en": "Both"
+            }
+        },
+        {
+            "id": "vertical",
+            "title": {
+                "en": "Vertical"
+            }
+        },
+        {
+            "id": "horizontal",
+            "title": {
+                "en": "Horizontal"
+            }
+        }
+    ],
+    "icon": "/assets/images/esphome_enum.svg"
+}
