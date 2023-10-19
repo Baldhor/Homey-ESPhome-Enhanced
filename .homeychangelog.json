@@ -199,5 +199,8 @@
   },
   "1.1.24": {
     "en": "Implemented zone filter in list virtual devices page (#61)"
+  },
+  "1.1.25": {
+    "en": "Removed auto from available values for esphome_enum_mode_AA (#66)"
   }
 }
