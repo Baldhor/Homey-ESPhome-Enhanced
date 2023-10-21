@@ -208,5 +208,8 @@
   },
   "1.1.27": {
     "en": "Was missing a value in the numeric to string conversion for fanMode (#67)"
+  },
+  "1.1.28": {
+    "en": "Full rework of the ESPhome triggers, conditions and action cards (#41). The cards related to ESPhome_select are deprecated => please migrate to ESPhome_text cards! ESPhome_text cards now supports ALL the capabilities (whatever their type: boolean, enum, text, number, ...). Also fixed: Link in Wizard not appearing blue AND capability options saved as null or empty string (at startup, your conf will be cleaned)."
   }
 }
