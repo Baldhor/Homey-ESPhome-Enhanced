@@ -37,16 +37,18 @@ class Driver extends Homey.Driver {
         // The options must not contains null or empty string values
 
         this.getDevices().forEach(virtualDevice => {
-            let capabilityOptions = virtualDevice.getCapabilityOptions;
-            let cleanedCapabilityOptions = {};
+            virtualDevice.getCapabilities().forEach(capabilityId => {
+                let capabilityOptions = virtualDevice.getCapabilityOptions(capabilityId);
+                let cleanedCapabilityOptions = {};
 
-            Object.keys(capabilityOptions).forEach(key => {
-                if (capabilityOptions[key] !== null && capabilityOptions[key] !== "") {
-                    cleanedCapabilityOptions[key] = capabilityOptions[key];
-                }
+                Object.keys(capabilityOptions).forEach(key => {
+                    if (capabilityOptions[key] !== null && capabilityOptions[key] !== "") {
+                        cleanedCapabilityOptions[key] = capabilityOptions[key];
+                    }
+                });
+
+                virtualDevice.setCapabilityOptions(capabilityId, cleanedCapabilityOptions);
             });
-
-            virtualDevice.setCapabilityOptions(cleanedCapabilityOptions);
         })
     }
 
