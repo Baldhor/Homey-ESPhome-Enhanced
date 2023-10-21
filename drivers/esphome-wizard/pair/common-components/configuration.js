@@ -3,6 +3,7 @@ const configuration = PetiteVue.reactive({
 
   locked: true,
 
+  versions: null,
   virtualDevices: null,
   physicalDevices: null,
   zones: null,
@@ -15,6 +16,7 @@ const configuration = PetiteVue.reactive({
     let homeyConfiguration = await Homey.emit('get-configuration')
       .catch(e => wizarderror(e));
 
+    this.versions = homeyConfiguration.versions;
     this.virtualDevices = homeyConfiguration.listVirtualDevices;
     this.physicalDevices = homeyConfiguration.listPhysicalDevices;
     this.zones = homeyConfiguration.listZones;

@@ -66,6 +66,7 @@ const ListPhysicalDevicesPage = function () {
       };
 
       this._clipboard = stringifyCircularJSON({
+        "versions": configuration.versions,
         "physicalDeviceId": physicalDeviceId,
         "physicalDevice": configuration.physicalDevices.find(physicalDevice => physicalDevice.physicalDeviceId === physicalDeviceId)
       });

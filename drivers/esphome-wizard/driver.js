@@ -635,6 +635,12 @@ class Driver extends Homey.Driver {
             }
 
             let result = {
+                'versions': {
+                    'platform': this.homey.platform,
+                    'platformVersion': this.homey.platformVersion,
+                    'version': this.homey.version,
+                    'appVersion': this.homey.manifest.version
+                },
                 'listVirtualDevices': listVirtualDevices,
                 'listPhysicalDevices': listPhysicalDevices,
                 'listZones': await this.getAllZones(session)
