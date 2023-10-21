@@ -204,6 +204,10 @@ class VirtualDevice extends Device {
   stateChangedListener(nativeCapabilityId, value) {
     this.log('stateChangedListener:', ...arguments);
 
+    if (value === null) {
+      return;
+    }
+    
     let capabilityKeysV2 = this.getStoreValue('capabilityKeysV2');
     Object.keys(capabilityKeysV2).forEach(capabilityKeyV2 => {
       let capabilityValueV2 = capabilityKeysV2[capabilityKeyV2];
@@ -221,61 +225,54 @@ class VirtualDevice extends Device {
               break;
           }
 
+          let capabilityType = capabilityKeyV2.split('.')[0];
+          if (['windowcoverings_set', 'windowcoverings_tilt_set', 'dim', 'volume_set'].includes(capabilityType)) {
+            // round up
+            value = parseFloat(value.toFixed(2));
+          }
+
           this.setCapabilityValue(capabilityKeyV2, value).catch(this.error);
 
-          // triger custom cards is needed
-          let capabilityType = capabilityKeyV2.split(".")[0];
-          if (capabilityType.startsWith('esphome_enum_')) {
-            // Behave as esphome_select
-            capabilityType = 'esphome_select';
-          }
-          switch (capabilityType) {
-            case 'esphome_text':
-              this.homey.flow.getDeviceTriggerCard("esphome_text_changed").trigger(
-                this,
-                { // tokens
-                  'value': value
-                },
-                { // state
-                  'capabilityId': capabilityKeyV2
-                }
-              ).catch(this.error);
+          // triger custom cards
+          this.homey.flow.getDeviceTriggerCard("esphome_text_changed").trigger(
+            this,
+            { // tokens
+              'value': value.toString()
+            },
+            { // state
+              'capabilityId': capabilityKeyV2
+            }
+          ).catch(this.error);
 
-              this.homey.flow.getDeviceTriggerCard("esphome_text_changed_to").trigger(
-                this,
-                { // tokens
-                },
-                { // state
-                  'capabilityId': capabilityKeyV2,
-                  'value': value
-                }
-              ).catch(this.error);
+          this.homey.flow.getDeviceTriggerCard("esphome_text_changed_to").trigger(
+            this,
+            { // tokens
+            },
+            { // state
+              'capabilityId': capabilityKeyV2,
+              'value': value
+            }
+          ).catch(this.error);
 
-              break;
+          this.homey.flow.getDeviceTriggerCard("esphome_select_changed").trigger(
+            this,
+            { // tokens
+              'value': value.toString()
+            },
+            { // state
+              'capabilityId': capabilityKeyV2
+            }
+          ).catch(this.error);
 
-            case 'esphome_select':
-              this.homey.flow.getDeviceTriggerCard("esphome_select_changed").trigger(
-                this,
-                { // tokens
-                  'value': value
-                },
-                { // state
-                  'capabilityId': capabilityKeyV2
-                }
-              ).catch(this.error);
-
-              this.homey.flow.getDeviceTriggerCard("esphome_select_changed_to").trigger(
-                this,
-                { // tokens
-                },
-                { // state
-                  'capabilityId': capabilityKeyV2,
-                  'value': value
-                }
-              ).catch(this.error);
-
-              break;
-          }
+          this.homey.flow.getDeviceTriggerCard("esphome_select_changed_to").trigger(
+            this,
+            { // tokens
+            },
+            { // state
+              'capabilityId': capabilityKeyV2,
+              'value': value
+            }
+          ).catch(this.error);
         } else {
           this.log('Unknown native capability', nativeCapabilityId, 'for physical device', capabilityValueV2.physicalDeviceId);
         }

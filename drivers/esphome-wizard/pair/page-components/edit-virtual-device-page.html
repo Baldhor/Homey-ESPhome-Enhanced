@@ -79,8 +79,7 @@
                 In read only mode, the capability can only be 'deleted'
               -->
           <li style='align-items: left;'>
-            <span>{{ capability.options.title !== null && capability.options.title !== '' ? capability.options.title :
-              capability.capabilityId }}</span>
+            <span>{{ capability.options.title ?? capability.capabilityId }}</span>
             <span></span>
             <span class='edit'
               @click='switchPage("edit-capability-page", { virtualDeviceId: _editVirtualDevice.virtualDeviceId, capabilityId: capability.capabilityId })'>{{

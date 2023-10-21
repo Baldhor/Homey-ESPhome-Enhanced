@@ -239,7 +239,7 @@ body {
 .esphomewizard .list ul li:not(last-child) {
   border-bottom: 1px solid var(--hk-background-color);
 }
-.esphomewizard .list ul li > *:last-child {
+.esphomewizard .list ul li > *:last-child:not(.edit) {
   color: var(--hk-control-font-color-light);
 }
 .esphomewizard .list ul li.center {

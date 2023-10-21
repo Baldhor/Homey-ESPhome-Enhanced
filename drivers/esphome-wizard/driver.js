@@ -13,6 +13,8 @@ class Driver extends Homey.Driver {
         this.checkMigration();
         this.initConf();
 
+        await this.cleanUpCapabilityOptions();
+
         await this.cleanUpConf();
 
         this.registerCustomFlowCards();
@@ -26,6 +28,26 @@ class Driver extends Homey.Driver {
         });
 
         this.log('ESPhomeWizard initialized');
+    }
+
+    async cleanUpCapabilityOptions() {
+        this.log('cleanUpCapabilityOptions');
+
+        // Need to clean up all devices capability options, because of a past bug in the edit capability page
+        // The options must not contains null or empty string values
+
+        this.getDevices().forEach(virtualDevice => {
+            let capabilityOptions = virtualDevice.getCapabilityOptions;
+            let cleanedCapabilityOptions = {};
+
+            Object.keys(capabilityOptions).forEach(key => {
+                if (capabilityOptions[key] !== null && capabilityOptions[key] !== "") {
+                    cleanedCapabilityOptions[key] = capabilityOptions[key];
+                }
+            });
+
+            virtualDevice.setCapabilityOptions(cleanedCapabilityOptions);
+        })
     }
 
     async cleanUpConf() {
@@ -76,13 +98,13 @@ class Driver extends Homey.Driver {
             myCard = this.homey.flow.getDeviceTriggerCard('esphome_text_changed');
 
             myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                this.log('registerArgumentAutocompleteListener:', 'esphome_text_changed', 'capability_name', query, args);
+                args.device.log('argumentAutocompleteListener:', 'esphome_text_changed', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_text', args.device).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames('esphome_text', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerRunListener(async (args, state) => {
-                this.log('registerRunListener:', 'esphome_text_changed', args, state);
+                args.device.log('runListener:', 'esphome_text_changed', args.capability_name, state);
 
                 // Make sure the selected capability is concerned by the trigger
                 return args.capability_name.capabilityId === state.capabilityId;
@@ -94,16 +116,26 @@ class Driver extends Homey.Driver {
             myCard = this.homey.flow.getDeviceTriggerCard('esphome_text_changed_to');
 
             myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                this.log('registerArgumentAutocompleteListener:', 'esphome_text_changed_to', 'capability_name', query, args);
+                args.device.log('argumentAutocompleteListener:', 'esphome_text_changed_to', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_text', args.device).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames('esphome_text', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+            });
+            myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
+                args.device.log('argumentAutocompleteListener:', 'esphome_text_changed_to', 'value', query, args.capability_name);
+
+                // Returns the compatible capabilities
+                if (args.capability_name !== 'undefined') {
+                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
+                } else {
+                    return [];
+                }
             });
             myCard.registerRunListener(async (args, state) => {
-                this.log('registerRunListener:', 'esphome_text_changed_to', args, state);
+                args.device.log('runListener:', 'esphome_text_changed_to', args.capability_name, args.value, state);
 
                 // Make sure the selected capability is concerned by the trigger
-                return args.capability_name.capabilityId === state.capabilityId && args.value === state.value;
+                return args.capability_name.capabilityId === state.capabilityId && this._convertValueForRunListener(args.device, state.capabilityId, args.value.name) === state.value;
             });
 
             // condition card esphome_text_condition
@@ -112,19 +144,58 @@ class Driver extends Homey.Driver {
             myCard = this.homey.flow.getConditionCard('esphome_text_condition');
 
             myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                this.log('registerArgumentAutocompleteListener:', 'esphome_text_condition', 'capability_name', query, args);
+                args.device.log('argumentAutocompleteListener:', 'esphome_text_condition', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_text', args.device).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames('esphome_text', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+            });
+            myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
+                args.device.log('argumentAutocompleteListener:', 'esphome_text_condition', 'value', query, args.capability_name);
+
+                // Returns the compatible capabilities
+                if (args.capability_name !== 'undefined') {
+                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
+                } else {
+                    return [];
+                }
             });
             myCard.registerRunListener(async (args, state) => {
-                this.log('registerRunListener:', 'esphome_text_condition', args, state);
+                args.device.log('runListener:', 'esphome_text_condition', args.capability_name, state);
 
                 // Make sure the selected capability current value match the condition
-                return this.getCapabilityValue(args.capability_name.capabilityId) === args.value;
+                args.device.log('current value:', args.device.getCapabilityValue(args.capability_name.capabilityId));
+                return this._convertValueForRunListener(args.device, args.capability_name.capabilityId, args.value.name) === args.device.getCapabilityValue(args.capability_name.capabilityId);
             });
 
-            // no action cards
+            // action card esphome_text_setvalue
+            //   args: capability_name, value
+            //   tokens: none
+            myCard = this.homey.flow.getActionCard('esphome_text_setvalue');
+
+            myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
+                args.device.log('argumentAutocompleteListener:', 'esphome_text_setvalue', 'capability_name', query);
+
+                // Returns the compatible capabilities
+                return this._getAutocompleteCapabilityNames('esphome_select', args.device, true).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+            });
+            myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
+                args.device.log('argumentAutocompleteListener:', 'esphome_text_setvalue', 'value', query, args.capability_name);
+
+                // Returns the compatible capabilities
+                if (args.capability_name !== 'undefined') {
+                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
+                } else {
+                    return [];
+                }
+            });
+            myCard.registerRunListener(async (args) => {
+                args.device.log('runListener:', 'esphome_text_setvalue', args.capability_name, args.value);
+
+                // Apply the modification
+                args.device.capabilityListener(args.capability_name.capabilityId, this._convertValueForRunListener(args.device, args.capability_name.capabilityId, args.value.name));
+
+                return true;
+            });
         }
 
         // esphome_select
@@ -135,13 +206,13 @@ class Driver extends Homey.Driver {
             myCard = this.homey.flow.getDeviceTriggerCard('esphome_select_changed');
 
             myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                this.log('registerArgumentAutocompleteListener:', 'esphome_select_changed', 'capability_name', query, args);
+                args.device.log('argumentAutocompleteListener:', 'esphome_select_changed', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames('esphome_select', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerRunListener(async (args, state) => {
-                this.log('registerRunListener:', 'esphome_select_changed', args, state);
+                args.device.log('runListener:', 'esphome_select_changed', args.capability_name, state);
 
                 // Make sure the selected capability is concerned by the trigger
                 return args.capability_name.capabilityId === state.capabilityId;
@@ -153,38 +224,26 @@ class Driver extends Homey.Driver {
             myCard = this.homey.flow.getDeviceTriggerCard('esphome_select_changed_to');
 
             myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                this.log('registerArgumentAutocompleteListener:', 'esphome_select_changed_to', 'capability_name', query, args);
+                args.device.log('argumentAutocompleteListener:', 'esphome_select_changed_to', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames('esphome_select', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
-                let device = args.device;
-                device.log('registerArgumentAutocompleteListener:', 'esphome_select_changed_to', 'value', query, args);
-
-                // Build values list
-                let results = [];
-                if (args.capability_name !== 'undefined') {
-                    let capabilityKeysV2 = device.getStoreValue('capabilityKeysV2');
-                    let capabilityValueV2 = capabilityKeysV2[args.capability_name.capabilityId];
-                    let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
-                    let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
-
-                    nativeCapability.getConstraint('values').forEach(value => {
-                        results.push({
-                            name: value
-                        });
-                    });
-                }
+                args.device.log('argumentAutocompleteListener:', 'esphome_select_changed_to', 'value', query, args.capability_name);
 
                 // Returns the compatible capabilities
-                return results.filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                if (args.capability_name !== 'undefined') {
+                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
+                } else {
+                    return [];
+                }
             });
             myCard.registerRunListener(async (args, state) => {
-                this.log('registerRunListener:', 'esphome_select_changed_to', args, state);
+                args.device.log('runListener:', 'esphome_select_changed_to', args.capability_name, args.value, state);
 
                 // Make sure the selected capability is concerned by the trigger
-                return args.capability_name.capabilityId === state.capabilityId && args.value.name === state.value;
+                return args.capability_name.capabilityId === state.capabilityId && this._convertValueForRunListener(args.device, state.capabilityId, args.value.name) === state.value;
             });
 
             // condition card esphome_select_condition
@@ -193,38 +252,26 @@ class Driver extends Homey.Driver {
             myCard = this.homey.flow.getConditionCard('esphome_select_condition');
 
             myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                this.log('registerArgumentAutocompleteListener:', 'esphome_select_condition', 'capability_name', query, args);
+                args.device.log('argumentAutocompleteListener:', 'esphome_select_condition', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames('esphome_select', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
-                let device = args.device;
-                device.log('registerArgumentAutocompleteListener:', 'esphome_select_condition', 'value', query, args);
-
-                // Build values list
-                let results = [];
-                if (args.capability_name !== 'undefined') {
-                    let capabilityKeysV2 = device.getStoreValue('capabilityKeysV2');
-                    let capabilityValueV2 = capabilityKeysV2[args.capability_name.capabilityId];
-                    let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
-                    let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
-
-                    nativeCapability.getConstraint('values').forEach(value => {
-                        results.push({
-                            name: value
-                        });
-                    });
-                }
+                args.device.log('argumentAutocompleteListener:', 'esphome_select_condition', 'value', query, args.capability_name);
 
                 // Returns the compatible capabilities
-                return results.filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                if (args.capability_name !== 'undefined') {
+                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
+                } else {
+                    return [];
+                }
             });
             myCard.registerRunListener(async (args, state) => {
-                this.log('registerRunListener:', 'esphome_select_condition', args, state);
+                args.device.log('runListener:', 'esphome_select_condition', args.capability_name, args.value, state);
 
                 // Make sure the selected capability current value match the condition
-                return args.device.getCapabilityValue(args.capability_name.capabilityId) === args.value;
+                return this._convertValueForRunListener(args.device, args.capability_name.capabilityId, args.value.name) === args.device.getCapabilityValue(args.capability_name.capabilityId);
             });
 
             // action card esphome_select_setvalue
@@ -233,66 +280,235 @@ class Driver extends Homey.Driver {
             myCard = this.homey.flow.getActionCard('esphome_select_setvalue');
 
             myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                this.log('registerArgumentAutocompleteListener:', 'esphome_select_setvalue', 'capability_name', query, args);
+                args.device.log('argumentAutocompleteListener:', 'esphome_select_setvalue', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames('esphome_select', args.device, true).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
-                let device = args.device;
-                device.log('registerArgumentAutocompleteListener:', 'esphome_select_setvalue', 'value', query, args);
-
-                // Build values list
-                let results = [];
-                if (args.capability_name !== 'undefined') {
-                    let capabilityKeysV2 = device.getStoreValue('capabilityKeysV2');
-                    let capabilityValueV2 = capabilityKeysV2[args.capability_name.capabilityId];
-                    let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
-                    let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
-
-                    nativeCapability.getConstraint('values').forEach(value => {
-                        results.push({
-                            name: value
-                        });
-                    });
-                }
+                args.device.log('argumentAutocompleteListener:', 'esphome_select_setvalue', 'value', query, args.capability_name);
 
                 // Returns the compatible capabilities
-                return results.filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                if (args.capability_name !== 'undefined') {
+                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
+                } else {
+                    return [];
+                }
             });
-            myCard.registerRunListener(async (args, state) => {
-                this.log('registerRunListener:', 'esphome_select_setvalue', args, state);
+            myCard.registerRunListener(async (args) => {
+                args.device.log('runListener:', 'esphome_select_setvalue', args.capability_name, args.value);
 
                 // Apply the modification
-                args.device.capabilityListener(args.capability_name.capabilityId, args.value.name);
+                args.device.capabilityListener(args.capability_name.capabilityId, this._convertValueForRunListener(args.device, args.capability_name.capabilityId, args.value.name));
 
                 return true;
             });
         }
     }
 
-    _getAutocompleteCapabilityNames(filterCapabilityType, device) {
-        device.log('_getAutocompleteCapabilityNames:', ...arguments);
+    _getAutocompleteCapabilityNames(filterCapabilityType, device, writeRequired) {
+        device.log('_getAutocompleteCapabilityNames:', writeRequired);
 
         let results = [];
 
         device.getCapabilities().forEach(capabilityId => {
-            device.log('Testing:', capabilityId);
+            let capabilityOptions = device.getCapabilityOptions(capabilityId);
 
-            let capabilityType = capabilityId.split(".")[0];
+            // If writeRequired is true, need to check if the capability is readOnly
+            if (writeRequired) {
+                let capabilityKeysV2 = device.getStoreValue('capabilityKeysV2');
+                let capabilityValueV2 = capabilityKeysV2[capabilityId];
+                let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
+                let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
 
-            if (capabilityType === filterCapabilityType || (filterCapabilityType === "esphome_select" && capabilityType.startsWith("esphome_enum_"))) {
-                device.log('Found a valid capability:', capabilityId);
-
-                let capabilityOptions = device.getCapabilityOptions(capabilityId);
-                results.push({
-                    name: capabilityOptions.title ?? capabilityId,
-                    'capabilityId': capabilityId
-                });
+                if (nativeCapability.configs.readOnly === true) {
+                    return;
+                }
             }
+
+            results.push({
+                name: capabilityOptions.title ?? capabilityId,
+                'capabilityId': capabilityId
+            });
         });
 
         return results;
+    }
+
+    _getAutocompleteCapabilityValues(device, capabilityId, query) {
+        device.log('_getAutocompleteCapabilityValues:', capabilityId, query);
+
+        let capabilityType = capabilityId.split(".")[0];
+
+        // Build values list
+        let results = [];
+        let capabilityKeysV2 = device.getStoreValue('capabilityKeysV2');
+        let capabilityValueV2 = capabilityKeysV2[capabilityId];
+        let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
+        let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
+
+        if (capabilityType.startsWith("esphome_enum_")) {
+            // List of values
+            nativeCapability.getConstraint('values').forEach(value => {
+                results.push({
+                    name: value
+                });
+            });
+
+            // If a value match, filter the result, otherwise, show all possible values
+            if (results.filter(e => e.name.toLowerCase().includes(query.toLowerCase())).length > 0) {
+                results = results.filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+            }
+        } else {
+            switch (nativeCapability.constraints.type) {
+                case 'boolean':
+                    // TODO: Can translate?
+                    results.push({
+                        name: 'true'
+                    });
+                    results.push({
+                        name: 'false'
+                    });
+                    break;
+
+                case 'number':
+                    let fixedValue = parseFloat(query.replace(',', '.'));
+                    // If NaN, let's add a default value
+                    if (isNaN(fixedValue)) {
+                        if (nativeCapability.constraints.min !== undefined && nativeCapability.constraints.max !== undefined) {
+                            fixedValue = nativeCapability.constraints.min + (nativeCapability.constraints.max - nativeCapability.constraints.min) / 2;
+                        } else if (['windowcoverings_set', 'dim'].includes(capabilityType)) {
+                            fixedValue = 0.5;
+                        } else {
+                            fixedValue = 0;
+                        }
+                    }
+
+                    // Apply min max
+                    if (nativeCapability.constraints.min !== undefined && fixedValue < min) {
+                        fixedValue = min;
+                    }
+                    if (nativeCapability.constraints.max !== undefined && fixedValue < max) {
+                        fixedValue = min;
+                    }
+
+                    // Apply precision
+                    if (nativeCapability.configs.precision !== undefined) {
+                        if (precision === 0) {
+                            fixedValue = parseInt(fixedValue, 10);
+                        } else {
+                            fixedValue = parseFloat(parseInt(fixedValue * Math.pow(10, nativeCapability.configs.precision))) / Math.pow(10, nativeCapability.configs.precision);
+                        }
+                    }
+
+                    // dim case
+                    if (['windowcoverings_set', 'windowcoverings_tilt_set', 'dim', 'volume_set'].includes(capabilityType)) {
+                        // Value should be in range 0 to 1
+                        if (fixedValue < 0) {
+                            fixedValue = 0;
+                        } else if (fixedValue > 1) {
+                            fixedValue = 1;
+                        }
+
+                        // Add open and closed values
+                        // TODO: Can translate?
+                        results.push({
+                            name: 'open',
+                            description: 'Open/Max (1)',
+                        });
+                        results.push({
+                            name: 'closed',
+                            description: 'Closed/Min (0)',
+                        });
+                    }
+
+                    // TODO: Apply step
+                    // If good, propose the value, if in between, propose above and below values!
+                    if (nativeCapability.constraints.step !== undefined) {
+                        let remains = fixedValue % nativeCapability.constraints.step;
+
+                        if (remains !== 0) {
+                            results.push({
+                                name: fixedValue.toString()
+                            });
+                        } else {
+                            results.push({
+                                name: (fixedValue - remains).toString()
+                            });
+                            results.push({
+                                name: (fixedValue - remains + nativeCapability.constraints.step).toString()
+                            });
+                        }
+                    } else {
+                        results.push({
+                            name: fixedValue.toString()
+                        });
+                    }
+
+                    break;
+
+                case 'string':
+                    if (query === "") {
+                        results.push({
+                            name: query,
+                            description: "Empty"
+                        });
+                    } else {
+                        results.push({
+                            name: query
+                        });
+                    }
+                    break;
+
+                default:
+                    this.log('unsupported type:', nativeCapability.constraints.type);
+            }
+
+        }
+
+        // Returns the compatible capabilities
+        return results;
+    }
+
+    _convertValueForRunListener(device, capabilityId, value) {
+        device.log('_convertValueForRunListener:', capabilityId, value);
+
+        let capabilityType = capabilityId.split(".")[0];
+
+        // Need to convert the value?
+        let fixedValue = value;
+
+        let capabilityKeysV2 = device.getStoreValue('capabilityKeysV2');
+        let capabilityValueV2 = capabilityKeysV2[capabilityId];
+        let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
+        let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
+
+        switch (nativeCapability.constraints.type) {
+            case 'boolean':
+                if (value === 'true') {
+                    fixedValue = true;
+                } else if (value === 'false') {
+                    fixedValue = false;
+                }
+                break;
+
+            case 'number':
+                // dim case
+                if (['windowcoverings_set', 'windowcoverings_tilt_set', 'dim', 'volume_set'].includes(capabilityType)) {
+                    if (value === 'open') {
+                        fixedValue = 1;
+                    } else if (value === 'closed') {
+                        fixedValue = 0;
+                    } else {
+                        fixedValue = parseFloat(value);
+                    }
+                } else {
+                    fixedValue = parseFloat(value);
+                }
+                break;
+        }
+
+        return fixedValue;
     }
 
     async onPair(session) {

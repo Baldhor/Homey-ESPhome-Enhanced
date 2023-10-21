@@ -45,7 +45,7 @@
         },
         {
           "name": "value",
-          "type": "text",
+          "type": "autocomplete",
           "title": {
             "en": "value"
           }
@@ -55,10 +55,10 @@
     {
       "id": "esphome_select_changed",
       "title": {
-        "en": "Selected value of ... changed"
+        "en": "(Deprecated) Selected value of ... changed"
       },
       "titleFormatted": {
-        "en": "Selected value of [[capability_name]] changed"
+        "en": "(Deprecated) Selected value of [[capability_name]] changed"
       },
       "args": [
         {
@@ -82,10 +82,10 @@
     {
       "id": "esphome_select_changed_to",
       "title": {
-        "en": "Selected value of ... changed to ..."
+        "en": "(Deprecated) Selected value of ... changed to ..."
       },
       "titleFormatted": {
-        "en": "Selected value of [[capability_name]] changed to [[value]]"
+        "en": "(Deprecated) Selected value of [[capability_name]] changed to [[value]]"
       },
       "args": [
         {
@@ -124,7 +124,7 @@
         },
         {
           "name": "value",
-          "type": "text",
+          "type": "autocomplete",
           "title": {
             "en": "value"
           }
@@ -134,10 +134,10 @@
     {
       "id": "esphome_select_condition",
       "title": {
-        "en": "Selected value of ... !{{is|isn't}} ..."
+        "en": "(Deprecated) Selected value of ... !{{is|isn't}} ..."
       },
       "titleFormatted": {
-        "en": "Selected value of [[capability_name]] !{{is|isn't}} [[value]]"
+        "en": "(Deprecated) Selected value of [[capability_name]] !{{is|isn't}} [[value]]"
       },
       "args": [
         {
@@ -159,12 +159,37 @@
   ],
   "actions": [
     {
-      "id": "esphome_select_setvalue",
+      "id": "esphome_text_setvalue",
       "title": {
-        "en": "Set selected value of ... to ..."
+        "en": "Set value of ... to ..."
       },
       "titleFormatted": {
-        "en": "Set selected value of [[capability_name]] to [[value]]"
+        "en": "Set value of [[capability_name]] to [[value]]"
+      },
+      "args": [
+        {
+          "name": "capability_name",
+          "type": "autocomplete",
+          "title": {
+            "en": "capability"
+          }
+        },
+        {
+          "name": "value",
+          "type": "autocomplete",
+          "title": {
+            "en": "value"
+          }
+        }
+      ]
+    },
+    {
+      "id": "esphome_select_setvalue",
+      "title": {
+        "en": "(Deprecated) Set selected value of ... to ..."
+      },
+      "titleFormatted": {
+        "en": "(Deprecated) Set selected value of [[capability_name]] to [[value]]"
       },
       "args": [
         {

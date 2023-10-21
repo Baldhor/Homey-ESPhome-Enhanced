@@ -64,10 +64,12 @@ const EditCapabilityPage = function () {
 
         // Other options!
         this._initValues.capabilityOptions = [];
+        this._initValues.capabilityOptions.index = "";
+        this._initValues.capabilityOptions.title = "";
         Object.keys(this._editCapability.options).forEach(optionKey => {
           this._initValues.capabilityOptions[optionKey] = this._editCapability.options[optionKey];
         });
-        this.capabilityOptions = Object.assign({ 'index': "", 'title': "" }, this._initValues.capabilityOptions); // must be a seperate instance (shallow copy)
+        this.capabilityOptions = Object.assign({}, this._initValues.capabilityOptions); // must be a seperate instance (shallow copy)
       }
       this.capabilityTypeDescription = "";
 
@@ -285,8 +287,13 @@ const EditCapabilityPage = function () {
         // nativeCapabilityId
         tmpCapability.nativeCapabilityId = this.nativeCapabilityId;
 
-        // options
-        tmpCapability.options = Object.assign({}, this.capabilityOptions); // shallow copy
+        // options - need remove null and empty options
+        tmpCapability.options = {};
+        Object.keys(this.capabilityOptions).forEach(key => {
+          if (this.capabilityOptions[key] !== null && this.capabilityOptions[key] !== "") {
+            tmpCapability.options[key] = this.capabilityOptions[key];
+          }
+        });
 
         let tmpPhysicalDevice = {
           'physicalDeviceId': this._physicalDeviceSelected.physicalDeviceId,
