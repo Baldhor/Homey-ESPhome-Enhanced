@@ -591,17 +591,19 @@ class PhysicalDevice extends EventEmitter {
 
         let result = [];
 
-        Object.keys(this.client.nativeApiClient.entities).forEach(entityId => {
-            let tmpRawData = {
-                id: this.client.nativeApiClient.entities[entityId].id,
-                type: this.client.nativeApiClient.entities[entityId].type,
-                name: this.client.nativeApiClient.entities[entityId].name,
-                config: this.client.nativeApiClient.entities[entityId].config
-            };
+        if (this.client.nativeApiClient !== null) {
+            Object.keys(this.client.nativeApiClient.entities).forEach(entityId => {
+                let tmpRawData = {
+                    id: this.client.nativeApiClient.entities[entityId].id,
+                    type: this.client.nativeApiClient.entities[entityId].type,
+                    name: this.client.nativeApiClient.entities[entityId].name,
+                    config: this.client.nativeApiClient.entities[entityId].config
+                };
 
-            result.push(tmpRawData);
-        });
-
+                result.push(tmpRawData);
+            });
+        }
+        
         return result;
     }
 
