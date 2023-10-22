@@ -1,0 +1,19 @@
+{
+    "type": "number",
+    "title": {
+        "en": "Duration"
+    },
+    "units": {
+        "en": "s"
+    },
+    "insights": true,
+    "desc": {
+        "en": "Duration in seconds (s)"
+    },
+    "chartType": "spline",
+    "decimals": 2,
+    "getable": true,
+    "setable": false,
+    "uiComponent": "sensor",
+    "icon": "/assets/images/measure_duration.svg"
+}

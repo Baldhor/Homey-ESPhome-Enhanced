@@ -51,9 +51,6 @@ const EditCapabilityPage = function () {
 
         // Other options!
         this._initValues.capabilityOptions = {};
-        this._initValues.capabilityOptions['index'] = "";
-        this._initValues.capabilityOptions['title'] = "";
-        this.capabilityOptions = JSON.parse(JSON.stringify(this._initValues.capabilityOptions)); // must be a seperate instance (deep copy)
       } else {
         // edit mode
         this._editCapability = this._editVirtualDevice.current.capabilities.find(capability => capability.capabilityId === capabilityId);
@@ -63,14 +60,13 @@ const EditCapabilityPage = function () {
         this.capabilityType = this._initValues.capabilityType = this._editCapability.type;
 
         // Other options!
-        this._initValues.capabilityOptions = [];
-        this._initValues.capabilityOptions.index = "";
-        this._initValues.capabilityOptions.title = "";
+        this._initValues.capabilityOptions = {};
+        this._initCapabilityOptionsValues();
         Object.keys(this._editCapability.options).forEach(optionKey => {
           this._initValues.capabilityOptions[optionKey] = this._editCapability.options[optionKey];
         });
-        this.capabilityOptions = Object.assign({}, this._initValues.capabilityOptions); // must be a seperate instance (shallow copy)
       }
+      this.capabilityOptions = Object.assign({}, this._initValues.capabilityOptions); // must be a seperate instance (shallow copy)
       this.capabilityTypeDescription = "";
 
       await PetiteVue.nextTick();
@@ -223,7 +219,10 @@ const EditCapabilityPage = function () {
         // However, a capability option may be missing in the initial values, or be null
         modified = Object.keys(this.capabilityOptions).find(capabilityKey => {
           let initialValue = this._initValues.capabilityOptions[capabilityKey];
-          return initialValue === undefined || initialValue === null || initialValue !== this.capabilityOptions[capabilityKey];
+          if (initialValue === undefined || initialValue !== this.capabilityOptions[capabilityKey]) {
+            wizardlog('[' + this.componentName + '] ' + 'capability option modified:', capabilityKey);
+            return true;
+          }
         }) !== undefined;
       }
       this._modified = modified;
@@ -251,7 +250,7 @@ const EditCapabilityPage = function () {
           if (tmpCapability.index === "") {
             // If index is empty, we need to calculate one
             let tmpIndex = 1;
-            this._editVirtualDevice.current.capabilities.filter(capability => capability.type === this.capabilityType && capability.options.index === "").forEach(capability => {
+            this._editVirtualDevice.current.capabilities.filter(capability => capability.type === this.capabilityType && capability.options.index === undefined).forEach(capability => {
               if (tmpIndex <= parseInt(capability.index)) {
                 tmpIndex = parseInt(capability.index) + 1;
               }
@@ -328,7 +327,7 @@ const EditCapabilityPage = function () {
     async confirmDelete() {
       wizardlog('[' + this.componentName + '] ' + 'confirmDelete');
 
-      if (!await confirm(Homey.__("wizard2.edit-capability.loseModification", "warning"))) {
+      if (!await confirm(Homey.__("wizard2.edit-capability.warning-delete", "warning"))) {
         return;
       }
 
@@ -443,6 +442,103 @@ const EditCapabilityPage = function () {
       }
       return isEqual;
     },
+    _initCapabilityOptionsValues() {
+      wizardlog('[' + this.componentName + '] ' + '_initCapabilityOptionsValues');
+
+      // Reminder, they will be erased by current values
+
+      // Get applicable options and apply default values
+      let capabilityConf = CAPABILITY_CONFIGURATION.find(capabilityConf => capabilityConf.type === this.capabilityType);
+
+      capabilityConf.options.forEach(optionKey => {
+        // Add this option key
+        let optionValue = null;
+
+        switch (optionKey) {
+          case 'index':
+          case 'title':
+            optionValue = "";
+
+            break;
+
+          case 'preventInsights':
+          case 'preventTag':
+          case 'getable':
+          case 'approximated':
+          case 'zoneActivity':
+            if (optionKey === 'zoneActivity') {
+              if (['alarm_contact', 'alarm_motion'].includes(this.capabilityType)) {
+                optionValue = true;
+              } else {
+                optionValue = false;
+              }
+            } else if (optionKey === 'getable') {
+              optionValue = true;
+            }
+
+            // getable should be false if the option is writeOnly!
+            if (optionKey === 'getable' && this._nativeCapabilitySelected.configs.writeOnly === true) {
+              optionValue = false;
+            }
+
+            break;
+
+          case 'decimals':
+            optionValue = this._nativeCapabilitySelected.configs.precision;
+            if (optionValue === undefined) {
+              optionValue = 0;
+            }
+
+            break;
+
+          case 'min':
+            optionValue = this._nativeCapabilitySelected.constraints.min;
+            if (optionValue === undefined) {
+              optionValue = 0;
+            }
+
+            break;
+
+          case 'max':
+            optionValue = this._nativeCapabilitySelected.constraints.max;
+            if (optionValue === undefined) {
+              optionValue = 100;
+            }
+
+            break;
+
+          case 'step':
+            optionValue = this._nativeCapabilitySelected.constraints.step;
+            if (optionValue === undefined || typeof optionValue !== 'number') {
+              optionValue = 1;
+            }
+
+            if (optionValue < 0) {
+              optionValue = 0 - optionValue;
+            }
+
+            break;
+
+          case 'units':
+            this._nativeCapabilitySelected.configs.unit
+            if (optionValue === undefined) {
+              optionValue = "";
+            }
+
+            break;
+
+          case 'values':
+            optionValue = [...this._nativeCapabilitySelected.constraints.values];
+
+            break;
+
+          default:
+            throw new Error('Unknown optionKey, please fix the code: ' + optionKey);
+        }
+
+        this._initValues.capabilityOptions[optionKey] = optionValue;
+      });
+    },
     _updateCapabilityOptions() {
       wizardlog('[' + this.componentName + '] ' + '_updateCapabilityOptions');
 
@@ -471,7 +567,7 @@ const EditCapabilityPage = function () {
             if (optionValue === null || optionValue === undefined) {
               optionValue = "";
             }
-            this.capabilityOptions[optionKey] = optionValue;
+            
             break;
 
           case 'preventInsights':
@@ -515,7 +611,6 @@ const EditCapabilityPage = function () {
               optionValue = false;
             }
 
-            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           case 'decimals':
@@ -557,7 +652,6 @@ const EditCapabilityPage = function () {
             // 5- Enforced
             // do nothing
 
-            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           case 'min':
@@ -599,7 +693,6 @@ const EditCapabilityPage = function () {
             // 5- Enforced
             // do nothing
 
-            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           case 'max':
@@ -641,7 +734,6 @@ const EditCapabilityPage = function () {
             // 5- Enforced
             // do nothing
 
-            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           case 'step':
@@ -677,7 +769,6 @@ const EditCapabilityPage = function () {
               optionValue = 0 - optionValue;
             }
 
-            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           case 'units':
@@ -711,7 +802,6 @@ const EditCapabilityPage = function () {
             // 5- Enforced
             // do nothing
 
-            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           case 'values':
@@ -730,12 +820,13 @@ const EditCapabilityPage = function () {
             // 5- Enforced
             // do nothing
 
-            this.capabilityOptions[optionKey] = optionValue;
             break;
 
           default:
             throw new Error('Unknown optionKey, please fix the code: ' + optionKey);
         }
+        
+        this.capabilityOptions[optionKey] = optionValue;
       });
 
       // Remove not applicable options

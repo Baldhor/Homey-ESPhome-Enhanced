@@ -382,6 +382,10 @@
             "label": "ESPhome Select",
             "description": "Custom enum capability that appear as a text, can only be modified through action card"
         },
+        "measure_duration": {
+            "label": "measure_duration",
+            "description": "Measure duration"
+        },
         "onoff": {
             "label": "onoff",
             "description": "Turned on/off"

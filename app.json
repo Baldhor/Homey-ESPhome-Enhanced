@@ -156,6 +156,7 @@
       },
       {
         "id": "esphome_select_changed",
+        "deprecated": true,
         "title": {
           "en": "(Deprecated) Selected value of ... changed"
         },
@@ -188,6 +189,7 @@
       },
       {
         "id": "esphome_select_changed_to",
+        "deprecated": true,
         "title": {
           "en": "(Deprecated) Selected value of ... changed to ..."
         },
@@ -250,6 +252,7 @@
       },
       {
         "id": "esphome_select_condition",
+        "deprecated": true,
         "title": {
           "en": "(Deprecated) Selected value of ... !{{is|isn't}} ..."
         },
@@ -312,6 +315,7 @@
       },
       {
         "id": "esphome_select_setvalue",
+        "deprecated": true,
         "title": {
           "en": "(Deprecated) Set selected value of ... to ..."
         },
@@ -503,6 +507,7 @@
         "esphome_enum_vertical_swing_mode_AB",
         "esphome_select",
         "esphome_text",
+        "measure_duration",
         "onoff",
         "dim",
         "target_temperature",
@@ -1040,6 +1045,25 @@
       "getable": true,
       "setable": false,
       "icon": "/assets/images/esphome_text.svg"
+    },
+    "measure_duration": {
+      "type": "number",
+      "title": {
+        "en": "Duration"
+      },
+      "units": {
+        "en": "s"
+      },
+      "insights": true,
+      "desc": {
+        "en": "Duration in seconds (s)"
+      },
+      "chartType": "spline",
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/images/measure_duration.svg"
     }
   }
 }

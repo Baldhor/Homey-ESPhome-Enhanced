@@ -158,6 +158,18 @@ CAPABILITY_CONFIGURATION = [
     options: ['index', 'title', 'preventInsights', 'preventTag']
   },
   {
+    type: 'measure_duration',
+    valueType: 'number',
+    getable: true,
+    setable: false,
+    quickaction: false,
+    uielement: 'sensor',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: ['Cover.position', 'Cover.tilt'],
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
+  },
+  {
     type: 'onoff',
     valueType: 'boolean',
     getable: true,

@@ -18,6 +18,7 @@
     "esphome_enum_vertical_swing_mode_AB",
     "esphome_select",
     "esphome_text",
+    "measure_duration",
     "onoff",
     "dim",
     "target_temperature",
