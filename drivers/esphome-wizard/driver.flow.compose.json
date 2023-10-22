@@ -54,6 +54,7 @@
     },
     {
       "id": "esphome_select_changed",
+      "deprecated": true,
       "title": {
         "en": "(Deprecated) Selected value of ... changed"
       },
@@ -81,6 +82,7 @@
     },
     {
       "id": "esphome_select_changed_to",
+      "deprecated": true,
       "title": {
         "en": "(Deprecated) Selected value of ... changed to ..."
       },
@@ -133,6 +135,7 @@
     },
     {
       "id": "esphome_select_condition",
+      "deprecated": true,
       "title": {
         "en": "(Deprecated) Selected value of ... !{{is|isn't}} ..."
       },
@@ -185,6 +188,7 @@
     },
     {
       "id": "esphome_select_setvalue",
+      "deprecated": true,
       "title": {
         "en": "(Deprecated) Set selected value of ... to ..."
       },
