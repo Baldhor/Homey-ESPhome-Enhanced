@@ -214,5 +214,8 @@
   },
   "1.1.29": {
     "en": "Fix for cleaning up null and empty capability options (#41)"
+  },
+  "1.1.30": {
+    "en": "Corrected a few bugs and added measure_duration custom capability (#41)"
   }
 }
