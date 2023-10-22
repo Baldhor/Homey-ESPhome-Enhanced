@@ -217,5 +217,8 @@
   },
   "1.1.30": {
     "en": "Corrected a few bugs and added measure_duration custom capability (#41)"
+  },
+  "1.1.31": {
+    "en": "Fixed a bug introduced when adding the collect debug info function (#69)"
   }
 }
