@@ -50,6 +50,17 @@ class VirtualDevice extends Device {
     await this._checkAvailability().catch(this.error);
   }
 
+  // Overwrite getCapabilityOptions method
+  getCapabilityOptions(capabilityId) {
+    this.log('getCapabilityOptions:', ... arguments);
+
+    try {
+      return super.getCapabilityOptions(capabilityId);
+    } catch (e) {
+      return {};
+    }
+  }
+
   _setupCapabilities() {
     this.log('_setupCapabilities');
 
