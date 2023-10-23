@@ -382,9 +382,21 @@
             "label": "ESPhome Select",
             "description": "Custom enum capability that appear as a text, can only be modified through action card"
         },
+        "measure_angle": {
+            "label": "measure_angle",
+            "description": "Measure angle"
+        },
         "measure_duration": {
             "label": "measure_duration",
             "description": "Measure duration"
+        },
+        "measure_length": {
+            "label": "measure_length",
+            "description": "Measure length"
+        },
+        "measure_weight": {
+            "label": "measure_weight",
+            "description": "Measure weight"
         },
         "onoff": {
             "label": "onoff",

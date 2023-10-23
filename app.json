@@ -507,7 +507,10 @@
         "esphome_enum_vertical_swing_mode_AB",
         "esphome_select",
         "esphome_text",
+        "measure_angle",
         "measure_duration",
+        "measure_length",
+        "measure_weight",
         "onoff",
         "dim",
         "target_temperature",
@@ -1046,6 +1049,25 @@
       "setable": false,
       "icon": "/assets/images/esphome_text.svg"
     },
+    "measure_angle": {
+      "type": "number",
+      "title": {
+        "en": "Angle"
+      },
+      "units": {
+        "en": "°"
+      },
+      "insights": true,
+      "desc": {
+        "en": "Angle in degrees (°)"
+      },
+      "chartType": "spline",
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/images/measure_angle.svg"
+    },
     "measure_duration": {
       "type": "number",
       "title": {
@@ -1064,6 +1086,44 @@
       "setable": false,
       "uiComponent": "sensor",
       "icon": "/assets/images/measure_duration.svg"
+    },
+    "measure_length": {
+      "type": "number",
+      "title": {
+        "en": "Length"
+      },
+      "units": {
+        "en": "cm"
+      },
+      "insights": true,
+      "desc": {
+        "en": "Length in centimeter (cm)"
+      },
+      "chartType": "spline",
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/images/measure_length.svg"
+    },
+    "measure_weight": {
+      "type": "number",
+      "title": {
+        "en": "Weight"
+      },
+      "units": {
+        "en": "g"
+      },
+      "insights": true,
+      "desc": {
+        "en": "Weight in gram (g)"
+      },
+      "chartType": "spline",
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/images/measure_weight.svg"
     }
   }
 }

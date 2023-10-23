@@ -1,0 +1,19 @@
+{
+    "type": "number",
+    "title": {
+        "en": "Length"
+    },
+    "units": {
+        "en": "cm"
+    },
+    "insights": true,
+    "desc": {
+        "en": "Length in centimeter (cm)"
+    },
+    "chartType": "spline",
+    "decimals": 2,
+    "getable": true,
+    "setable": false,
+    "uiComponent": "sensor",
+    "icon": "/assets/images/measure_length.svg"
+}
