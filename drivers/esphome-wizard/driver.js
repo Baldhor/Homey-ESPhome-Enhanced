@@ -387,16 +387,30 @@ class Driver extends Homey.Driver {
                     }
 
                     // Apply min max
-                    if (nativeCapability.constraints.min !== undefined && fixedValue < min) {
-                        fixedValue = min;
+                    if (nativeCapability.constraints.min !== undefined) {
+                        if (fixedValue < nativeCapability.constraints.min) {
+                            fixedValue = nativeCapability.constraints.min;
+                        }
+                        // Propose min value
+                        results.push({
+                            name: nativeCapability.constraints.min.toString(),
+                            description: 'Min (' + nativeCapability.constraints.min + ')'
+                        });
                     }
-                    if (nativeCapability.constraints.max !== undefined && fixedValue < max) {
-                        fixedValue = min;
+                    if (nativeCapability.constraints.max !== undefined) {
+                        if (fixedValue > nativeCapability.constraints.max) {
+                            fixedValue = nativeCapability.constraints.max;
+                        }
+                        // Propose max value
+                        results.push({
+                            name: nativeCapability.constraints.max.toString(),
+                            description: 'Max (' + nativeCapability.constraints.max + ')'
+                        });
                     }
 
                     // Apply precision
                     if (nativeCapability.configs.precision !== undefined) {
-                        if (precision === 0) {
+                        if (nativeCapability.configs.precision === 0) {
                             fixedValue = parseInt(fixedValue, 10);
                         } else {
                             fixedValue = parseFloat(parseInt(fixedValue * Math.pow(10, nativeCapability.configs.precision))) / Math.pow(10, nativeCapability.configs.precision);
@@ -416,23 +430,25 @@ class Driver extends Homey.Driver {
                         // TODO: Can translate?
                         results.push({
                             name: 'open',
-                            description: 'Open/Max (1)',
+                            description: 'Open/Max (1)'
                         });
                         results.push({
                             name: 'closed',
-                            description: 'Closed/Min (0)',
+                            description: 'Closed/Min (0)'
                         });
                     }
 
-                    // TODO: Apply step
                     // If good, propose the value, if in between, propose above and below values!
                     if (nativeCapability.constraints.step !== undefined) {
                         let remains = fixedValue % nativeCapability.constraints.step;
 
-                        if (remains !== 0) {
-                            results.push({
-                                name: fixedValue.toString()
-                            });
+                        if (remains === 0) {
+                            // Do not propose it if it's min or max value; min and max are already proposed above!
+                            if ((nativeCapability.constraints.min === undefined || nativeCapability.constraints.min !== fixedValue) && (nativeCapability.constraints.max === undefined || nativeCapability.constraints.max !== fixedValue)) {
+                                results.push({
+                                    name: fixedValue.toString()
+                                });
+                            }
                         } else {
                             results.push({
                                 name: (fixedValue - remains).toString()
