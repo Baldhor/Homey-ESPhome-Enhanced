@@ -223,5 +223,8 @@
   },
   "1.1.32": {
     "en": "Attempt for a fix to #70, but I just cannot reproduce, and so cannot test it. However, I made a regression pass."
+  },
+  "1.2.0": {
+    "en": "Implemented meansure angle, duration, length and weight custom capabilities (why those are not standard!?). Context aware cards are fully functionnal."
   }
 }
