@@ -72,13 +72,9 @@ const EditCapabilityPage = function () {
       await PetiteVue.nextTick();
       this.checkValidity();
     },
-    checkValidity() {
-      wizardlog('[' + this.componentName + '] ' + 'checkValidity');
+    _updateComputedProperties() {
+      wizardlog('[' + this.componentName + '] ' + '_updateComputedProperties');
 
-      // Reset error and warning messsages
-      errorAndWarningList.reset();
-
-      // Update computed properties
       if (this.physicalDeviceId !== "unselected") {
         this._physicalDeviceSelected = configuration.physicalDevices.find(physicalDevice => physicalDevice.physicalDeviceId === this.physicalDeviceId);
       } else {
@@ -103,6 +99,15 @@ const EditCapabilityPage = function () {
           this.capabilityType = "unselected";
         }
       }
+    },
+    checkValidity() {
+      wizardlog('[' + this.componentName + '] ' + 'checkValidity');
+
+      // Reset error and warning messsages
+      errorAndWarningList.reset();
+
+      // Update computed properties
+      this._updateComputedProperties();
 
       // Update capability options as needed
       this._updateCapabilityOptions();
@@ -445,6 +450,9 @@ const EditCapabilityPage = function () {
     _initCapabilityOptionsValues() {
       wizardlog('[' + this.componentName + '] ' + '_initCapabilityOptionsValues');
 
+      // Update computed properties
+      this._updateComputedProperties();
+      
       // Reminder, they will be erased by current values
 
       // Get applicable options and apply default values
@@ -520,7 +528,7 @@ const EditCapabilityPage = function () {
             break;
 
           case 'units':
-            this._nativeCapabilitySelected.configs.unit
+            optionValue = this._nativeCapabilitySelected.configs.unit;
             if (optionValue === undefined) {
               optionValue = "";
             }
