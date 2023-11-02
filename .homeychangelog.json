@@ -226,5 +226,8 @@
   },
   "1.2.0": {
     "en": "Implemented meansure angle, duration, length and weight custom capabilities (why those are not standard!?). Context aware cards are fully functionnal."
+  },
+  "1.2.1": {
+    "en": "Fix for #71"
   }
 }
