@@ -229,5 +229,8 @@
   },
   "1.2.1": {
     "en": "Fix for #71"
+  },
+  "1.2.2": {
+    "en": "Fix #74 + Updated low level api version"
   }
 }
