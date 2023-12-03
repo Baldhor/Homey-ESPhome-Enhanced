@@ -235,5 +235,8 @@
   },
   "1.3.0": {
     "en": "#57 Definitevely removed support for legacy driver, users had warning since over a month."
+  },
+  "1.3.1": {
+    "en": "Implementation of Light State and Brightness (#75)"
   }
 }
