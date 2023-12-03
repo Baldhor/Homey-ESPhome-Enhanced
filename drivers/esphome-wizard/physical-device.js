@@ -343,6 +343,36 @@ class PhysicalDevice extends EventEmitter {
                     this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
                     break;
 
+                case 'Light':
+                    // Has a state and can be modified
+                    this.computeConfigShowUI(entity, configs);
+                    this.computeConfigDeviceClass(entity, configs);
+                    this.computeConfigUsage(entity, configs);
+
+                    // state
+                    let lightStateConstraints = Object.assign({}, constraints);
+                    lightStateConstraints.type = 'boolean';
+
+                    nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'state', configs, lightStateConstraints, null);
+                    this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+
+                    // brightness
+                    if (entity.config.legacySupportsBrightness) {
+                        let lightBrightnessConfigs = Object.assign({}, configs);
+                        lightBrightnessConfigs['precision'] = 2;
+
+                        let lightBrightnessConstraints = Object.assign({}, constraints);
+                        lightBrightnessConstraints['min'] = 0;
+                        lightBrightnessConstraints['max'] = 1;
+                        lightBrightnessConstraints['step'] = 0.01;
+                        lightBrightnessConstraints.type = 'number';
+
+                        nativeCapability = new NativeCapability(entityId, entity.name, entity.type, 'brightness', lightBrightnessConfigs, lightBrightnessConstraints, null);
+                        this.nativeCapabilities[nativeCapability.getId()] = nativeCapability;
+                    }
+
+                    break;
+
                 case 'Select':
                     if (entity.config.optionsList.length > 0 && this._checkAllValuesAreString(entity.config.optionsList)) {
                         this.computeConfigShowUI(entity, configs);
@@ -603,7 +633,7 @@ class PhysicalDevice extends EventEmitter {
                 result.push(tmpRawData);
             });
         }
-        
+
         return result;
     }
 

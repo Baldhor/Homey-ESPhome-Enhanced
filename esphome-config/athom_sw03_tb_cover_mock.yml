@@ -542,3 +542,10 @@ light:
     disabled_by_default: true
     output: button_led3
     default_transition_length: 500ms
+
+  - id: led_test
+    name: led_test
+    platform: monochromatic
+    disabled_by_default: true
+    output: button_led1
+    default_transition_length: 500ms

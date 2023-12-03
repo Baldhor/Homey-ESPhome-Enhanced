@@ -289,6 +289,22 @@ class Client extends EventEmitter {
                 this.nativeApiClient.connection.numberCommandService({ key: entityId, state: newValue });
                 break;
 
+            case 'Light':
+                switch (attribut) {
+                    case 'state':
+                        this.nativeApiClient.connection.lightCommandService({ key: entityId, state: newValue });
+                        break;
+
+                    case 'brightness':
+                        this.nativeApiClient.connection.lightCommandService({ key: entityId, brightness: newValue });
+                        break;
+
+                    default:
+                        // do nothing
+                        break
+                }
+                break;
+
             case 'Select':
                 this.nativeApiClient.connection.selectCommandService({ key: entityId, state: newValue });
                 break;

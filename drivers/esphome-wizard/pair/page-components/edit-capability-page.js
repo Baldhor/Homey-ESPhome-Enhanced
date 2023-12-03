@@ -194,7 +194,7 @@ const EditCapabilityPage = function () {
       // little stupid way to find it, but I don't know better one :)
       // Assuming step is a float (even if it is actually an integer)
       for (let i = 0; i <= 10; i++) {
-        let stepMultiplied = step * i * 10;
+        let stepMultiplied = step * Math.pow(10, i);
 
         // For precision 0, we just use initial step value, not 0 :)
         if (i === 0) {
