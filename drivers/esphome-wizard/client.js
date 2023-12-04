@@ -118,7 +118,11 @@ class Client extends EventEmitter {
         }
 
         // Connect (after the listener are added!)
-        this.nativeApiClient.connect();
+        try {
+            await this.nativeApiClient.connect();
+        } catch (error) {
+            this.error('Error while processing reconnection:', error);
+        }
     }
 
     /**
