@@ -241,5 +241,8 @@
   },
   "1.3.2": {
     "en": "Move back to reconnection function of the low level api + upgraded version of low level api (#78)"
+  },
+  "1.3.3": {
+    "en": "Added another try/catch to fix #56"
   }
 }
