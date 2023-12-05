@@ -119,7 +119,7 @@ class Client extends EventEmitter {
         try {
             await this.nativeApiClient.connect();
         } catch (error) {
-            this.error('Error while processing reconnection:', error);
+            this.error('Error while processing connection:', error);
         }
     }
 
@@ -373,7 +373,7 @@ class Client extends EventEmitter {
         this._disconnect();
     }
 
-    _disconnect() {
+    async _disconnect() {
         this.log('_disconnect');
 
         if (this.nativeApiClient !== null) {
@@ -381,7 +381,11 @@ class Client extends EventEmitter {
             this.nativeApiClient = null;
             nativeApiClient.removeAllListeners();
             Object.keys(nativeApiClient.entities).forEach(entityId => { nativeApiClient.entities[entityId].removeAllListeners(); });
-            nativeApiClient.disconnect();
+            try {
+                await nativeApiClient.disconnect();
+            } catch (error) {
+                this.error('Error while processing disconnection:', error);
+            }
         }
     }
 }
