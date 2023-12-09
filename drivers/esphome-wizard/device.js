@@ -264,26 +264,6 @@ class VirtualDevice extends Device {
               'value': value
             }
           ).catch(this.error);
-
-          this.homey.flow.getDeviceTriggerCard("esphome_select_changed").trigger(
-            this,
-            { // tokens
-              'value': value.toString()
-            },
-            { // state
-              'capabilityId': capabilityKeyV2
-            }
-          ).catch(this.error);
-
-          this.homey.flow.getDeviceTriggerCard("esphome_select_changed_to").trigger(
-            this,
-            { // tokens
-            },
-            { // state
-              'capabilityId': capabilityKeyV2,
-              'value': value
-            }
-          ).catch(this.error);
         } else {
           this.log('Unknown native capability', nativeCapabilityId, 'for physical device', capabilityValueV2.physicalDeviceId);
         }

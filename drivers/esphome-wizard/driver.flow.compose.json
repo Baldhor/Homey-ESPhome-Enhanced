@@ -51,60 +51,6 @@
           }
         }
       ]
-    },
-    {
-      "id": "esphome_select_changed",
-      "deprecated": true,
-      "title": {
-        "en": "(Deprecated) Selected value of ... changed"
-      },
-      "titleFormatted": {
-        "en": "(Deprecated) Selected value of [[capability_name]] changed"
-      },
-      "args": [
-        {
-          "name": "capability_name",
-          "type": "autocomplete",
-          "title": {
-            "en": "capability"
-          }
-        }
-      ],
-      "tokens": [
-        {
-          "name": "value",
-          "type": "string",
-          "title": {
-            "en": "value"
-          }
-        }
-      ]
-    },
-    {
-      "id": "esphome_select_changed_to",
-      "deprecated": true,
-      "title": {
-        "en": "(Deprecated) Selected value of ... changed to ..."
-      },
-      "titleFormatted": {
-        "en": "(Deprecated) Selected value of [[capability_name]] changed to [[value]]"
-      },
-      "args": [
-        {
-          "name": "capability_name",
-          "type": "autocomplete",
-          "title": {
-            "en": "capability"
-          }
-        },
-        {
-          "name": "value",
-          "type": "autocomplete",
-          "title": {
-            "en": "value"
-          }
-        }
-      ]
     }
   ],
   "conditions": [
@@ -132,32 +78,6 @@
           }
         }
       ]
-    },
-    {
-      "id": "esphome_select_condition",
-      "deprecated": true,
-      "title": {
-        "en": "(Deprecated) Selected value of ... !{{is|isn't}} ..."
-      },
-      "titleFormatted": {
-        "en": "(Deprecated) Selected value of [[capability_name]] !{{is|isn't}} [[value]]"
-      },
-      "args": [
-        {
-          "name": "capability_name",
-          "type": "autocomplete",
-          "title": {
-            "en": "capability"
-          }
-        },
-        {
-          "name": "value",
-          "type": "autocomplete",
-          "title": {
-            "en": "value"
-          }
-        }
-      ]
     }
   ],
   "actions": [
@@ -168,32 +88,6 @@
       },
       "titleFormatted": {
         "en": "Set value of [[capability_name]] to [[value]]"
-      },
-      "args": [
-        {
-          "name": "capability_name",
-          "type": "autocomplete",
-          "title": {
-            "en": "capability"
-          }
-        },
-        {
-          "name": "value",
-          "type": "autocomplete",
-          "title": {
-            "en": "value"
-          }
-        }
-      ]
-    },
-    {
-      "id": "esphome_select_setvalue",
-      "deprecated": true,
-      "title": {
-        "en": "(Deprecated) Set selected value of ... to ..."
-      },
-      "titleFormatted": {
-        "en": "(Deprecated) Set selected value of [[capability_name]] to [[value]]"
       },
       "args": [
         {

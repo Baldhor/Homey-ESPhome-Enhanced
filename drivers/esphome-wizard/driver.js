@@ -103,7 +103,7 @@ class Driver extends Homey.Driver {
                 args.device.log('argumentAutocompleteListener:', 'esphome_text_changed', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_text', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames(args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerRunListener(async (args, state) => {
                 args.device.log('runListener:', 'esphome_text_changed', args.capability_name, state);
@@ -121,7 +121,7 @@ class Driver extends Homey.Driver {
                 args.device.log('argumentAutocompleteListener:', 'esphome_text_changed_to', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_text', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames(args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
                 args.device.log('argumentAutocompleteListener:', 'esphome_text_changed_to', 'value', query, args.capability_name);
@@ -149,7 +149,7 @@ class Driver extends Homey.Driver {
                 args.device.log('argumentAutocompleteListener:', 'esphome_text_condition', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_text', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames(args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
                 args.device.log('argumentAutocompleteListener:', 'esphome_text_condition', 'value', query, args.capability_name);
@@ -178,7 +178,7 @@ class Driver extends Homey.Driver {
                 args.device.log('argumentAutocompleteListener:', 'esphome_text_setvalue', 'capability_name', query);
 
                 // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device, true).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
+                return this._getAutocompleteCapabilityNames(args.device, true).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
             });
             myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
                 args.device.log('argumentAutocompleteListener:', 'esphome_text_setvalue', 'value', query, args.capability_name);
@@ -199,116 +199,9 @@ class Driver extends Homey.Driver {
                 return true;
             });
         }
-
-        // esphome_select
-        {
-            // trigger card esphome_select_changed
-            //   args: capability_name
-            //   tokens: none
-            myCard = this.homey.flow.getDeviceTriggerCard('esphome_select_changed');
-
-            myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                args.device.log('argumentAutocompleteListener:', 'esphome_select_changed', 'capability_name', query);
-
-                // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
-            });
-            myCard.registerRunListener(async (args, state) => {
-                args.device.log('runListener:', 'esphome_select_changed', args.capability_name, state);
-
-                // Make sure the selected capability is concerned by the trigger
-                return args.capability_name.capabilityId === state.capabilityId;
-            });
-
-            // trigger card esphome_select_changed_to
-            //   args: capability_name, value
-            //   tokens: none
-            myCard = this.homey.flow.getDeviceTriggerCard('esphome_select_changed_to');
-
-            myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                args.device.log('argumentAutocompleteListener:', 'esphome_select_changed_to', 'capability_name', query);
-
-                // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
-            });
-            myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
-                args.device.log('argumentAutocompleteListener:', 'esphome_select_changed_to', 'value', query, args.capability_name);
-
-                // Returns the compatible capabilities
-                if (args.capability_name !== 'undefined') {
-                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
-                } else {
-                    return [];
-                }
-            });
-            myCard.registerRunListener(async (args, state) => {
-                args.device.log('runListener:', 'esphome_select_changed_to', args.capability_name, args.value, state);
-
-                // Make sure the selected capability is concerned by the trigger
-                return args.capability_name.capabilityId === state.capabilityId && this._convertValueForRunListener(args.device, state.capabilityId, args.value.name) === state.value;
-            });
-
-            // condition card esphome_select_condition
-            //   args: capability_name, value
-            //   tokens: none
-            myCard = this.homey.flow.getConditionCard('esphome_select_condition');
-
-            myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                args.device.log('argumentAutocompleteListener:', 'esphome_select_condition', 'capability_name', query);
-
-                // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device, false).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
-            });
-            myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
-                args.device.log('argumentAutocompleteListener:', 'esphome_select_condition', 'value', query, args.capability_name);
-
-                // Returns the compatible capabilities
-                if (args.capability_name !== 'undefined') {
-                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
-                } else {
-                    return [];
-                }
-            });
-            myCard.registerRunListener(async (args, state) => {
-                args.device.log('runListener:', 'esphome_select_condition', args.capability_name, args.value, state);
-
-                // Make sure the selected capability current value match the condition
-                return this._convertValueForRunListener(args.device, args.capability_name.capabilityId, args.value.name) === args.device.getCapabilityValue(args.capability_name.capabilityId);
-            });
-
-            // action card esphome_select_setvalue
-            //   args: capability_name, value
-            //   tokens: none
-            myCard = this.homey.flow.getActionCard('esphome_select_setvalue');
-
-            myCard.registerArgumentAutocompleteListener('capability_name', async (query, args) => {
-                args.device.log('argumentAutocompleteListener:', 'esphome_select_setvalue', 'capability_name', query);
-
-                // Returns the compatible capabilities
-                return this._getAutocompleteCapabilityNames('esphome_select', args.device, true).filter(e => e.name.toLowerCase().includes(query.toLowerCase()));
-            });
-            myCard.registerArgumentAutocompleteListener('value', async (query, args) => {
-                args.device.log('argumentAutocompleteListener:', 'esphome_select_setvalue', 'value', query, args.capability_name);
-
-                // Returns the compatible capabilities
-                if (args.capability_name !== 'undefined') {
-                    return this._getAutocompleteCapabilityValues(args.device, args.capability_name.capabilityId, query);
-                } else {
-                    return [];
-                }
-            });
-            myCard.registerRunListener(async (args) => {
-                args.device.log('runListener:', 'esphome_select_setvalue', args.capability_name, args.value);
-
-                // Apply the modification
-                args.device.capabilityListener(args.capability_name.capabilityId, this._convertValueForRunListener(args.device, args.capability_name.capabilityId, args.value.name));
-
-                return true;
-            });
-        }
     }
 
-    _getAutocompleteCapabilityNames(filterCapabilityType, device, writeRequired) {
+    _getAutocompleteCapabilityNames(device, writeRequired) {
         device.log('_getAutocompleteCapabilityNames:', writeRequired);
 
         let results = [];
@@ -514,9 +407,9 @@ class Driver extends Homey.Driver {
                 // dim case
                 if (['windowcoverings_set', 'windowcoverings_tilt_set', 'dim', 'volume_set'].includes(capabilityType)) {
                     if (value === 'open') {
-                        fixedValue = 1;
+                        fixedValue = parseFloat(1);
                     } else if (value === 'closed') {
-                        fixedValue = 0;
+                        fixedValue = parseFloat(0);
                     } else {
                         fixedValue = parseFloat(value);
                     }

@@ -1,14 +1,4 @@
 {
-    "app": {
-        "error": {
-            "connection_failed": "Failed connecting to device: ",
-            "connection_disconnected": "Disconnected from the device",
-            "connection_error": "Connection error: "
-        },
-        "initializing": "Initializing device, please wait...",
-        "deprecated_notice": "You are using deprecated devices, please use the new Wizard! It will be unsupported soon",
-        "deprecated_device": "This device is deprecated, please use the new Wizard! It will be unsupported soon"
-    },
     "wizard2": {
         "device": {
             "initializing": "Initializing device, please wait...",
