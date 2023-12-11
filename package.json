@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@2colors/esphome-native-api": "^1.2.6",
-    "p-queue": "^7.4.1",
+    "p-queue": "^8.0.0",
     "serialize-error": "^11.0.3",
     "socket.io-client": "^4.7.2"
   }
