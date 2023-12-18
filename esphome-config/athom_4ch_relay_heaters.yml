@@ -1,0 +1,363 @@
+# ---------------------------------------------
+# Owner: Baldhor
+# Code status: wip
+# Compile status: uncompiled
+# Test status: untested
+# ---------------------------------------------
+
+# ---------------------------------------------
+# ESPHome configuration for Athom 4CH relay switch device in purpose to handle wired heaters.
+# 
+# Important:
+#   - Wired heater are heating when no signal, and not heating when there are a signal
+#     => I'm using Normaly Closed output ports (no need to reverse)
+#   - At boot, we don't want to heat by default
+#     => Because I'm using Normaly Closed output, default should be OFF
+#   - We want to avoid over heating in case the connection to the "thermostat" is lost
+#     => The relays should turn OFF after a timeout if no news!
+#     => The thermostat must publish a new command before the timeout expire
+#   - We want to avoid turning ON/OFF the relays repeatedly (it could damage them)
+#     => A minimum delay must be respected before the new state is applied
+# 
+# Key points:
+#   - Use native api
+#   - Switch entities exposed are 'not inversed' and do not control the relays directly, but
+#       through an individual minimum delay
+#     => ON means 'heat', meaning the relays 'should be' ON
+#     => OFF means 'don't heat', meaning the relays 'should be' OFF
+#     /!\ 'Should be' state will be applied only after the apply delay
+#   - Switch entities turn back OFF (don't heat) after an individual max heating delay
+#     => Max heating delay restart everytime a switch command ON is received (through API or binary sensor)
+#     => Max heating delay turn OFF the linked switch
+#   - 
+# 
+# Features:
+#   1- 4 switches 'heater_<n>' and their respective binary sensors 'toggle_<n>' are exposed
+#     => Switches state is a 'Should be'
+#   2- 4 relays 'relay_<n> are exposed for diagnostic purpose ONLY
+#     => They are the real state of the heaters
+#     /!\ Avoid direct modification of their state, it could damage your device and will disturb the timers
+#   2- 'Apply delay' and 'Max heating delay' can be configured globaly (not individualy)
+#   3- 'Apply delay' and 'Max heating delay' are saved/restored from flash
+# 
+# Usage:
+#   - secrets.yaml file must include:
+#       wifi_ssid: to_be_complated
+#       wifi_password: to_be_complated
+#   - Compile and upload
+# ---------------------------------------------
+
+# Pin definition
+# GPIO16 Relay 1 and its status LED
+# GPIO14 Relay 2 and its status LED
+# GPIO12 Relay 3 and its status LED
+# GPIO13 Relay 4 and its status LED
+# GPIO5 Blue LED (HIGH = off, LOW = on)
+
+esphome:
+  name: athom_4ch_relay_heaters
+  name_add_mac_suffix: true
+  friendly_name: Athom 4CH Relay Heaters
+  project:
+    name: "baldhor.athom_4ch_relay_heaters"
+    version: "1.0.0"
+
+esp8266:
+  board: esp8285
+  restore_from_flash: true
+
+preferences:
+  flash_write_interval: 1min
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap: {} # This spawns an AP with the device name and mac address with no password.
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+  #password: !secret api_password
+
+#mqtt:
+#  broker: !secret mqtt_broker
+#  port: !secret mqtt_port
+#  username: !secret mqtt_login
+#  password: !secret mqtt_password
+
+ota:
+  password: !secret ota_password
+
+# Enable logging
+logger:
+  baud_rate: 0
+  level: DEBUG #(by default)
+#  level: VERBOSE
+#  level: VERY_VERBOSE
+
+# The mdns component makes the node announce itself on the local network using the multicast DNS (mDNS) protocol.
+# If mDNS is disabled, it will be impossible to automatically find your devices.
+mdns:
+  disabled: true
+
+web_server:
+  port: 80
+
+captive_portal:
+
+# Maintain date/time up to date
+#time:
+#  - platform: sntp
+#    id: my_time
+
+# Announce wifi connexion
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+      disabled_by_default: true
+
+# Announce uptime every minute
+sensor:
+  - platform: uptime
+    name: "Uptime"
+    disabled_by_default: true
+
+button:
+  - id: Restart
+    platform: restart
+    name: Simple restart
+    disabled_by_default: true
+
+number:
+  - id: apply_delay
+    platform: template
+    name: "Apply delay (in seconds)"
+    disabled_by_default: true
+    optimistic: true
+    min_value: 1
+    max_value: 10
+    step: 1
+    restore_value: true
+    initial_value: 3
+    mode: box
+    entity_category: config
+
+  - id: max_heating_delay
+    platform: template
+    name: "Max heating delay (in minutes)"
+    disabled_by_default: true
+    optimistic: true
+    min_value: 1
+    max_value: 10
+    step: 1
+    restore_value: true
+    initial_value: 5
+    mode: box
+    entity_category: config
+
+binary_sensor:
+  - id: Status
+    platform: status
+    name: "Status"
+    disabled_by_default: true
+
+script:
+  - id: apply_delay_1
+    mode: single
+    then:
+      - delay: !lambda return id(apply_delay).state * 1000;
+      - lambda: !lambda |-
+          if (id(heater_1).state) {
+            id(relay_1).turn_on();
+          } else {
+            id(relay_1).turn_off();
+          }
+      
+  - id: apply_delay_2
+    mode: single
+    then:
+      - delay: !lambda return id(apply_delay).state * 1000;
+      - lambda: !lambda |-
+          if (id(heater_2).state) {
+            id(relay_2).turn_on();
+          } else {
+            id(relay_2).turn_off();
+          }
+      
+  - id: apply_delay_3
+    mode: single
+    then:
+      - delay: !lambda return id(apply_delay).state * 1000;
+      - lambda: !lambda |-
+          if (id(heater_3).state) {
+            id(relay_3).turn_on();
+          } else {
+            id(relay_3).turn_off();
+          }
+      
+  - id: apply_delay_4
+    mode: single
+    then:
+      - delay: !lambda return id(apply_delay).state * 1000;
+      - lambda: !lambda |-
+          if (id(heater_4).state) {
+            id(relay_4).turn_on();
+          } else {
+            id(relay_4).turn_off();
+          }
+      
+  - id: max_heating_delay_1
+    mode: single
+    then:
+      - delay: !lambda return id(max_heating_delay).state * 60000;
+      - switch.turn_off: heater_1
+
+  - id: max_heating_delay_2
+    mode: single
+    then:
+      - delay: !lambda return id(max_heating_delay).state * 60000;
+      - switch.turn_off: heater_2
+
+  - id: max_heating_delay_3
+    mode: single
+    then:
+      - delay: !lambda return id(max_heating_delay).state * 60000;
+      - switch.turn_off: heater_3
+
+  - id: max_heating_delay_4
+    mode: single
+    then:
+      - delay: !lambda return id(max_heating_delay).state * 60000;
+      - switch.turn_off: heater_4
+
+switch:
+  - id: heater_1
+    platform: template
+    name: "Heater 1"
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_1).is_running()) {
+            id(apply_delay_1).execute();
+          }
+    on_turn_off:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_1).is_running()) {
+            id(apply_delay_1).execute();
+          }
+
+  - id: heater_2
+    platform: template
+    name: "Heater 2"
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_2).is_running()) {
+            id(apply_delay_2).execute();
+          }
+    on_turn_off:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_2).is_running()) {
+            id(apply_delay_2).execute();
+          }
+
+  - id: heater_3
+    platform: template
+    name: "Heater 3"
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_3).is_running()) {
+            id(apply_delay_3).execute();
+          }
+    on_turn_off:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_3).is_running()) {
+            id(apply_delay_3).execute();
+          }
+
+  - id: heater_4
+    platform: template
+    name: "Heater 4"
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_4).is_running()) {
+            id(apply_delay_4).execute();
+          }
+    on_turn_off:
+      then:
+        lambda: !lambda |-
+          if (!id(apply_delay_4).is_running()) {
+            id(apply_delay_4).execute();
+          }
+
+  - id: relay_1
+    platform: gpio
+    pin: GPIO16
+    disabled_by_default: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        - script.execute: max_heating_delay_1
+    on_turn_off:
+      then:
+        - script.stop: max_heating_delay_1
+
+  - id: relay_2
+    platform: gpio
+    pin: GPIO14
+    disabled_by_default: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        - script.execute: max_heating_delay_2
+    on_turn_off:
+      then:
+        - script.stop: max_heating_delay_2
+
+  - id: relay_3
+    platform: gpio
+    pin: GPIO12
+    disabled_by_default: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        - script.execute: max_heating_delay_3
+    on_turn_off:
+      then:
+        - script.stop: max_heating_delay_3
+
+  - id: relay_4
+    platform: gpio
+    pin: GPIO13
+    disabled_by_default: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      then:
+        - script.execute: max_heating_delay_4
+    on_turn_off:
+      then:
+        - script.stop: max_heating_delay_4
+
+light:
+  - id: status_led1
+    platform: status_led
+    disabled_by_default: true
+    pin:
+      number: GPIO5
+      inverted: true
