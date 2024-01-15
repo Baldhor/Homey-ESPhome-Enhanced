@@ -12,6 +12,6 @@
     "@2colors/esphome-native-api": "^1.2.9",
     "p-queue": "^8.0.1",
     "serialize-error": "^11.0.3",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.4"
   }
 }
