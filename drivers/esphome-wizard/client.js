@@ -106,7 +106,7 @@ class Client extends EventEmitter {
                 encryptionKey: this.encryptionKey === '' ? null : this.encryptionKey,
                 password: this.password === '' ? null : this.password,
                 initializeSubscribeLogs: true, // We want logs, we like logs
-                initializeListEntities: true, // We want the entities configuration²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
+                initializeListEntities: true, // We want the entities configuration
                 reconnect: true,
                 clientInfo: 'homey'
             });
@@ -179,8 +179,10 @@ class Client extends EventEmitter {
     errorListener(error) {
         this.error('Received an error:', error);
 
+        /**
         this.connected = false;
         this.emit('disconnected');
+        */
     }
 
     logsListener(message) {
