@@ -87,15 +87,15 @@ web_server:
 captive_portal:
 
 # Maintain date/time up to date
-# time:
-#   - platform: sntp
-#     id: my_time
-#     on_time:
-#       - seconds: 10
-#         then:
-#           - binary_sensor.template.publish:
-#             id: random_boolean
-#             state: !lambda 'return (rand() % 2) == 1;'
+time:
+  - platform: sntp
+    id: my_time
+#    on_time:
+#      - seconds: 10
+#        then:
+#          - binary_sensor.template.publish:
+#            id: random_boolean
+#            state: !lambda 'return (rand() % 2) == 1;'
 
 # Announce wifi connexion
 text_sensor:

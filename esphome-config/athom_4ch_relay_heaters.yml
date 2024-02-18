@@ -108,9 +108,9 @@ web_server:
 captive_portal:
 
 # Maintain date/time up to date
-#time:
-#  - platform: sntp
-#    id: my_time
+time:
+  - platform: sntp
+    id: my_time
 
 # Announce wifi connexion
 text_sensor:
