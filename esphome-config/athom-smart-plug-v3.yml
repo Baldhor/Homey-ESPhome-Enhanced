@@ -1,7 +1,8 @@
 # ---------------------------------------------
 # Source: https://github.com/athom-tech/esp32-configs/blob/main/athom-smart-plug.yaml
 # Corrections :
-#   Renamed the relay from "Power" to "Power relay" to avoid duplicate name
+#   Renamed the relay from "Power" to "Power Relay" to avoid duplicate name
+#   Change power filter value from 3.0 to 0.9w on request of SvenRhein : https://community.homey.app/t/app-pro-esphome-control-your-esp8266-esp32-by-simple-configuration-files/87271/63?u=baldhor
 # Code status: completed
 # Compile status: completed
 # Test status: completed
@@ -120,7 +121,7 @@ sensor:
       name: "Power"
       id: power_sensor
       filters:
-          - lambda: if (x < 3.0) return 0.0; else return x;    #For the chip will report less than 3w power when no load is connected
+          - lambda: if (x < 0.9) return 0.0; else return x;    #For the chip will report less than 3w power when no load is connected
 
     energy:
       name: "Energy"
@@ -169,7 +170,7 @@ button:
 
 switch:
   - platform: gpio
-    name: "Power relay"
+    name: "Power Relay"
     pin: GPIO5
     id: relay
     restore_mode: ${relay_restore_mode}
