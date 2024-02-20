@@ -253,5 +253,8 @@
   },
   "1.3.6": {
     "en": "Fix - Do not consider errors as disconnection"
+  },
+  "1.3.7": {
+    "en": "Put back my own implmentation of autoreconnect (cf. #88)"
   }
 }
