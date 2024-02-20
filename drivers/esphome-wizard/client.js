@@ -40,7 +40,9 @@ class Client extends EventEmitter {
     reconnect = true;
     expectConnected = false;
     connected = false;
+    reconnectTimer = null;
 
+    abortController = null;
     nativeApiClient = null;
 
     /**
@@ -107,7 +109,7 @@ class Client extends EventEmitter {
                 password: this.password === '' ? null : this.password,
                 initializeSubscribeLogs: true, // We want logs, we like logs
                 initializeListEntities: true, // We want the entities configuration
-                reconnect: true,
+                reconnect: false, // We use our own reconnection implementation
                 clientInfo: 'homey'
             });
 
@@ -174,15 +176,13 @@ class Client extends EventEmitter {
 
         this.connected = false;
         this.emit('disconnected');
+
+        this._disconnect();
+        this._autoReconnect();
     }
 
     errorListener(error) {
         this.error('Received an error:', error);
-
-        /**
-        this.connected = false;
-        this.emit('disconnected');
-        */
     }
 
     logsListener(message) {
@@ -206,7 +206,8 @@ class Client extends EventEmitter {
      */
     startRemoteEntityListener(entityId) {
         this.nativeApiClient.entities[entityId]
-            .on('state', (state) => this.remoteEntityStateListener(entityId, state));
+            .on('state', (state) => this.remoteEntityStateListener(entityId, state)
+                , { signal: this.abortController.signal });
     }
 
     /**
@@ -372,6 +373,10 @@ class Client extends EventEmitter {
         this.log('Disconnecting');
 
         this.expectConnected = false;
+        if (this.reconnectTimer !== null) {
+            clearTimeout(this.reconnectTimer);
+            this.reconnectTimer = null;
+        }
         this._disconnect();
     }
 
@@ -379,6 +384,7 @@ class Client extends EventEmitter {
         this.log('_disconnect');
 
         if (this.nativeApiClient !== null) {
+            this.abortController.abort();
             let nativeApiClient = this.nativeApiClient;
             this.nativeApiClient = null;
             nativeApiClient.removeAllListeners();
@@ -388,6 +394,22 @@ class Client extends EventEmitter {
             } catch (error) {
                 this.error('Error while processing disconnection:', error);
             }
+        }
+    }
+
+    _autoReconnect() {
+        this.log('_autoReconnect');
+
+        if (this.expectConnected === false || this.reconnect === false) {
+            this.log('Reconnection is disabled');
+            return;
+        }
+
+        if (this.reconnectTimer === null) {
+            this.reconnectTimer = setTimeout(() => {
+                this.reconnectTimer = null;
+                this.processConnection();
+            }, NATIVE_API_RECONNECTION_DELAY * 1000);
         }
     }
 }
