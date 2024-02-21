@@ -122,6 +122,9 @@ class Client extends EventEmitter {
             await this.nativeApiClient.connect();
         } catch (error) {
             this.error('Error while processing connection:', error);
+            
+            this._disconnect();
+            this._autoReconnect();
         }
     }
 
@@ -183,6 +186,12 @@ class Client extends EventEmitter {
 
     errorListener(error) {
         this.error('Received an error:', error);
+
+        // Some errors requier to reconnect, other do not
+        if (error.code === "EHOSTUNREACH") {
+            this._disconnect();
+            this._autoReconnect();
+        }
     }
 
     logsListener(message) {
