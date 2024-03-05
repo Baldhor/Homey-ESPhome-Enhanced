@@ -259,5 +259,8 @@
   },
   "1.3.8": {
     "en": "Solved some edge cases (no so edge actually) in the reconnect feature"
+  },
+  "1.3.10": {
+    "en": "Improved resilience of context aware flow cards"
   }
 }
