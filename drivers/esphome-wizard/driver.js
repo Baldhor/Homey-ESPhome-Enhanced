@@ -213,6 +213,12 @@ class Driver extends Homey.Driver {
             if (writeRequired) {
                 let capabilityKeysV2 = device.getStoreValue('capabilityKeysV2');
                 let capabilityValueV2 = capabilityKeysV2[capabilityId];
+
+                if (capabilityValueV2 === undefined) {
+                    this.error("Cannot find stored values for capabilityId:", capabilityId, "for virtual device:", device.getId());
+                    return;
+                }
+
                 let physicalDevice = PhysicalDeviceManager.getById(capabilityValueV2.physicalDeviceId);
                 let nativeCapability = physicalDevice.nativeCapabilities[capabilityValueV2.nativeCapabilityId];
 
