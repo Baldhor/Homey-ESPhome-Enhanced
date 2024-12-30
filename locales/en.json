@@ -359,6 +359,10 @@
             "label": "measure_length",
             "description": "Measure length"
         },
+        "measure_rssi": {
+            "label": "measure_rssi",
+            "description": "Measure RSSI"
+        },
         "measure_weight": {
             "label": "measure_weight",
             "description": "Measure weight"

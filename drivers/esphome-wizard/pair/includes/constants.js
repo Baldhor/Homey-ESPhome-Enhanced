@@ -206,6 +206,18 @@ CAPABILITY_CONFIGURATION = [
     options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
   },
   {
+    type: 'measure_rssi',
+    valueType: 'number',
+    getable: true,
+    setable: false,
+    quickaction: false,
+    uielement: 'sensor',
+    nativeCapabilitySupported: null,
+    nativeCapabilityUnsupported: null,
+    specialCaseSupported: [],
+    options: ['index', 'title', 'preventInsights', 'preventTag', 'units', 'decimals']
+  },
+  {
     type: 'onoff',
     valueType: 'boolean',
     getable: true,
