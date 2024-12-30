@@ -22,6 +22,7 @@
     "measure_duration",
     "measure_length",
     "measure_weight",
+    "measure_rssi",
     "onoff",
     "dim",
     "target_temperature",

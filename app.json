@@ -218,6 +218,7 @@
         "measure_duration",
         "measure_length",
         "measure_weight",
+        "measure_rssi",
         "onoff",
         "dim",
         "target_temperature",
@@ -812,6 +813,22 @@
       "setable": false,
       "uiComponent": "sensor",
       "icon": "/assets/images/measure_length.svg"
+    },
+    "measure_rssi": {
+      "type": "number",
+      "title": {
+        "en": "RSSI"
+      },
+      "units": {
+        "en": "dBm"
+      },
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "min": -100,
+      "max": 0,
+      "step": 1,
+      "icon": "/assets/images/measure_rssi.svg"
     },
     "measure_weight": {
       "type": "number",
