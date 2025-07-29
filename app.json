@@ -1,836 +1,809 @@
 {
-  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
-  "id": "nl.inversion.esphome",
-  "version": "1.3.11",
-  "compatibility": ">=5.0.0",
-  "sdk": 3,
-  "platforms": [
-    "local"
-  ],
-  "name": {
-    "en": "ESPhome"
-  },
-  "description": {
-    "en": "Control your ESP8266/ESP32 by simple configuration files."
-  },
-  "brandColor": "#9e9c98",
-  "category": [
-    "appliances"
-  ],
-  "permissions": [
-    "homey:manager:api"
-  ],
-  "images": {
-    "small": "/assets/images/small.png",
-    "large": "/assets/images/large.png",
-    "xlarge": "/assets/images/xlarge.png"
-  },
-  "author": {
-    "name": "Baldhor",
-    "email": "baldhors@gmail.com"
-  },
-  "contributors": {
-    "developers": [
-      {
-        "name": "Robin van Kekem"
-      }
-    ]
-  },
-  "homeyCommunityTopicId": 87271,
-  "contributing": {
-    "donate": {
-      "paypal": {
-        "username": "baldhors"
-      }
-    }
-  },
-  "homepage": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki",
-  "support": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki/User-Guide",
-  "source": "https://github.com/Baldhor/Homey-ESPhome-Enhanced",
-  "bugs": {
-    "url": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/issues"
-  },
-  "tags": {
-    "en": [
-      "ESPhome",
-      "esp32",
-      "esp8266",
-      "esp8285",
-      "Home Assistant"
-    ]
-  },
-  "flow": {
-    "triggers": [
-      {
-        "id": "esphome_text_changed",
-        "title": {
-          "en": "Value of ... changed"
-        },
-        "titleFormatted": {
-          "en": "Value of [[capability_name]] changed"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=esphome-wizard"
-          },
-          {
-            "name": "capability_name",
-            "type": "autocomplete",
-            "title": {
-              "en": "capability"
+    "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+    "id": "nl.inversion.esphome",
+    "version": "1.3.12",
+    "compatibility": ">=5.0.0",
+    "sdk": 3,
+    "platforms": [
+        "local"
+    ],
+    "name": {
+        "en": "ESPhome"
+    },
+    "description": {
+        "en": "Control your ESP8266/ESP32 by simple configuration files."
+    },
+    "brandColor": "#9e9c98",
+    "category": [
+        "appliances"
+    ],
+    "permissions": [
+        "homey:manager:api"
+    ],
+    "images": {
+        "small": "/assets/images/small.png",
+        "large": "/assets/images/large.png",
+        "xlarge": "/assets/images/xlarge.png"
+    },
+    "author": {
+        "name": "Baldhor",
+        "email": "baldhors@gmail.com"
+    },
+    "contributors": {
+        "developers": [{
+            "name": "Robin van Kekem"
+        }]
+    },
+    "homeyCommunityTopicId": 87271,
+    "contributing": {
+        "donate": {
+            "paypal": {
+                "username": "baldhors"
             }
-          }
+        }
+    },
+    "homepage": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki",
+    "support": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/wiki/User-Guide",
+    "source": "https://github.com/Baldhor/Homey-ESPhome-Enhanced",
+    "bugs": {
+        "url": "https://github.com/Baldhor/Homey-ESPhome-Enhanced/issues"
+    },
+    "tags": {
+        "en": [
+            "ESPhome",
+            "esp32",
+            "esp8266",
+            "esp8285",
+            "Home Assistant"
+        ]
+    },
+    "flow": {
+        "triggers": [{
+                "id": "esphome_text_changed",
+                "title": {
+                    "en": "Value of ... changed"
+                },
+                "titleFormatted": {
+                    "en": "Value of [[capability_name]] changed"
+                },
+                "args": [{
+                        "type": "device",
+                        "name": "device",
+                        "filter": "driver_id=esphome-wizard"
+                    },
+                    {
+                        "name": "capability_name",
+                        "type": "autocomplete",
+                        "title": {
+                            "en": "capability"
+                        }
+                    }
+                ],
+                "tokens": [{
+                    "name": "value",
+                    "type": "string",
+                    "title": {
+                        "en": "value"
+                    }
+                }]
+            },
+            {
+                "id": "esphome_text_changed_to",
+                "title": {
+                    "en": "Value of ... changed to ..."
+                },
+                "titleFormatted": {
+                    "en": "Value of [[capability_name]] changed to [[value]]"
+                },
+                "args": [{
+                        "type": "device",
+                        "name": "device",
+                        "filter": "driver_id=esphome-wizard"
+                    },
+                    {
+                        "name": "capability_name",
+                        "type": "autocomplete",
+                        "title": {
+                            "en": "capability"
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "type": "autocomplete",
+                        "title": {
+                            "en": "value"
+                        }
+                    }
+                ]
+            }
         ],
-        "tokens": [
-          {
-            "name": "value",
+        "conditions": [{
+            "id": "esphome_text_condition",
+            "title": {
+                "en": "Value of ... !{{is|isn't}} ..."
+            },
+            "titleFormatted": {
+                "en": "Value of [[capability_name]] !{{is|isn't}} [[value]]"
+            },
+            "args": [{
+                    "type": "device",
+                    "name": "device",
+                    "filter": "driver_id=esphome-wizard"
+                },
+                {
+                    "name": "capability_name",
+                    "type": "autocomplete",
+                    "title": {
+                        "en": "capability"
+                    }
+                },
+                {
+                    "name": "value",
+                    "type": "autocomplete",
+                    "title": {
+                        "en": "value"
+                    }
+                }
+            ]
+        }],
+        "actions": [{
+            "id": "esphome_text_setvalue",
+            "title": {
+                "en": "Set value of ... to ..."
+            },
+            "titleFormatted": {
+                "en": "Set value of [[capability_name]] to [[value]]"
+            },
+            "args": [{
+                    "type": "device",
+                    "name": "device",
+                    "filter": "driver_id=esphome-wizard"
+                },
+                {
+                    "name": "capability_name",
+                    "type": "autocomplete",
+                    "title": {
+                        "en": "capability"
+                    }
+                },
+                {
+                    "name": "value",
+                    "type": "autocomplete",
+                    "title": {
+                        "en": "value"
+                    }
+                }
+            ]
+        }]
+    },
+    "drivers": [{
+        "name": {
+            "en": "ESPHome Wizard"
+        },
+        "class": "other",
+        "platforms": [
+            "local"
+        ],
+        "connectivity": [
+            "lan"
+        ],
+        "capabilities": [
+            "esphome_enum_test_AA",
+            "esphome_enum_custom_fan_mode_AA",
+            "esphome_enum_custom_preset_AA",
+            "esphome_enum_fan_mode_AA",
+            "esphome_enum_horizontal_swing_mode_AA",
+            "esphome_enum_horizontal_swing_mode_AB",
+            "esphome_enum_mode_AA",
+            "esphome_enum_swing_mode_AA",
+            "esphome_enum_vertical_swing_mode_AA",
+            "esphome_enum_vertical_swing_mode_AB",
+            "esphome_select",
+            "esphome_text",
+            "measure_angle",
+            "measure_duration",
+            "measure_length",
+            "measure_weight",
+            "onoff",
+            "dim",
+            "target_temperature",
+            "measure_temperature",
+            "measure_co",
+            "measure_co2",
+            "measure_pm25",
+            "measure_humidity",
+            "measure_pressure",
+            "measure_noise",
+            "measure_rain",
+            "measure_wind_strength",
+            "measure_wind_angle",
+            "measure_gust_strength",
+            "measure_gust_angle",
+            "measure_battery",
+            "measure_power",
+            "measure_voltage",
+            "measure_current",
+            "measure_luminance",
+            "measure_ultraviolet",
+            "measure_water",
+            "alarm_generic",
+            "alarm_motion",
+            "alarm_contact",
+            "alarm_co",
+            "alarm_co2",
+            "alarm_pm25",
+            "alarm_tamper",
+            "alarm_smoke",
+            "alarm_fire",
+            "alarm_heat",
+            "alarm_water",
+            "alarm_battery",
+            "alarm_night",
+            "meter_power",
+            "meter_water",
+            "meter_gas",
+            "meter_rain",
+            "volume_set",
+            "volume_up",
+            "volume_down",
+            "volume_mute",
+            "channel_up",
+            "channel_down",
+            "locked",
+            "windowcoverings_tilt_set",
+            "windowcoverings_closed",
+            "windowcoverings_set",
+            "button"
+        ],
+        "energy": {
+            "batteries": [
+                "OTHER"
+            ]
+        },
+        "images": {
+            "small": "drivers/esphome-wizard/assets/images/small.png",
+            "large": "drivers/esphome-wizard/assets/images/large.png"
+        },
+        "pair": [{
+            "id": "main"
+        }],
+        "id": "esphome-wizard",
+        "settings": []
+    }],
+    "capabilities": {
+        "esphome_enum_custom_fan_mode_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Custom Fan Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "1",
+                    "title": {
+                        "en": "Speed 1"
+                    }
+                },
+                {
+                    "id": "2",
+                    "title": {
+                        "en": "Speed 2"
+                    }
+                },
+                {
+                    "id": "3",
+                    "title": {
+                        "en": "Speed 3"
+                    }
+                },
+                {
+                    "id": "4",
+                    "title": {
+                        "en": "Speed 4"
+                    }
+                },
+                {
+                    "id": "5",
+                    "title": {
+                        "en": "Speed 5"
+                    }
+                },
+                {
+                    "id": "Automatic",
+                    "title": {
+                        "en": "Automatic"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_custom_preset_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Custom Preset Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "Normal",
+                    "title": {
+                        "en": "Normal"
+                    }
+                },
+                {
+                    "id": "Powerful",
+                    "title": {
+                        "en": "Powerful"
+                    }
+                },
+                {
+                    "id": "Quiet",
+                    "title": {
+                        "en": "Quiet"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_fan_mode_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Fan Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "auto",
+                    "title": {
+                        "en": "Auto"
+                    }
+                },
+                {
+                    "id": "low",
+                    "title": {
+                        "en": "Low"
+                    }
+                },
+                {
+                    "id": "medium",
+                    "title": {
+                        "en": "Medium"
+                    }
+                },
+                {
+                    "id": "high",
+                    "title": {
+                        "en": "High"
+                    }
+                },
+                {
+                    "id": "quiet",
+                    "title": {
+                        "en": "Quiet"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_horizontal_swing_mode_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Horizontal Swing Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "auto",
+                    "title": {
+                        "en": "Auto"
+                    }
+                },
+                {
+                    "id": "left",
+                    "title": {
+                        "en": "Left"
+                    }
+                },
+                {
+                    "id": "left_center",
+                    "title": {
+                        "en": "Left Center"
+                    }
+                },
+                {
+                    "id": "center",
+                    "title": {
+                        "en": "Center"
+                    }
+                },
+                {
+                    "id": "right_center",
+                    "title": {
+                        "en": "Right Center"
+                    }
+                },
+                {
+                    "id": "right",
+                    "title": {
+                        "en": "Right"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_horizontal_swing_mode_AB": {
+            "type": "enum",
+            "title": {
+                "en": "Horizontal Swing Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "Left",
+                    "title": {
+                        "en": "Left"
+                    }
+                },
+                {
+                    "id": "Left/Center",
+                    "title": {
+                        "en": "Left/Center"
+                    }
+                },
+                {
+                    "id": "Center",
+                    "title": {
+                        "en": "Center"
+                    }
+                },
+                {
+                    "id": "Center/Right",
+                    "title": {
+                        "en": "Center/Right"
+                    }
+                },
+                {
+                    "id": "Right",
+                    "title": {
+                        "en": "Right"
+                    }
+                },
+                {
+                    "id": "Wide",
+                    "title": {
+                        "en": "Wide"
+                    }
+                },
+                {
+                    "id": "Spot",
+                    "title": {
+                        "en": "Spot"
+                    }
+                },
+                {
+                    "id": "Swing",
+                    "title": {
+                        "en": "Swing"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_mode_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "off",
+                    "title": {
+                        "en": "Off"
+                    }
+                },
+                {
+                    "id": "heat_cool",
+                    "title": {
+                        "en": "Heat Cool"
+                    }
+                },
+                {
+                    "id": "cool",
+                    "title": {
+                        "en": "Cool"
+                    }
+                },
+                {
+                    "id": "heat",
+                    "title": {
+                        "en": "Heat"
+                    }
+                },
+                {
+                    "id": "fan_only",
+                    "title": {
+                        "en": "Fan Only"
+                    }
+                },
+                {
+                    "id": "dry",
+                    "title": {
+                        "en": "Dry"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_swing_mode_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Swing Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "off",
+                    "title": {
+                        "en": "Off"
+                    }
+                },
+                {
+                    "id": "both",
+                    "title": {
+                        "en": "Both"
+                    }
+                },
+                {
+                    "id": "vertical",
+                    "title": {
+                        "en": "Vertical"
+                    }
+                },
+                {
+                    "id": "horizontal",
+                    "title": {
+                        "en": "Horizontal"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_test_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Test Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "one",
+                    "title": {
+                        "en": "One"
+                    }
+                },
+                {
+                    "id": "two",
+                    "title": {
+                        "en": "Two"
+                    }
+                },
+                {
+                    "id": "three",
+                    "title": {
+                        "en": "Three"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_vertical_swing_mode_AA": {
+            "type": "enum",
+            "title": {
+                "en": "Vertical Swing Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "swing",
+                    "title": {
+                        "en": "Swing"
+                    }
+                },
+                {
+                    "id": "auto",
+                    "title": {
+                        "en": "Auto"
+                    }
+                },
+                {
+                    "id": "up",
+                    "title": {
+                        "en": "Up"
+                    }
+                },
+                {
+                    "id": "up_center",
+                    "title": {
+                        "en": "Up Center"
+                    }
+                },
+                {
+                    "id": "center",
+                    "title": {
+                        "en": "Center"
+                    }
+                },
+                {
+                    "id": "down_center",
+                    "title": {
+                        "en": "Down Center"
+                    }
+                },
+                {
+                    "id": "down",
+                    "title": {
+                        "en": "Down"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_enum_vertical_swing_mode_AB": {
+            "type": "enum",
+            "title": {
+                "en": "Vertical Swing Mode"
+            },
+            "uiComponent": "picker",
+            "getable": true,
+            "setable": true,
+            "values": [{
+                    "id": "Up",
+                    "title": {
+                        "en": "Up"
+                    }
+                },
+                {
+                    "id": "Up/Center",
+                    "title": {
+                        "en": "Up/Center"
+                    }
+                },
+                {
+                    "id": "Center/Down",
+                    "title": {
+                        "en": "Center/Down"
+                    }
+                },
+                {
+                    "id": "Down",
+                    "title": {
+                        "en": "Down"
+                    }
+                },
+                {
+                    "id": "Swing",
+                    "title": {
+                        "en": "Swing"
+                    }
+                }
+            ],
+            "icon": "/assets/images/esphome_enum.svg"
+        },
+        "esphome_number": {
+            "type": "number",
+            "title": {
+                "en": "number"
+            },
+            "uiComponent": "sensor",
+            "getable": true,
+            "setable": false,
+            "icon": "/assets/images/esphome_number.svg"
+        },
+        "esphome_select": {
             "type": "string",
             "title": {
-              "en": "value"
-            }
-          }
-        ]
-      },
-      {
-        "id": "esphome_text_changed_to",
-        "title": {
-          "en": "Value of ... changed to ..."
+                "en": "select"
+            },
+            "uiComponent": "sensor",
+            "getable": true,
+            "setable": true,
+            "icon": "/assets/images/esphome_select.svg"
         },
-        "titleFormatted": {
-          "en": "Value of [[capability_name]] changed to [[value]]"
+        "esphome_text": {
+            "type": "string",
+            "title": {
+                "en": "text"
+            },
+            "uiComponent": "sensor",
+            "getable": true,
+            "setable": false,
+            "icon": "/assets/images/esphome_text.svg"
         },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=esphome-wizard"
-          },
-          {
-            "name": "capability_name",
-            "type": "autocomplete",
+        "measure_angle": {
+            "type": "number",
             "title": {
-              "en": "capability"
-            }
-          },
-          {
-            "name": "value",
-            "type": "autocomplete",
-            "title": {
-              "en": "value"
-            }
-          }
-        ]
-      }
-    ],
-    "conditions": [
-      {
-        "id": "esphome_text_condition",
-        "title": {
-          "en": "Value of ... !{{is|isn't}} ..."
+                "en": "Angle"
+            },
+            "units": {
+                "en": "°"
+            },
+            "insights": true,
+            "desc": {
+                "en": "Angle in degrees (°)"
+            },
+            "chartType": "spline",
+            "decimals": 2,
+            "getable": true,
+            "setable": false,
+            "uiComponent": "sensor",
+            "icon": "/assets/images/measure_angle.svg"
         },
-        "titleFormatted": {
-          "en": "Value of [[capability_name]] !{{is|isn't}} [[value]]"
+        "measure_duration": {
+            "type": "number",
+            "title": {
+                "en": "Duration"
+            },
+            "units": {
+                "en": "s"
+            },
+            "insights": true,
+            "desc": {
+                "en": "Duration in seconds (s)"
+            },
+            "chartType": "spline",
+            "decimals": 2,
+            "getable": true,
+            "setable": false,
+            "uiComponent": "sensor",
+            "icon": "/assets/images/measure_duration.svg"
         },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=esphome-wizard"
-          },
-          {
-            "name": "capability_name",
-            "type": "autocomplete",
+        "measure_length": {
+            "type": "number",
             "title": {
-              "en": "capability"
-            }
-          },
-          {
-            "name": "value",
-            "type": "autocomplete",
-            "title": {
-              "en": "value"
-            }
-          }
-        ]
-      }
-    ],
-    "actions": [
-      {
-        "id": "esphome_text_setvalue",
-        "title": {
-          "en": "Set value of ... to ..."
+                "en": "Length"
+            },
+            "units": {
+                "en": "cm"
+            },
+            "insights": true,
+            "desc": {
+                "en": "Length in centimeter (cm)"
+            },
+            "chartType": "spline",
+            "decimals": 2,
+            "getable": true,
+            "setable": false,
+            "uiComponent": "sensor",
+            "icon": "/assets/images/measure_length.svg"
         },
-        "titleFormatted": {
-          "en": "Set value of [[capability_name]] to [[value]]"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=esphome-wizard"
-          },
-          {
-            "name": "capability_name",
-            "type": "autocomplete",
+        "measure_weight": {
+            "type": "number",
             "title": {
-              "en": "capability"
-            }
-          },
-          {
-            "name": "value",
-            "type": "autocomplete",
-            "title": {
-              "en": "value"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "drivers": [
-    {
-      "name": {
-        "en": "ESPHome Wizard"
-      },
-      "class": "other",
-      "platforms": [
-        "local"
-      ],
-      "connectivity": [
-        "lan"
-      ],
-      "capabilities": [
-        "esphome_enum_test_AA",
-        "esphome_enum_custom_fan_mode_AA",
-        "esphome_enum_custom_preset_AA",
-        "esphome_enum_fan_mode_AA",
-        "esphome_enum_horizontal_swing_mode_AA",
-        "esphome_enum_horizontal_swing_mode_AB",
-        "esphome_enum_mode_AA",
-        "esphome_enum_swing_mode_AA",
-        "esphome_enum_vertical_swing_mode_AA",
-        "esphome_enum_vertical_swing_mode_AB",
-        "esphome_select",
-        "esphome_text",
-        "measure_angle",
-        "measure_duration",
-        "measure_length",
-        "measure_weight",
-        "onoff",
-        "dim",
-        "target_temperature",
-        "measure_temperature",
-        "measure_co",
-        "measure_co2",
-        "measure_pm25",
-        "measure_humidity",
-        "measure_pressure",
-        "measure_noise",
-        "measure_rain",
-        "measure_wind_strength",
-        "measure_wind_angle",
-        "measure_gust_strength",
-        "measure_gust_angle",
-        "measure_battery",
-        "measure_power",
-        "measure_voltage",
-        "measure_current",
-        "measure_luminance",
-        "measure_ultraviolet",
-        "measure_water",
-        "alarm_generic",
-        "alarm_motion",
-        "alarm_contact",
-        "alarm_co",
-        "alarm_co2",
-        "alarm_pm25",
-        "alarm_tamper",
-        "alarm_smoke",
-        "alarm_fire",
-        "alarm_heat",
-        "alarm_water",
-        "alarm_battery",
-        "alarm_night",
-        "meter_power",
-        "meter_water",
-        "meter_gas",
-        "meter_rain",
-        "volume_set",
-        "volume_up",
-        "volume_down",
-        "volume_mute",
-        "channel_up",
-        "channel_down",
-        "locked",
-        "windowcoverings_tilt_set",
-        "windowcoverings_closed",
-        "windowcoverings_set",
-        "button"
-      ],
-      "energy": {
-        "batteries": [
-          "OTHER"
-        ]
-      },
-      "images": {
-        "small": "drivers/esphome-wizard/assets/images/small.png",
-        "large": "drivers/esphome-wizard/assets/images/large.png"
-      },
-      "pair": [
-        {
-          "id": "main"
+                "en": "Weight"
+            },
+            "units": {
+                "en": "g"
+            },
+            "insights": true,
+            "desc": {
+                "en": "Weight in gram (g)"
+            },
+            "chartType": "spline",
+            "decimals": 2,
+            "getable": true,
+            "setable": false,
+            "uiComponent": "sensor",
+            "icon": "/assets/images/measure_weight.svg"
         }
-      ],
-      "id": "esphome-wizard",
-      "settings": []
     }
-  ],
-  "capabilities": {
-    "esphome_enum_custom_fan_mode_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Custom Fan Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "1",
-          "title": {
-            "en": "Speed 1"
-          }
-        },
-        {
-          "id": "2",
-          "title": {
-            "en": "Speed 2"
-          }
-        },
-        {
-          "id": "3",
-          "title": {
-            "en": "Speed 3"
-          }
-        },
-        {
-          "id": "4",
-          "title": {
-            "en": "Speed 4"
-          }
-        },
-        {
-          "id": "5",
-          "title": {
-            "en": "Speed 5"
-          }
-        },
-        {
-          "id": "Automatic",
-          "title": {
-            "en": "Automatic"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_custom_preset_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Custom Preset Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "Normal",
-          "title": {
-            "en": "Normal"
-          }
-        },
-        {
-          "id": "Powerful",
-          "title": {
-            "en": "Powerful"
-          }
-        },
-        {
-          "id": "Quiet",
-          "title": {
-            "en": "Quiet"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_fan_mode_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Fan Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "auto",
-          "title": {
-            "en": "Auto"
-          }
-        },
-        {
-          "id": "low",
-          "title": {
-            "en": "Low"
-          }
-        },
-        {
-          "id": "medium",
-          "title": {
-            "en": "Medium"
-          }
-        },
-        {
-          "id": "high",
-          "title": {
-            "en": "High"
-          }
-        },
-        {
-          "id": "quiet",
-          "title": {
-            "en": "Quiet"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_horizontal_swing_mode_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Horizontal Swing Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "auto",
-          "title": {
-            "en": "Auto"
-          }
-        },
-        {
-          "id": "left",
-          "title": {
-            "en": "Left"
-          }
-        },
-        {
-          "id": "left_center",
-          "title": {
-            "en": "Left Center"
-          }
-        },
-        {
-          "id": "center",
-          "title": {
-            "en": "Center"
-          }
-        },
-        {
-          "id": "right_center",
-          "title": {
-            "en": "Right Center"
-          }
-        },
-        {
-          "id": "right",
-          "title": {
-            "en": "Right"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_horizontal_swing_mode_AB": {
-      "type": "enum",
-      "title": {
-        "en": "Horizontal Swing Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "Left",
-          "title": {
-            "en": "Left"
-          }
-        },
-        {
-          "id": "Left/Center",
-          "title": {
-            "en": "Left/Center"
-          }
-        },
-        {
-          "id": "Center",
-          "title": {
-            "en": "Center"
-          }
-        },
-        {
-          "id": "Center/Right",
-          "title": {
-            "en": "Center/Right"
-          }
-        },
-        {
-          "id": "Right",
-          "title": {
-            "en": "Right"
-          }
-        },
-        {
-          "id": "Wide",
-          "title": {
-            "en": "Wide"
-          }
-        },
-        {
-          "id": "Spot",
-          "title": {
-            "en": "Spot"
-          }
-        },
-        {
-          "id": "Swing",
-          "title": {
-            "en": "Swing"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_mode_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "off",
-          "title": {
-            "en": "Off"
-          }
-        },
-        {
-          "id": "heat_cool",
-          "title": {
-            "en": "Heat Cool"
-          }
-        },
-        {
-          "id": "cool",
-          "title": {
-            "en": "Cool"
-          }
-        },
-        {
-          "id": "heat",
-          "title": {
-            "en": "Heat"
-          }
-        },
-        {
-          "id": "fan_only",
-          "title": {
-            "en": "Fan Only"
-          }
-        },
-        {
-          "id": "dry",
-          "title": {
-            "en": "Dry"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_swing_mode_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Swing Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "off",
-          "title": {
-            "en": "Off"
-          }
-        },
-        {
-          "id": "both",
-          "title": {
-            "en": "Both"
-          }
-        },
-        {
-          "id": "vertical",
-          "title": {
-            "en": "Vertical"
-          }
-        },
-        {
-          "id": "horizontal",
-          "title": {
-            "en": "Horizontal"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_test_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Test Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "one",
-          "title": {
-            "en": "One"
-          }
-        },
-        {
-          "id": "two",
-          "title": {
-            "en": "Two"
-          }
-        },
-        {
-          "id": "three",
-          "title": {
-            "en": "Three"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_vertical_swing_mode_AA": {
-      "type": "enum",
-      "title": {
-        "en": "Vertical Swing Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "swing",
-          "title": {
-            "en": "Swing"
-          }
-        },
-        {
-          "id": "auto",
-          "title": {
-            "en": "Auto"
-          }
-        },
-        {
-          "id": "up",
-          "title": {
-            "en": "Up"
-          }
-        },
-        {
-          "id": "up_center",
-          "title": {
-            "en": "Up Center"
-          }
-        },
-        {
-          "id": "center",
-          "title": {
-            "en": "Center"
-          }
-        },
-        {
-          "id": "down_center",
-          "title": {
-            "en": "Down Center"
-          }
-        },
-        {
-          "id": "down",
-          "title": {
-            "en": "Down"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_enum_vertical_swing_mode_AB": {
-      "type": "enum",
-      "title": {
-        "en": "Vertical Swing Mode"
-      },
-      "uiComponent": "picker",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "Up",
-          "title": {
-            "en": "Up"
-          }
-        },
-        {
-          "id": "Up/Center",
-          "title": {
-            "en": "Up/Center"
-          }
-        },
-        {
-          "id": "Center/Down",
-          "title": {
-            "en": "Center/Down"
-          }
-        },
-        {
-          "id": "Down",
-          "title": {
-            "en": "Down"
-          }
-        },
-        {
-          "id": "Swing",
-          "title": {
-            "en": "Swing"
-          }
-        }
-      ],
-      "icon": "/assets/images/esphome_enum.svg"
-    },
-    "esphome_number": {
-      "type": "number",
-      "title": {
-        "en": "number"
-      },
-      "uiComponent": "sensor",
-      "getable": true,
-      "setable": false,
-      "icon": "/assets/images/esphome_number.svg"
-    },
-    "esphome_select": {
-      "type": "string",
-      "title": {
-        "en": "select"
-      },
-      "uiComponent": "sensor",
-      "getable": true,
-      "setable": true,
-      "icon": "/assets/images/esphome_select.svg"
-    },
-    "esphome_text": {
-      "type": "string",
-      "title": {
-        "en": "text"
-      },
-      "uiComponent": "sensor",
-      "getable": true,
-      "setable": false,
-      "icon": "/assets/images/esphome_text.svg"
-    },
-    "measure_angle": {
-      "type": "number",
-      "title": {
-        "en": "Angle"
-      },
-      "units": {
-        "en": "°"
-      },
-      "insights": true,
-      "desc": {
-        "en": "Angle in degrees (°)"
-      },
-      "chartType": "spline",
-      "decimals": 2,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/images/measure_angle.svg"
-    },
-    "measure_duration": {
-      "type": "number",
-      "title": {
-        "en": "Duration"
-      },
-      "units": {
-        "en": "s"
-      },
-      "insights": true,
-      "desc": {
-        "en": "Duration in seconds (s)"
-      },
-      "chartType": "spline",
-      "decimals": 2,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/images/measure_duration.svg"
-    },
-    "measure_length": {
-      "type": "number",
-      "title": {
-        "en": "Length"
-      },
-      "units": {
-        "en": "cm"
-      },
-      "insights": true,
-      "desc": {
-        "en": "Length in centimeter (cm)"
-      },
-      "chartType": "spline",
-      "decimals": 2,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/images/measure_length.svg"
-    },
-    "measure_weight": {
-      "type": "number",
-      "title": {
-        "en": "Weight"
-      },
-      "units": {
-        "en": "g"
-      },
-      "insights": true,
-      "desc": {
-        "en": "Weight in gram (g)"
-      },
-      "chartType": "spline",
-      "decimals": 2,
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor",
-      "icon": "/assets/images/measure_weight.svg"
-    }
-  }
 }

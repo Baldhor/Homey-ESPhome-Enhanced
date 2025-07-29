@@ -90,7 +90,7 @@ class Client extends EventEmitter {
      * This function process the connection to the remote
      */
     processConnection() {
-        this.log('processConnection');        
+        this.log('processConnection');
 
         // Make sure nothing is wrong
         if (!this.expectConnected) {
@@ -173,19 +173,19 @@ class Client extends EventEmitter {
         this.connected = false;
         this.emit('disconnected');
 
+        this._autoReconnect(); // trigger reconnect first
         this._disconnect();
-        this._autoReconnect();
     }
 
     errorListener(error) {
         this.error('Received an error:', error);
 
-        if(this.nativeApiClient === null) return; //some race condition
+        if (this.nativeApiClient === null) return; //some race condition
 
         // if we got a error and we are not connected reconnect
         if (error.code === "EHOSTUNREACH" || !this.nativeApiClient.connected()) {
+            this._autoReconnect(); // trigger reconnect first
             this._disconnect();
-            this._autoReconnect();
         }
     }
 
@@ -210,8 +210,7 @@ class Client extends EventEmitter {
      */
     startRemoteEntityListener(entityId) {
         this.nativeApiClient.entities[entityId]
-            .on('state', (state) => this.remoteEntityStateListener(entityId, state)
-                , { signal: this.abortController.signal });
+            .on('state', (state) => this.remoteEntityStateListener(entityId, state), { signal: this.abortController.signal });
     }
 
     /**

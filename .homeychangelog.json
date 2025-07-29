@@ -1,269 +1,272 @@
 {
-  "0.1.0": {
-    "en": "Intial version"
-  },
-  "0.2.0": {
-    "en": "Undocumented and lost version"
-  },
-  "0.3.0": {
-    "en": "Project forked and app ownership in Homey store transfered to baldhors@gmail.com. Added support for ESPhome based cover. Please log issues on the github project!"
-  },
-  "0.3.1": {
-    "en": "Added support for button (untested)"
-  },
-  "0.3.2": {
-    "en": "Attempt to solve capabilities and cards handled by the app in homey store"
-  },
-  "0.3.3": {
-    "en": "Added support for consoleRe, it can be enabled from app settings"
-  },
-  "0.3.4": {
-    "en": "Fixed issues #8, #9 and #10. Also include a fix to console.re to avoid stackcall overflow"
-  },
-  "0.3.5": {
-    "en": "Improved console.re support, now ensure none of the log messages are lost at start of the application."
-  },
-  "0.3.6": {
-    "en": "Fixed a timeout handling in console.re client"
-  },
-  "0.4.0": {
-    "en": "BETA: new wizard driver, fully independant from legacy driver, so no risk of collision. USE AT YOUR OWN RISK"
-  },
-  "0.4.1": {
-    "en": "BETA: refacto of wizard driver, imply breaking changes (sorry). The wizard driver should be stable enough to avoid breaking changes in the future"
-  },
-  "0.4.2": {
-    "en": "Wizard is fully implemented. Still in BETA as more testing is necessary"
-  },
-  "0.4.3": {
-    "en": "A few fix to Wizard driver"
-  },
-  "0.4.4": {
-    "en": "FIX: few fix for edge cases"
-  },
-  "0.4.5": {
-    "en": "WIZARD: Added support for title option a few more things"
-  },
-  "0.4.6": {
-    "en": "Can create a virtual device directly from the native capability list + some fix\""
-  },
-  "0.5.0": {
-    "en": "Legacy driver is deprecated, long life to the wizard!"
-  },
-  "0.5.1": {
-    "en": "Wizard is not in BETA anymore, legacy driver is deprecated"
-  },
-  "0.5.2": {
-    "en": "Added community link"
-  },
-  "0.5.3": {
-    "en": "password are now supported as expected"
-  },
-  "0.5.4": {
-    "en": "Fixed #19, and now all logs from the browser will also be sent to console.re. Passwords are filtered out in a generic way to ensure even new logs will not include passwords!"
-  },
-  "0.5.5": {
-    "en": "No more circular reference in console.re and it is now possible to modify a device settings through the wizard (ip address, port and password)"
-  },
-  "0.6.0": {
-    "en": "Added support for encryption key. Improved new_device / update settyings views"
-  },
-  "0.6.1": {
-    "en": "Added logs"
-  },
-  "0.6.2": {
-    "en": "fix: length of encryption key in new_device view"
-  },
-  "0.6.3": {
-    "en": "Added support for template cover"
-  },
-  "0.6.4": {
-    "en": "Fixed: Errors where not correctly sent to console.re. Fix: Added error management for unexisting native capability used by a virtual device"
-  },
-  "0.6.5": {
-    "en": "Fix: added compatible with virtual devices created before implementation of encryption key support"
-  },
-  "0.6.6": {
-    "en": "Improved console.re logs. console.re will deactivate after 2 consecutive days\""
-  },
-  "0.6.7": {
-    "en": "Fixed issue in console.re auto disable"
-  },
-  "0.6.8": {
-    "en": "Fixed 2 bugs when the entityId change (entityId are calculated by esphome on the name of the entity, so if you change them, the id change)"
-  },
-  "0.7.0": {
-    "en": "The wizard can now modify a virtual device's class"
-  },
-  "0.7.1": {
-    "en": "Added tags to help find the app in Homey store"
-  },
-  "0.7.2": {
-    "en": "Fixed #28: The driver should correctly reconnect to the physical device if"
-  },
-  "0.7.3": {
-    "en": "Testing fix for #35: reconnection is now handled at high level client, not low level"
-  },
-  "0.7.4": {
-    "en": "Fixed a null crash case"
-  },
-  "1.0.0": {
-    "en": "Full redesign of the wizard, this version is for TEST purpose ONLY"
-  },
-  "1.0.1": {
-    "en": "Corrected a few bugs related to bearer token for new virtual device"
-  },
-  "1.0.2": {
-    "en": "Several fix, and added advices for migrated users"
-  },
-  "1.0.3": {
-    "en": "Fixed #47 memory leak when reconnection occur (hopefully)"
-  },
-  "1.0.4": {
-    "en": "Fixed #50 and corrected back page of edit physiucal device"
-  },
-  "1.0.5": {
-    "en": "Fixed #48: removing text capability support, I will add new custom capabilities later"
-  },
-  "1.1.0": {
-    "en": "Implemented #42: Added support for Climate and Select entities! UNTESTED!"
-  },
-  "1.1.1": {
-    "en": "Added missing zoneActivity option for alarm_motion and alarm_contact capabilities + fixed a tiny bug related to esphome_enum capability"
-  },
-  "1.1.2": {
-    "en": "Fix for #47"
-  },
-  "1.1.3": {
-    "en": "publish failed, trying again"
-  },
-  "1.1.4": {
-    "en": "corrected source link in app.json and enhanced console.re max queue handling"
-  },
-  "1.1.5": {
-    "en": "Added esphome_text and esphome_select custom capabilities for #42"
-  },
-  "1.1.6": {
-    "en": "Added esphome_select_setvalue action card for #42"
-  },
-  "1.1.7": {
-    "en": "Fixed #54 and #44: Now, you can collect debug logs directly from the page Manage your physical devices"
-  },
-  "1.1.8": {
-    "en": "Fixed Climate handling of list of values"
-  },
-  "1.1.9": {
-    "en": "Updated readme files"
-  },
-  "1.1.10": {
-    "en": " Updated readme files .. forbidden to write url in the readme, using app.json instead"
-  },
-  "1.1.11": {
-    "en": "Small fix in console.re to avoid an undefined exception when I added the reconnection delay"
-  },
-  "1.1.12": {
-    "en": "Moved console.re to the Wizard, there are no more App settings! (issue #15)"
-  },
-  "1.1.13": {
-    "en": "Fixed a tiny bug for #42"
-  },
-  "1.1.14": {
-    "en": "Added custom enum for horizontale swing mode (#42), flow card of esphome_select can be used"
-  },
-  "1.1.15": {
-    "en": "Implementation of Climate.mode: added convert functions from numeric to string and back (#42)"
-  },
-  "1.1.16": {
-    "en": "Small fix for #42"
-  },
-  "1.1.17": {
-    "en": "several fixes: 1/ Addition, modification and deletion of capabilities were not updating correctly a virtual device availability. 2/ getable option was not initialized correctly (getable mean: can be read and not 'write only' :p) 3/ ESPhome sameple config for wired heater is fully tested and functionnal (I moved all my heaters to ESPhome) -> Bye bye Tasmota and MQTT"
-  },
-  "1.1.18": {
-    "en": "One more fix to #42: flowCard need retrieve the concerned device from the args, and cards should be setup in the driver, not the device"
-  },
-  "1.1.19": {
-    "en": "And yet another #42 fix: esphome_enum_ should trigger card the same way as esphome_select does"
-  },
-  "1.1.20": {
-    "en": "Fixed getCapabilityValue and capabilityListener issues for the esphome_* cards"
-  },
-  "1.1.21": {
-    "en": "Added warning and notification for legacy driver/device => I will remove support/code soon"
-  },
-  "1.1.22": {
-    "en": "Implementation of #66, to be tested by end user"
-  },
-  "1.1.23": {
-    "en": "Fix #65: added error management to decimals and min/max options"
-  },
-  "1.1.24": {
-    "en": "Implemented zone filter in list virtual devices page (#61)"
-  },
-  "1.1.25": {
-    "en": "Removed auto from available values for esphome_enum_mode_AA (#66)"
-  },
-  "1.1.26": {
-    "en": "Added support for Mitsubishi Heavy Industries (MHI) airco enum (#67)"
-  },
-  "1.1.27": {
-    "en": "Was missing a value in the numeric to string conversion for fanMode (#67)"
-  },
-  "1.1.28": {
-    "en": "Full rework of the ESPhome triggers, conditions and action cards (#41). The cards related to ESPhome_select are deprecated => please migrate to ESPhome_text cards! ESPhome_text cards now supports ALL the capabilities (whatever their type: boolean, enum, text, number, ...). Also fixed: Link in Wizard not appearing blue AND capability options saved as null or empty string (at startup, your conf will be cleaned)."
-  },
-  "1.1.29": {
-    "en": "Fix for cleaning up null and empty capability options (#41)"
-  },
-  "1.1.30": {
-    "en": "Corrected a few bugs and added measure_duration custom capability (#41)"
-  },
-  "1.1.31": {
-    "en": "Fixed a bug introduced when adding the collect debug info function (#69)"
-  },
-  "1.1.32": {
-    "en": "Attempt for a fix to #70, but I just cannot reproduce, and so cannot test it. However, I made a regression pass."
-  },
-  "1.2.0": {
-    "en": "Implemented meansure angle, duration, length and weight custom capabilities (why those are not standard!?). Context aware cards are fully functionnal."
-  },
-  "1.2.1": {
-    "en": "Fix for #71"
-  },
-  "1.2.2": {
-    "en": "Fix #74 + Updated low level api version"
-  },
-  "1.3.0": {
-    "en": "#57 Definitevely removed support for legacy driver, users had warning since over a month."
-  },
-  "1.3.1": {
-    "en": "Implementation of Light State and Brightness (#75)"
-  },
-  "1.3.2": {
-    "en": "Move back to reconnection function of the low level api + upgraded version of low level api (#78)"
-  },
-  "1.3.3": {
-    "en": "Added another try/catch to fix #56"
-  },
-  "1.3.4": {
-    "en": "Removed deprecated flow cards (sorry if it breaks your flows => you just need to replace them), and fixed a tiny bug in context aware condition cards (related to float/integer comparaison)"
-  },
-  "1.3.5": {
-    "en": "Updated dependancies, including more logs for #83"
-  },
-  "1.3.6": {
-    "en": "Fix - Do not consider errors as disconnection"
-  },
-  "1.3.7": {
-    "en": "Put back my own implmentation of autoreconnect (cf. #88)"
-  },
-  "1.3.8": {
-    "en": "Solved some edge cases (no so edge actually) in the reconnect feature"
-  },
-  "1.3.10": {
-    "en": "Improved resilience of context aware flow cards"
-  },
-  "1.3.11": {
-    "en": "Tiny bug in consolere"
-  }
+    "0.1.0": {
+        "en": "Intial version"
+    },
+    "0.2.0": {
+        "en": "Undocumented and lost version"
+    },
+    "0.3.0": {
+        "en": "Project forked and app ownership in Homey store transfered to baldhors@gmail.com. Added support for ESPhome based cover. Please log issues on the github project!"
+    },
+    "0.3.1": {
+        "en": "Added support for button (untested)"
+    },
+    "0.3.2": {
+        "en": "Attempt to solve capabilities and cards handled by the app in homey store"
+    },
+    "0.3.3": {
+        "en": "Added support for consoleRe, it can be enabled from app settings"
+    },
+    "0.3.4": {
+        "en": "Fixed issues #8, #9 and #10. Also include a fix to console.re to avoid stackcall overflow"
+    },
+    "0.3.5": {
+        "en": "Improved console.re support, now ensure none of the log messages are lost at start of the application."
+    },
+    "0.3.6": {
+        "en": "Fixed a timeout handling in console.re client"
+    },
+    "0.4.0": {
+        "en": "BETA: new wizard driver, fully independant from legacy driver, so no risk of collision. USE AT YOUR OWN RISK"
+    },
+    "0.4.1": {
+        "en": "BETA: refacto of wizard driver, imply breaking changes (sorry). The wizard driver should be stable enough to avoid breaking changes in the future"
+    },
+    "0.4.2": {
+        "en": "Wizard is fully implemented. Still in BETA as more testing is necessary"
+    },
+    "0.4.3": {
+        "en": "A few fix to Wizard driver"
+    },
+    "0.4.4": {
+        "en": "FIX: few fix for edge cases"
+    },
+    "0.4.5": {
+        "en": "WIZARD: Added support for title option a few more things"
+    },
+    "0.4.6": {
+        "en": "Can create a virtual device directly from the native capability list + some fix\""
+    },
+    "0.5.0": {
+        "en": "Legacy driver is deprecated, long life to the wizard!"
+    },
+    "0.5.1": {
+        "en": "Wizard is not in BETA anymore, legacy driver is deprecated"
+    },
+    "0.5.2": {
+        "en": "Added community link"
+    },
+    "0.5.3": {
+        "en": "password are now supported as expected"
+    },
+    "0.5.4": {
+        "en": "Fixed #19, and now all logs from the browser will also be sent to console.re. Passwords are filtered out in a generic way to ensure even new logs will not include passwords!"
+    },
+    "0.5.5": {
+        "en": "No more circular reference in console.re and it is now possible to modify a device settings through the wizard (ip address, port and password)"
+    },
+    "0.6.0": {
+        "en": "Added support for encryption key. Improved new_device / update settyings views"
+    },
+    "0.6.1": {
+        "en": "Added logs"
+    },
+    "0.6.2": {
+        "en": "fix: length of encryption key in new_device view"
+    },
+    "0.6.3": {
+        "en": "Added support for template cover"
+    },
+    "0.6.4": {
+        "en": "Fixed: Errors where not correctly sent to console.re. Fix: Added error management for unexisting native capability used by a virtual device"
+    },
+    "0.6.5": {
+        "en": "Fix: added compatible with virtual devices created before implementation of encryption key support"
+    },
+    "0.6.6": {
+        "en": "Improved console.re logs. console.re will deactivate after 2 consecutive days\""
+    },
+    "0.6.7": {
+        "en": "Fixed issue in console.re auto disable"
+    },
+    "0.6.8": {
+        "en": "Fixed 2 bugs when the entityId change (entityId are calculated by esphome on the name of the entity, so if you change them, the id change)"
+    },
+    "0.7.0": {
+        "en": "The wizard can now modify a virtual device's class"
+    },
+    "0.7.1": {
+        "en": "Added tags to help find the app in Homey store"
+    },
+    "0.7.2": {
+        "en": "Fixed #28: The driver should correctly reconnect to the physical device if"
+    },
+    "0.7.3": {
+        "en": "Testing fix for #35: reconnection is now handled at high level client, not low level"
+    },
+    "0.7.4": {
+        "en": "Fixed a null crash case"
+    },
+    "1.0.0": {
+        "en": "Full redesign of the wizard, this version is for TEST purpose ONLY"
+    },
+    "1.0.1": {
+        "en": "Corrected a few bugs related to bearer token for new virtual device"
+    },
+    "1.0.2": {
+        "en": "Several fix, and added advices for migrated users"
+    },
+    "1.0.3": {
+        "en": "Fixed #47 memory leak when reconnection occur (hopefully)"
+    },
+    "1.0.4": {
+        "en": "Fixed #50 and corrected back page of edit physiucal device"
+    },
+    "1.0.5": {
+        "en": "Fixed #48: removing text capability support, I will add new custom capabilities later"
+    },
+    "1.1.0": {
+        "en": "Implemented #42: Added support for Climate and Select entities! UNTESTED!"
+    },
+    "1.1.1": {
+        "en": "Added missing zoneActivity option for alarm_motion and alarm_contact capabilities + fixed a tiny bug related to esphome_enum capability"
+    },
+    "1.1.2": {
+        "en": "Fix for #47"
+    },
+    "1.1.3": {
+        "en": "publish failed, trying again"
+    },
+    "1.1.4": {
+        "en": "corrected source link in app.json and enhanced console.re max queue handling"
+    },
+    "1.1.5": {
+        "en": "Added esphome_text and esphome_select custom capabilities for #42"
+    },
+    "1.1.6": {
+        "en": "Added esphome_select_setvalue action card for #42"
+    },
+    "1.1.7": {
+        "en": "Fixed #54 and #44: Now, you can collect debug logs directly from the page Manage your physical devices"
+    },
+    "1.1.8": {
+        "en": "Fixed Climate handling of list of values"
+    },
+    "1.1.9": {
+        "en": "Updated readme files"
+    },
+    "1.1.10": {
+        "en": " Updated readme files .. forbidden to write url in the readme, using app.json instead"
+    },
+    "1.1.11": {
+        "en": "Small fix in console.re to avoid an undefined exception when I added the reconnection delay"
+    },
+    "1.1.12": {
+        "en": "Moved console.re to the Wizard, there are no more App settings! (issue #15)"
+    },
+    "1.1.13": {
+        "en": "Fixed a tiny bug for #42"
+    },
+    "1.1.14": {
+        "en": "Added custom enum for horizontale swing mode (#42), flow card of esphome_select can be used"
+    },
+    "1.1.15": {
+        "en": "Implementation of Climate.mode: added convert functions from numeric to string and back (#42)"
+    },
+    "1.1.16": {
+        "en": "Small fix for #42"
+    },
+    "1.1.17": {
+        "en": "several fixes: 1/ Addition, modification and deletion of capabilities were not updating correctly a virtual device availability. 2/ getable option was not initialized correctly (getable mean: can be read and not 'write only' :p) 3/ ESPhome sameple config for wired heater is fully tested and functionnal (I moved all my heaters to ESPhome) -> Bye bye Tasmota and MQTT"
+    },
+    "1.1.18": {
+        "en": "One more fix to #42: flowCard need retrieve the concerned device from the args, and cards should be setup in the driver, not the device"
+    },
+    "1.1.19": {
+        "en": "And yet another #42 fix: esphome_enum_ should trigger card the same way as esphome_select does"
+    },
+    "1.1.20": {
+        "en": "Fixed getCapabilityValue and capabilityListener issues for the esphome_* cards"
+    },
+    "1.1.21": {
+        "en": "Added warning and notification for legacy driver/device => I will remove support/code soon"
+    },
+    "1.1.22": {
+        "en": "Implementation of #66, to be tested by end user"
+    },
+    "1.1.23": {
+        "en": "Fix #65: added error management to decimals and min/max options"
+    },
+    "1.1.24": {
+        "en": "Implemented zone filter in list virtual devices page (#61)"
+    },
+    "1.1.25": {
+        "en": "Removed auto from available values for esphome_enum_mode_AA (#66)"
+    },
+    "1.1.26": {
+        "en": "Added support for Mitsubishi Heavy Industries (MHI) airco enum (#67)"
+    },
+    "1.1.27": {
+        "en": "Was missing a value in the numeric to string conversion for fanMode (#67)"
+    },
+    "1.1.28": {
+        "en": "Full rework of the ESPhome triggers, conditions and action cards (#41). The cards related to ESPhome_select are deprecated => please migrate to ESPhome_text cards! ESPhome_text cards now supports ALL the capabilities (whatever their type: boolean, enum, text, number, ...). Also fixed: Link in Wizard not appearing blue AND capability options saved as null or empty string (at startup, your conf will be cleaned)."
+    },
+    "1.1.29": {
+        "en": "Fix for cleaning up null and empty capability options (#41)"
+    },
+    "1.1.30": {
+        "en": "Corrected a few bugs and added measure_duration custom capability (#41)"
+    },
+    "1.1.31": {
+        "en": "Fixed a bug introduced when adding the collect debug info function (#69)"
+    },
+    "1.1.32": {
+        "en": "Attempt for a fix to #70, but I just cannot reproduce, and so cannot test it. However, I made a regression pass."
+    },
+    "1.2.0": {
+        "en": "Implemented meansure angle, duration, length and weight custom capabilities (why those are not standard!?). Context aware cards are fully functionnal."
+    },
+    "1.2.1": {
+        "en": "Fix for #71"
+    },
+    "1.2.2": {
+        "en": "Fix #74 + Updated low level api version"
+    },
+    "1.3.0": {
+        "en": "#57 Definitevely removed support for legacy driver, users had warning since over a month."
+    },
+    "1.3.1": {
+        "en": "Implementation of Light State and Brightness (#75)"
+    },
+    "1.3.2": {
+        "en": "Move back to reconnection function of the low level api + upgraded version of low level api (#78)"
+    },
+    "1.3.3": {
+        "en": "Added another try/catch to fix #56"
+    },
+    "1.3.4": {
+        "en": "Removed deprecated flow cards (sorry if it breaks your flows => you just need to replace them), and fixed a tiny bug in context aware condition cards (related to float/integer comparaison)"
+    },
+    "1.3.5": {
+        "en": "Updated dependancies, including more logs for #83"
+    },
+    "1.3.6": {
+        "en": "Fix - Do not consider errors as disconnection"
+    },
+    "1.3.7": {
+        "en": "Put back my own implmentation of autoreconnect (cf. #88)"
+    },
+    "1.3.8": {
+        "en": "Solved some edge cases (no so edge actually) in the reconnect feature"
+    },
+    "1.3.10": {
+        "en": "Improved resilience of context aware flow cards"
+    },
+    "1.3.11": {
+        "en": "Tiny bug in consolere"
+    },
+    "1.3.12": {
+        "en": "Fix reconnect issue"
+    }
 }
