@@ -179,11 +179,11 @@ class Client extends EventEmitter {
 
     errorListener(error) {
         this.error('Received an error:', error);
-
+    
         if (this.nativeApiClient === null) return; //some race condition
 
         // if we got a error and we are not connected reconnect
-        if (error.code === "EHOSTUNREACH" || !this.nativeApiClient.connected()) {
+        if (error.code === "EHOSTUNREACH" || !this.nativeApiClient.connection.connected) {
             this._autoReconnect(); // trigger reconnect first
             this._disconnect();
         }
@@ -195,8 +195,6 @@ class Client extends EventEmitter {
 
 
     newEntityListener(entity) {
-        this.log('Received a newentity:', entity);
-
         this.startRemoteEntityListener(entity.id);
     }
 
@@ -243,7 +241,6 @@ class Client extends EventEmitter {
             if (attributsToIgnore.includes(attribut))
                 return;
 
-            this.log('Emit event:', 'stateChanged', entityId, attribut, state[attribut]);
             this.emit('stateChanged', entityId, attribut, state[attribut]);
         });
     }
@@ -388,7 +385,7 @@ class Client extends EventEmitter {
 
         if (this.nativeApiClient !== null) {
             this.abortController.abort();
-            Object.keys(this.nativeApiClient.entities).forEach(entityId => { nativeApiClient.entities[entityId].destroy(); });
+            Object.keys(this.nativeApiClient.entities).forEach(entityId => { this.nativeApiClient.entities[entityId].destroy(); });
             this.nativeApiClient.disconnect(); //not a async function
             this.nativeApiClient = null;
         }
