@@ -265,5 +265,8 @@
   },
   "1.3.11": {
     "en": "Tiny bug in consolere"
+  },
+  "1.3.12": {
+    "en": "Fix to device reconnection issue"
   }
 }
