@@ -81,16 +81,15 @@ class Client extends EventEmitter {
         // We obviosuly expect to connect, so let's start
         this.expectConnected = true;
         this.reconnect = reconnect;
-        this.abortController = new AbortController();
         this.processConnection();
 
         this.log('Created');
     }
 
     /**
-     * This async function process the connection to the remote
+     * This function process the connection to the remote
      */
-    async processConnection() {
+    processConnection() {
         this.log('processConnection');
 
         // Make sure nothing is wrong
@@ -98,6 +97,8 @@ class Client extends EventEmitter {
             this.error("Processing connection, but expected state is not 'Connected'");
             return;
         }
+
+        this.abortController = new AbortController();
 
         // We need to create the native api client and attach the listeners
         if (this.nativeApiClient === null) {
@@ -117,15 +118,7 @@ class Client extends EventEmitter {
             this.startRemoteListener();
         }
 
-        // Connect (after the listener are added!)
-        try {
-            await this.nativeApiClient.connect();
-        } catch (error) {
-            this.error('Error while processing connection:', error);
-            
-            this._disconnect();
-            this._autoReconnect();
-        }
+        this.nativeApiClient.connect();
     }
 
     /**
@@ -180,17 +173,19 @@ class Client extends EventEmitter {
         this.connected = false;
         this.emit('disconnected');
 
+        this._autoReconnect(); // trigger reconnect first
         this._disconnect();
-        this._autoReconnect();
     }
 
     errorListener(error) {
         this.error('Received an error:', error);
+    
+        if (this.nativeApiClient === null) return; //some race condition
 
-        // Some errors requier to reconnect, other do not
-        if (error.code === "EHOSTUNREACH") {
+        // if we got a error and we are not connected reconnect
+        if (error.code === "EHOSTUNREACH" || !this.nativeApiClient.connection.connected) {
+            this._autoReconnect(); // trigger reconnect first
             this._disconnect();
-            this._autoReconnect();
         }
     }
 
@@ -200,8 +195,6 @@ class Client extends EventEmitter {
 
 
     newEntityListener(entity) {
-        this.log('Received a newentity:', entity);
-
         this.startRemoteEntityListener(entity.id);
     }
 
@@ -215,8 +208,7 @@ class Client extends EventEmitter {
      */
     startRemoteEntityListener(entityId) {
         this.nativeApiClient.entities[entityId]
-            .on('state', (state) => this.remoteEntityStateListener(entityId, state)
-                , { signal: this.abortController.signal });
+            .on('state', (state) => this.remoteEntityStateListener(entityId, state), { signal: this.abortController.signal });
     }
 
     /**
@@ -249,7 +241,6 @@ class Client extends EventEmitter {
             if (attributsToIgnore.includes(attribut))
                 return;
 
-            this.log('Emit event:', 'stateChanged', entityId, attribut, state[attribut]);
             this.emit('stateChanged', entityId, attribut, state[attribut]);
         });
     }
@@ -389,20 +380,14 @@ class Client extends EventEmitter {
         this._disconnect();
     }
 
-    async _disconnect() {
-        this.log('_disconnect');
+    _disconnect() {
+        this.log('_disconnect and cleanup');
 
         if (this.nativeApiClient !== null) {
             this.abortController.abort();
-            let nativeApiClient = this.nativeApiClient;
+            Object.keys(this.nativeApiClient.entities).forEach(entityId => { this.nativeApiClient.entities[entityId].destroy(); });
+            this.nativeApiClient.disconnect(); //not a async function
             this.nativeApiClient = null;
-            nativeApiClient.removeAllListeners();
-            Object.keys(nativeApiClient.entities).forEach(entityId => { nativeApiClient.entities[entityId].removeAllListeners(); });
-            try {
-                await nativeApiClient.disconnect();
-            } catch (error) {
-                this.error('Error while processing disconnection:', error);
-            }
         }
     }
 
@@ -416,6 +401,7 @@ class Client extends EventEmitter {
 
         if (this.reconnectTimer === null) {
             this.reconnectTimer = setTimeout(() => {
+                this.log('Reconnecting...');
                 this.reconnectTimer = null;
                 this.processConnection();
             }, NATIVE_API_RECONNECTION_DELAY * 1000);
